@@ -49,6 +49,8 @@ public class FirstPersonPlayerController : MonoBehaviour
         Jump();
         Gravity();
     }
+
+    //Methodes that use PlayerMovement method
     private void GroundCheck()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -58,7 +60,6 @@ public class FirstPersonPlayerController : MonoBehaviour
             velocity.y = 0f;
         }
     }
-
     private void Mover()
     {
         float x = Input.GetAxis("Horizontal");
@@ -68,13 +69,11 @@ public class FirstPersonPlayerController : MonoBehaviour
 
         controller.Move(move * movementSpeed * Time.deltaTime);
     }
-
     private void Gravity()
     {
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
-
     private void Jump()
     {
         if (Input.GetKey(KeyCode.Space) && isGrounded)
@@ -82,7 +81,6 @@ public class FirstPersonPlayerController : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeigh * -2 * gravity);
         }
     }
-
     private void PlayerLook()
     {
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
