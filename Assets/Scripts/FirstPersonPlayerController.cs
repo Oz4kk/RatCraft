@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,20 @@ public class FirstPersonPlayerController : MonoBehaviour
     [SerializeField] private CharacterController controller;
     public float movementSpeed = 12f;
 
+    //Gravity parametres
+    Vector3 velocity;
+    public float gravity = -9.81f;
+
+    //Ground check paremetres
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private LayerMask groundMask;
+    private float groundDistance = 0.4f;
+    bool isGrounded;
+
+    //Jump parametres
+    public float jumpHeigh = 2f;
+
+
     void Start()
     {
         bodyTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -29,12 +44,43 @@ public class FirstPersonPlayerController : MonoBehaviour
 
     private void PlayerMovement()
     {
+        GroundCheck();
+        Mover();
+        Jump();
+        Gravity();
+    }
+    private void GroundCheck()
+    {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = 0f;
+        }
+    }
+
+    private void Mover()
+    {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
 
         controller.Move(move * movementSpeed * Time.deltaTime);
+    }
+
+    private void Gravity()
+    {
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+    }
+
+    private void Jump()
+    {
+        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        {
+            velocity.y = Mathf.Sqrt(jumpHeigh * -2 * gravity);
+        }
     }
 
     private void PlayerLook()
