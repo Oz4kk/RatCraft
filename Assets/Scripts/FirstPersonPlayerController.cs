@@ -10,6 +10,10 @@ public class FirstPersonPlayerController : MonoBehaviour
     private Transform cameraTransform;
     private float xRotation = 0f;
 
+    //Player move parametres
+    [SerializeField] private CharacterController controller;
+    public float movementSpeed = 12f;
+
     void Start()
     {
         bodyTransform = GameObject.FindGameObjectWithTag("Player").transform;
@@ -20,6 +24,17 @@ public class FirstPersonPlayerController : MonoBehaviour
     void Update()
     {
         PlayerLook();
+        PlayerMovement();
+    }
+
+    private void PlayerMovement()
+    {
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+
+        Vector3 move = transform.right * x + transform.forward * z;
+
+        controller.Move(move * movementSpeed * Time.deltaTime);
     }
 
     private void PlayerLook()
