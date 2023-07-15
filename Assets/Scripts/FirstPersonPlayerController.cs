@@ -6,10 +6,10 @@ using UnityEngine;
 public class FirstPersonPlayerController : MonoBehaviour
 {
     //Player look parametres
-    [SerializeField] private float mouseSensitivity = 100f;
-    [SerializeField] private float xRotation = 0f;
+    [SerializeField] private float mouseSensitivity = 100.0f;
+    [SerializeField] private float xRotation = 0.0f;
     //Player move parametres
-    [SerializeField] private float movementSpeed = 12f;
+    [SerializeField] private float movementSpeed = 12.0f;
     //Gravity parametres
     Vector3 velocity;
     [SerializeField] private float gravity = -9.81f;
@@ -17,7 +17,7 @@ public class FirstPersonPlayerController : MonoBehaviour
     private float groundDistance = 0.4f;
     private bool isGrounded;
     //Jump parametres
-    [SerializeField] private float jumpHeigh = 2f;
+    [SerializeField] private float jumpHeigh = 2.0f;
 
     private Transform bodyTransform;
     private Transform cameraTransform;
@@ -51,9 +51,9 @@ public class FirstPersonPlayerController : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (isGrounded && velocity.y < 0)
+        if (isGrounded && velocity.y < 0.0f)
         {
-            velocity.y = 0f;
+            velocity.y = 0.0f;
         }
     }
     private void Mover()
@@ -83,9 +83,9 @@ public class FirstPersonPlayerController : MonoBehaviour
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
 
         xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        xRotation = Mathf.Clamp(xRotation, -90.0f, 90.0f);
 
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0.0f, 0.0f);
         bodyTransform.Rotate(Vector3.up * mouseX);
     }
 }
