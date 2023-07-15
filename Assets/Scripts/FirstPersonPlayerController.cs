@@ -6,28 +6,24 @@ using UnityEngine;
 public class FirstPersonPlayerController : MonoBehaviour
 {
     //Player look parametres
-    public float mouseSensitivity = 100f;
-    private Transform bodyTransform;
-    private Transform cameraTransform;
-    private float xRotation = 0f;
-
+    [SerializeField] private float mouseSensitivity = 100f;
+    [SerializeField] private float xRotation = 0f;
     //Player move parametres
-    [SerializeField] private CharacterController controller;
-    public float movementSpeed = 12f;
-
+    [SerializeField] private float movementSpeed = 12f;
     //Gravity parametres
     Vector3 velocity;
-    public float gravity = -9.81f;
-
+    [SerializeField] private float gravity = -9.81f;
     //Ground check paremetres
+    private float groundDistance = 0.4f;
+    private bool isGrounded;
+    //Jump parametres
+    [SerializeField] private float jumpHeigh = 2f;
+
+    private Transform bodyTransform;
+    private Transform cameraTransform;
+    [SerializeField] private CharacterController controller;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
-    private float groundDistance = 0.4f;
-    bool isGrounded;
-
-    //Jump parametres
-    public float jumpHeigh = 2f;
-
 
     void Start()
     {
