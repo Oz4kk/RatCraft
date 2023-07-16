@@ -35,10 +35,10 @@ public class FirstPersonPlayerController : MonoBehaviour
     void Update()
     {
         PlayerLook();
-        PlayerMovement();
+        PlayerMove();
     }
 
-    private void PlayerMovement()
+    private void PlayerMove()
     {
         GroundCheck();
         Mover();

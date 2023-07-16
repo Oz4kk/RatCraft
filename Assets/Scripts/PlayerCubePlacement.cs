@@ -36,9 +36,9 @@ public class PlayerCubePlacement : MonoBehaviour
 
     Vector3 GetNearestGridPosition(Vector3 position) 
     {
-        int x = Mathf.RoundToInt(position.x);
-        int y = Mathf.RoundToInt(position.y);
-        int z = Mathf.RoundToInt(position.z);
+        float x = position.x;
+        float y = position.y;
+        float z = position.z;
 
         Vector3 targetPosition = new Vector3(x, y+1.0f, z);
 
