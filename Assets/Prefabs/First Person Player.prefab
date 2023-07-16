@@ -177,7 +177,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4753265342929213755}
   m_Layer: 0
-  m_Name: Ground Check
+  m_Name: Ground Checker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -269,12 +269,12 @@ MonoBehaviour:
   xRotation: 0
   movementSpeed: 12
   gravity: -12
-  jumpHeigh: 3
+  jumpHeigh: 5
   controller: {fileID: 4753265343426609401}
   groundCheck: {fileID: 4753265342929213755}
   groundMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 8
 --- !u!114 &4944540343240117374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,3 +287,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332fb415507e5e1458a3a19d97fa3801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cubeInHand: {fileID: 8591505072687008416, guid: 22627b804d2489a4293217cc20b24581, type: 3}
+  gridLayerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  raycastDistance: 100

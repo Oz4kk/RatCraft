@@ -5,8 +5,8 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject cubePrefab;
-    [SerializeField] private Vector3 gridSize = new Vector3(5, 5, 5);
-    private float gridSpacing = 2f;
+    [SerializeField] private Vector3 gridSize = new Vector3(5.0f, 5.0f, 5.0f);
+    private float gridSpacing = 2.0f;
 
     void Start()
     {
