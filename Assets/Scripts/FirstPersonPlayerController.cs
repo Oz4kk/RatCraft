@@ -7,7 +7,7 @@ public class FirstPersonPlayerController : MonoBehaviour
 {
     //Player look parametres
     [SerializeField] private float mouseSensitivity = 100.0f;
-    [SerializeField] private float xRotation = 0.0f;
+    private float xRotation = 0.0f;
     //Player move parametres
     [SerializeField] private float movementSpeed = 12.0f;
     //Gravity parametres
