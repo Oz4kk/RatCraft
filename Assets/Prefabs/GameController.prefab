@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1960336968039664911}
   - component: {fileID: 1960336968039664908}
-  - component: {fileID: 1960336968039664897}
   - component: {fileID: 1960336968039664910}
   m_Layer: 0
   m_Name: GameController
@@ -48,20 +47,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabToSpawn: {fileID: 4753265343426609398, guid: d2698b9933bd618438dbee41f598ebbb, type: 3}
   spawnPosition: {x: 0, y: 20, z: 0}
---- !u!114 &1960336968039664897
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1960336968039664909}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3836632e329005a4bae3a3ef7515b0cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cubePrefab: {fileID: 0}
-  gridSize: {x: 5, y: 0, z: 5}
 --- !u!114 &1960336968039664910
 MonoBehaviour:
   m_ObjectHideFlags: 0
