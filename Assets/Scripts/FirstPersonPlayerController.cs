@@ -13,11 +13,11 @@ public class FirstPersonPlayerController : MonoBehaviour
     //Gravity parametres
     Vector3 velocity;
     [SerializeField] private float gravity = -9.81f;
-    //Ground check paremetres
-    private float groundDistance = 0.4f;
-    private bool isGrounded;
     //Jump parametres
     [SerializeField] private float jumpHeigh = 2.0f;
+    //Ground-check parametres
+    private float groundDistance = 0.4f;
+    private bool isGrounded;
 
     private Transform bodyTransform;
     private Transform cameraTransform;
@@ -51,7 +51,7 @@ public class FirstPersonPlayerController : MonoBehaviour
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (isGrounded && velocity.y < 0.0f)
+        if (controller.isGrounded)
         {
             velocity.y = 0.0f;
         }
