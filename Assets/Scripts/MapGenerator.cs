@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
-    [SerializeField] private GameObject[] cubePrefabs;
+    [SerializeField] private GameObject cubePrefab;
     [SerializeField] private Vector3 gridSize = new Vector3(5.0f, 5.0f, 5.0f);
     private float gridSpacing = 2.0f;
 
@@ -18,10 +18,14 @@ public class MapGenerator : MonoBehaviour
                 {
                     Vector3 spawnPosition = new Vector3(x, y, z) * gridSpacing;
 
-                    Instantiate(cubePrefabs[Random.Range(0, cubePrefabs.Length)], spawnPosition, Quaternion.identity);
+                    GameObject cube = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
                 }
             }
         }
     }
 
+    void Update()
+    {
+        
+    }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.30692244, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 222003126}
   - component: {fileID: 222003125}
+  - component: {fileID: 222003128}
   - component: {fileID: 222003127}
   m_Layer: 0
   m_Name: GameController
@@ -182,12 +183,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3836632e329005a4bae3a3ef7515b0cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubePrefabs:
-  - {fileID: 8591505072687008416, guid: 22627b804d2489a4293217cc20b24581, type: 3}
-  - {fileID: 4379399405519702302, guid: 1db18f9f01062ab4481090540dba20d4, type: 3}
-  - {fileID: 648501518413717210, guid: 12585a7c819a5524db9c941e0f695ee3, type: 3}
-  - {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
-  gridSize: {x: 5, y: 4, z: 5}
+  cubePrefab: {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+  gridSize: {x: 5, y: 1, z: 5}
+--- !u!114 &222003128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 222003124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3836632e329005a4bae3a3ef7515b0cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cubePrefab: {fileID: 0}
+  gridSize: {x: 5, y: 0, z: 5}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

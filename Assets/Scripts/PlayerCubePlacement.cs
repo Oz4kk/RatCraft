@@ -27,7 +27,7 @@ public class PlayerCubePlacement : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, raycastDistance, gridLayerMask))
             {
-                Vector3 targetPosition = GetNearestGridPosition(hit.collider.gameObject.transform.position);
+                Vector3 targetPosition = GetNearestGridPosition(hit.point);
 
                 Instantiate(cubeInHand, targetPosition, Quaternion.identity);
             }
@@ -40,7 +40,7 @@ public class PlayerCubePlacement : MonoBehaviour
         float y = position.y;
         float z = position.z;
 
-        Vector3 targetPosition = new Vector3(x, y+2.0f, z);
+        Vector3 targetPosition = new Vector3(x, y+1.0f, z);
 
         return targetPosition;
     }
