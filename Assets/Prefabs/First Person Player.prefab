@@ -251,7 +251,7 @@ CharacterController:
   m_SlopeLimit: 45
   m_StepOffset: 0.7
   m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &4753265343426609403
 MonoBehaviour:
@@ -271,10 +271,6 @@ MonoBehaviour:
   jumpHeigh: 5
   verticalCameraRotation: {fileID: 4753265341900488802}
   controller: {fileID: 4753265343426609401}
-  groundCheck: {fileID: 4753265342929213755}
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!114 &4944540343240117374
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -15,14 +15,9 @@ public class FirstPersonPlayerController : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     //Jump parametres
     [SerializeField] private float jumpHeigh = 2.0f;
-    //Ground-check parametres
-    private float groundDistance = 0.4f;
-    private bool isGrounded;
 
     [SerializeField] private Camera verticalCameraRotation;
     [SerializeField] private CharacterController controller;
-    [SerializeField] private Transform groundCheck;
-    [SerializeField] private LayerMask groundMask;
 
     void Start()
     {
@@ -38,16 +33,14 @@ public class FirstPersonPlayerController : MonoBehaviour
     private void PlayerMove()
     {
         GroundCheck();
-        Mover();
         Jump();
+        Mover();
         Gravity();
     }
 
     //Methodes that use PlayerMovement method
     private void GroundCheck()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
-
         if (controller.isGrounded)
         {
             velocity.y = 0.0f;
@@ -59,7 +52,10 @@ public class FirstPersonPlayerController : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
-
+        if (move == Vector3.zero)
+        {
+            return;
+        }
         controller.Move(move * movementSpeed * Time.deltaTime);
     }
     private void Gravity()
@@ -69,9 +65,13 @@ public class FirstPersonPlayerController : MonoBehaviour
     }
     private void Jump()
     {
-        if (Input.GetKey(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            velocity.y = Mathf.Sqrt(jumpHeigh * -2 * gravity);
+            Debug.Log("Pressed SPACE and isGrounded is set to " + controller.isGrounded);
+            if (controller.isGrounded)
+            {
+                velocity.y = Mathf.Sqrt(jumpHeigh * -2 * gravity);
+            }
         }
     }
     private void PlayerLook()
