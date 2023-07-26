@@ -23,9 +23,4 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
-
-    void Update()
-    {
-        
-    }
 }

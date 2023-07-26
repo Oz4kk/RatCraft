@@ -8,11 +8,6 @@ public class PlayerCubePlacement : MonoBehaviour
     [SerializeField] private LayerMask gridLayerMask;
     [SerializeField] private float raycastDistance = 100.0f;
 
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         PlaceBlock();
