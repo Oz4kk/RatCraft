@@ -19,16 +19,13 @@ public class FirstPersonPlayerController : MonoBehaviour
     private float groundDistance = 0.4f;
     private bool isGrounded;
 
-    private Transform bodyTransform;
-    private Transform cameraTransform;
+    [SerializeField] private Camera verticalCameraRotation;
     [SerializeField] private CharacterController controller;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundMask;
 
     void Start()
     {
-        bodyTransform = GameObject.FindGameObjectWithTag("Player").transform;
-        cameraTransform = GameObject.FindGameObjectWithTag("MainCamera").transform;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -85,7 +82,7 @@ public class FirstPersonPlayerController : MonoBehaviour
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90.0f, 90.0f);
 
-        cameraTransform.localRotation = Quaternion.Euler(xRotation, 0.0f, 0.0f);
-        bodyTransform.Rotate(Vector3.up * mouseX);
+        verticalCameraRotation.transform.localRotation = Quaternion.Euler(xRotation, 0.0f, 0.0f);
+        transform.Rotate(Vector3.up * mouseX);
     }
 }

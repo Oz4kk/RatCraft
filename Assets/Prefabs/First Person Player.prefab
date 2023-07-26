@@ -266,10 +266,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 400
-  xRotation: 0
   movementSpeed: 12
   gravity: -12
   jumpHeigh: 5
+  verticalCameraRotation: {fileID: 4753265341900488802}
   controller: {fileID: 4753265343426609401}
   groundCheck: {fileID: 4753265342929213755}
   groundMask:
