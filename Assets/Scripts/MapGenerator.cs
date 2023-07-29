@@ -6,7 +6,7 @@ public class MapGenerator : MonoBehaviour
 {
     [SerializeField] private GameObject cubePrefab;
     [SerializeField] private Vector3 gridSize = new Vector3(5.0f, 5.0f, 5.0f);
-    private float gridSpacing = 2.0f;
+    private float gridSpacing = 1.0f;
 
     void Start()
     {
@@ -16,7 +16,7 @@ public class MapGenerator : MonoBehaviour
             {
                 for (int z = 0; z < gridSize.z; z++)
                 {
-                    Vector3 spawnPosition = new Vector3(x, y, z) * gridSpacing;
+                    Vector3 spawnPosition = new Vector3(x, y, z);
 
                     GameObject cube = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
                 }
