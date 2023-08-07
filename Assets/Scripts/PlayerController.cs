@@ -5,31 +5,60 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField] private Rigidbody rigidBody;
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private Vector3 groundCheckBoxExtents;
+
     [SerializeField] private float movementSpeed = 10.0f;
 
+    [SerializeField] private float jumpForce = 10.0f;
+
     [SerializeField] private float cameraSensitivity = 50.0f;
-    private float verticalCameraRotation;
     [SerializeField] private float minVerticalCameraClamp = -90.0f;
     [SerializeField] private float maxVerticalCameraClamp = 90.0f;
+    private float verticalCameraRotation;
 
-    private Rigidbody rigidBody;
-    [SerializeField] private Camera playerCamera; 
+    private bool isGrounded;
+
 
     private void Awake()
     {
-        rigidBody = GetComponent<Rigidbody>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void FixedUpdate()
     {
+        GroundCheck();
         MovePlayer();
     }
 
-
     void Update()
     {
+        Jump();
         CameraRotation();
+    }
+    private void GroundCheck()
+    {
+        isGrounded = Physics.CheckBox(groundCheck.transform.position, groundCheckBoxExtents);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawCube(groundCheck.transform.position, groundCheckBoxExtents);
+    }
+
+    private void Jump()
+    {
+        if (!isGrounded)
+        {
+            return;
+        }
+        if (Input.GetButtonDown("Jump"))
+        {
+            rigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
     }
 
     private void MovePlayer()
