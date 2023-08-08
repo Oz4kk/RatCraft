@@ -66,6 +66,15 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
+        //if (Input.GetAxis("Horizontal") == 0)
+        //{            
+        //    return;
+        //}
+        //if (Input.GetAxis("Vertical") == 0)
+        //{
+        //    return;
+        //}
+
         Vector3 forwardMovement = vertical * transform.forward * Time.fixedDeltaTime * movementSpeed;
         Vector3 sideMovement = horizontal * transform.right * Time.fixedDeltaTime * movementSpeed;
 
@@ -82,7 +91,6 @@ public class PlayerController : MonoBehaviour
         verticalCameraRotation -= mouseY;
         verticalCameraRotation = Mathf.Clamp(verticalCameraRotation, minVerticalCameraClamp, maxVerticalCameraClamp);
 
-        //proc zde nemuzu pouzit Rotate()?
         playerCamera.transform.localRotation = Quaternion.Euler(Vector3.right * verticalCameraRotation);
         transform.Rotate(Vector3.up * mouseX);
     }
