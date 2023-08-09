@@ -4,9 +4,7 @@ using UnityEngine;
 
 public class PlayerCubePlacement : MonoBehaviour
 {
-    [SerializeField] private GameObject cubeInHand;
-    [SerializeField] private LayerMask gridLayerMask;
-    [SerializeField] private float raycastDistance = 100.0f;
+    
 
     void Update()
     {
@@ -17,26 +15,16 @@ public class PlayerCubePlacement : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            //vystrelim ray od stredu obrzovky v pred
+            //ray hitne block
+            //spocita se v jakym smeru se hitl block
+            //Porovnam abs. x s y
+            //pokud je x vetsi tak porovnam abs. x se z - vetsi hodnota je vyherce
+            //pokud je y vetsi tak porovnam abs. y se z - vetsi hodnota je vyherce
+            //lokace spawnu pozice bloku + vypocitaby smer 
+            //instantiatne to block podle gridu prilnuty k blocku co jsem hitl
 
-            if (Physics.Raycast(ray, out hit, raycastDistance, gridLayerMask))
-            {
-                Vector3 targetPosition = GetNearestGridPosition(hit.point);
 
-                Instantiate(cubeInHand, targetPosition, Quaternion.identity);
-            }
         }
-    }
-
-    Vector3 GetNearestGridPosition(Vector3 position) 
-    {
-        float x = position.x;
-        float y = position.y;
-        float z = position.z;
-
-        Vector3 targetPosition = new Vector3(x, y+1.0f, z);
-
-        return targetPosition;
     }
 }
