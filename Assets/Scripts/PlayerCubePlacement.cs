@@ -35,103 +35,47 @@ public class PlayerCubePlacement : MonoBehaviour
                 Transform hitTransform = hit.transform;
                 Vector3 hitPoint = hit.point;
 
-                float x = Mathf.Abs((Mathf.Abs(hitPoint.x) - Mathf.Abs(hitTransform.position.x)));
-                float y = Mathf.Abs((Mathf.Abs(hitPoint.y) - Mathf.Abs(hitTransform.position.y)));
-                float z = Mathf.Abs((Mathf.Abs(hitPoint.z) - Mathf.Abs(hitTransform.position.z)));
-
+                Vector3 delta = (hitPoint.Abs() - hitTransform.position.Abs()).Abs();
 
                 Debug.Log("Zasahl jsi objekt: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
-                Debug.Log("x=" + x + " y=" + y + " z=" + z);
+                Debug.Log($"x={delta.x} y={delta.y} z={delta.z}");
+                //napsat nebo najit extension metodu pomoci ktery muzu zavolat horni debug radek ale jednodusejc
+                Debug.Log($"{delta.ToString()}");
 
-                if (x > y)
+                Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
+
+                bool isXHighest = delta.x > delta.y && delta.x > delta.z;
+                bool isYHighest = delta.y > delta.x && delta.y > delta.z;
+
+                if (isXHighest)
                 {
-                    if (x > z)
-                    {
-                        //x
-                        if (Sider(hitTransform.position.x, hitPoint.x))
-                        {
-                            Debug.Log("1");
-                            Vector3 placementLocation = new Vector3(hitTransform.position.x + 1.0f, hitTransform.position.y, hitTransform.position.z);
-                            Instantiation(placementLocation);
-                        }
-                        else
-                        {
-                            Debug.Log("2");
-                            Vector3 placementLocation = new Vector3(hitTransform.position.x - 1.0f, hitTransform.position.y, hitTransform.position.z);
-                            Instantiation(placementLocation);
-                        }
-                    }
-                    else
-                    {
-                        //z
-                        if (Sider(hitTransform.position.z, hitPoint.z))
-                        {
-                            Debug.Log("3");
-                            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z + 1.0f);
-                            Instantiation(placementLocation);
-                        }
-                        else
-                        {
-                            Debug.Log("4");
-                            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z - 1.0f);
-                            Instantiation(placementLocation);
-                        }
-                    }    
+                    //x
+                    placementLocation.x += GetSideModifier(hitTransform.position.x, hitPoint.x);
+                }
+                else if (isYHighest)
+                {
+                    //y
+                    placementLocation.y += GetSideModifier(hitTransform.position.y, hitPoint.y);
                 }
                 else
                 {
-                    if (y > z)
-                    {
-                        //y
-                        if (Sider(hitTransform.position.y, hitPoint.y))
-                        {
-                            Debug.Log("5");
-                            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y + 1.0f, hitTransform.position.z);
-                            Instantiation(placementLocation);
-                        }
-                        else
-                        {
-                            Debug.Log("6");
-                            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y - 1.0f, hitTransform.position.z);
-                            Instantiation(placementLocation);
-                        }
-                    }
-                    else
-                    {
-                        //z
-                        if (Sider(hitTransform.position.z, hitPoint.z))
-                        {
-                            Debug.Log("7");
-                            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z + 1.0f);
-                            Instantiation(placementLocation);
-                        }
-                        else
-                        {
-                            Debug.Log("8");
-                            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z - 1.0f);
-                            Instantiation(placementLocation);
-                        }
-                    }
+                    //z
+                    placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
                 }
+                Instantiate(cubeInHand, placementLocation, Quaternion.identity);
             }
         }
     }
 
-    private bool Sider(float hitTransform, float hitPoint)
+    private int GetSideModifier(float hitTransform, float hitPoint)
     {
-        float sider = hitTransform - hitPoint;
-        if (sider > 0)
+        if (hitTransform > hitPoint)
         {
-            return false;
+            return -1;
         }
         else
         {
-            return true;
+            return 1;
         }
-    }
-
-    private void Instantiation(Vector3 placementLocation)
-    {
-        Instantiate(cubeInHand, placementLocation, Quaternion.identity);
     }
 }
