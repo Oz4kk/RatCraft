@@ -1,22 +1,32 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Rendering.RendererUtils;
 
 public class PlayerCubePlacement : MonoBehaviour
 {
-    [SerializeField] float maxDistance = 10000.0f;
-    [SerializeField] GameObject cubeInHand;
+    [SerializeField] private float maxDistance = 10000.0f;
+
+    [SerializeField] private InventoryHandler inventoryHandler;
 
     void Update()
     {
+        CubeInHand();
         PlaceBlock();
+    }
+
+    private void CubeInHand()
+    {
+
     }
 
     private void PlaceBlock()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
+            //PSEUDO CODE
             //vystrelim ray od stredu obrzovky v pred
             //ray hitne block
             //spocita se v jakym smeru se hitl block

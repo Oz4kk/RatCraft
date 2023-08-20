@@ -180,6 +180,7 @@ GameObject:
   - component: {fileID: 1282558723791484814}
   - component: {fileID: 7216508841655883252}
   - component: {fileID: 4944540343240117374}
+  - component: {fileID: 4559356150114023157}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -247,15 +248,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e38abe7eddc00c4b83d8cef7c128da3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rigidBody: {fileID: 5694507831387461935}
+  playerCamera: {fileID: 4753265341900488802}
+  groundCheck: {fileID: 5197378831824002700}
+  groundCheckBoxExtents: {x: 0.5, y: 0, z: 0.5}
   movementSpeed: 1000
   jumpForce: 10
   cameraSensitivity: 300
   minVerticalCameraClamp: -90
   maxVerticalCameraClamp: 90
-  rigidBody: {fileID: 5694507831387461935}
-  playerCamera: {fileID: 4753265341900488802}
-  groundCheck: {fileID: 5197378831824002700}
-  groundCheckBoxExtents: {x: 0.5, y: 0, z: 0.5}
 --- !u!114 &4944540343240117374
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -268,11 +269,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332fb415507e5e1458a3a19d97fa3801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeInHand: {fileID: 8591505072687008416, guid: 22627b804d2489a4293217cc20b24581, type: 3}
-  gridLayerMask:
-    serializedVersion: 2
-    m_Bits: 8
-  raycastDistance: 100
+  maxDistance: 10000
+  inventoryHandler: {fileID: 4559356150114023157}
+--- !u!114 &4559356150114023157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4753265343426609398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f8a62c242f4f9a43bb358f0510cf71d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inventory:
+  - {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+  - {fileID: 8591505072687008416, guid: 22627b804d2489a4293217cc20b24581, type: 3}
+  - {fileID: 4379399405519702302, guid: 1db18f9f01062ab4481090540dba20d4, type: 3}
+  - {fileID: 648501518413717210, guid: 12585a7c819a5524db9c941e0f695ee3, type: 3}
 --- !u!1 &8912566402229700352
 GameObject:
   m_ObjectHideFlags: 0
