@@ -1,10 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class InventoryHandler : MonoBehaviour
 {
     [SerializeField] private GameObject[] inventory;
+
+    [SerializeField] List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
+
     int activeSlot = 0;
 
     void Update()
@@ -13,39 +18,68 @@ public class InventoryHandler : MonoBehaviour
     }
     private void ChooseItem()
     {
-        ChooseItemViaMouseWheel();
-
+        ChooseCubeWithMouseScroll();
+        ChooseItemWithKeyboard();
     }
 
-    private void Inventory()
+    public void SetSlot(int newSlot)
     {
+        activeSlot = newSlot;
+        Debug.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
     }
 
-    private void ChooseItemViaMouseWheel()
+    private void ChooseCubeWithMouseScroll()
     {
         float mouseScroll = Input.GetAxis("Mouse ScrollWheel");
+        if (mouseScroll != 0)
+        {
+            if (mouseScroll > 0.0f)
+            {
+                if (activeSlot == inventory.Length - 1)
+                {
+                    SetSlot(0);
+                }
+                else
+                {
+                    SetSlot(activeSlot + 1);
+                }
+            }
+            else
+            {
+                if (activeSlot == 0)
+                {
+                    SetSlot(inventory.Length - 1);
+                }
+                else
+                {
+                    SetSlot(activeSlot - 1);
+                }
+            }
+        }
+    }
 
-        if (mouseScroll > 0.0f)
+
+    public GameObject GetSelectedCube()
+    {
+        return inventory[activeSlot];
+    }
+
+    private void ChooseItemWithKeyboard()
+    {
+        foreach (KeyCodeIndexPair item in keyCodeIndexPairs)
         {
-            if (activeSlot == inventory.Length)
+            if (Input.GetKeyDown(item.keycode))
             {
-                activeSlot = 0;
-            }
-            else
-            {
-                activeSlot++;
+                SetSlot(item.index);
+                break;
             }
         }
-        else
-        {
-            if (activeSlot == 0)
-            {
-                activeSlot = inventory.Length;
-            }
-            else
-            {
-                activeSlot--;
-            }
-        }
+    }
+
+    [Serializable]
+    private struct KeyCodeIndexPair
+    {
+        public KeyCode keycode;
+        public int index;
     }
 }

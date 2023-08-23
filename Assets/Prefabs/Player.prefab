@@ -229,7 +229,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4753265343426609398}
-  m_Material: {fileID: 13400000, guid: 78cf47dd2f965f14786a6f14af00ad76, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.6
@@ -288,6 +288,15 @@ MonoBehaviour:
   - {fileID: 8591505072687008416, guid: 22627b804d2489a4293217cc20b24581, type: 3}
   - {fileID: 4379399405519702302, guid: 1db18f9f01062ab4481090540dba20d4, type: 3}
   - {fileID: 648501518413717210, guid: 12585a7c819a5524db9c941e0f695ee3, type: 3}
+  keyCodeIndexPairs:
+  - keycode: 49
+    index: 0
+  - keycode: 50
+    index: 1
+  - keycode: 51
+    index: 2
+  - keycode: 52
+    index: 3
 --- !u!1 &8912566402229700352
 GameObject:
   m_ObjectHideFlags: 0

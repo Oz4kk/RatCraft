@@ -71,7 +71,7 @@ public class PlayerCubePlacement : MonoBehaviour
                     //z
                     placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
                 }
-                Instantiate(cubeInHand, placementLocation, Quaternion.identity);
+                Instantiate(inventoryHandler.GetSelectedCube(), placementLocation, Quaternion.identity);
             }
         }
     }
