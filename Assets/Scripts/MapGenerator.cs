@@ -22,7 +22,7 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private GameObject cubePrefab;
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
-    private float gridSpacing = 1.0f;
+    //private float gridSpacing = 1.0f;
 
     GameObject[,,] mapField = null;
 

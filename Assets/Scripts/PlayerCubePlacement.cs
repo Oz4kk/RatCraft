@@ -10,6 +10,8 @@ public class PlayerCubePlacement : MonoBehaviour
     [SerializeField] private float maxDistance = 10000.0f;
 
     [SerializeField] private InventoryHandler inventoryHandler;
+    //Nedavat pres serialise field ale pre Start();
+    //Mit input v jedny klase
 
     void Update()
     {
@@ -45,7 +47,7 @@ public class PlayerCubePlacement : MonoBehaviour
                 Transform hitTransform = hit.transform;
                 Vector3 hitPoint = hit.point;
 
-                Vector3 delta = (hitPoint.Abs() - hitTransform.position.Abs()).Abs();
+                Vector3 delta = (hitPoint - hitTransform.position).Abs();
 
                 Debug.Log("Zasahl jsi objekt: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
 

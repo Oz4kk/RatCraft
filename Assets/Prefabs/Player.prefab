@@ -269,7 +269,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332fb415507e5e1458a3a19d97fa3801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 10000
+  maxDistance: 1000
   inventoryHandler: {fileID: 4559356150114023157}
 --- !u!114 &4559356150114023157
 MonoBehaviour:
