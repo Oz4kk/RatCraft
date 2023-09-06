@@ -22,35 +22,22 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private GameObject cubePrefab;
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
-    private static List<Cube> mapList;
+    //private float gridSpacing = 1.0f;
 
-    public void SetList(Cube newCube)
-    {
-        mapList.Add(newCube);
-    }    
-    public List<Cube> GetList()
-    {
-        return mapList;
-    }
+    GameObject[,,] mapField = null;
 
     void Start()
     {
-        mapList = new List<Cube>();
-        for (int x = 0; x < gridSize.x; x++)
+        mapField = new GameObject[gridSize.x, gridSize.y, gridSize.z];
+        for (int x = 0; x < mapField.GetLength(0); x++)
         {
-            for (int y = 0; y < gridSize.y; y++)
+            for (int y = 0; y < mapField.GetLength(1); y++)
             {
-                for (int z = 0; z < gridSize.z; z++)
+                for (int z = 0; z < mapField.GetLength(2); z++)
                 {
                     Vector3 spawnPosition = new Vector3(x, y, z);
 
-                    Cube newCube = new Cube(spawnPosition, cubePrefab);
-
-                    if (!newCube.doesCoordinateExist(newCube.coordinates))
-                    {
-                        mapList.Add(newCube);
-                        Instantiate(newCube.chosenCube, newCube.coordinates, Quaternion.identity);
-                    }
+                    mapField[x,y,z] = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
                 }
             }
         }
