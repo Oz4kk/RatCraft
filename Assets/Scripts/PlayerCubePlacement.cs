@@ -10,36 +10,20 @@ public class PlayerCubePlacement : MonoBehaviour
     [SerializeField] private float maxDistance = 10000.0f;
 
     [SerializeField] private InventoryHandler inventoryHandler;
+
+    MapGenerator mapGenerator = new MapGenerator();
     //Nedavat pres serialise field ale pre Start();
     //Mit input v jedny klase
 
     void Update()
     {
-        CubeInHand();
         PlaceBlock();
-    }
-
-    private void CubeInHand()
-    {
-
     }
 
     private void PlaceBlock()
     {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            //PSEUDO CODE
-            //vystrelim ray od stredu obrzovky v pred
-            //ray hitne block
-            //spocita se v jakym smeru se hitl block
-            //Porovnam abs. x s y
-            //Porovnam abs. x s y
-            //Porovnam abs. x s y
-            //pokud je x vetsi tak porovnam abs. x se z - vetsi hodnota je vyherce
-            //pokud je y vetsi tak porovnam abs. y se z - vetsi hodnota je vyherce
-            //lokace spawnu pozice bloku + vypocitaby smer 
-            //instantiatne to block podle gridu prilnuty k blocku co jsem hitl
-
             RaycastHit hit;
 
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDistance))
@@ -52,6 +36,7 @@ public class PlayerCubePlacement : MonoBehaviour
                 Debug.Log("Zasahl jsi objekt: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
 
                 Debug.Log($"{delta.GetString()}");
+                Debug.Log($"Player - {transform.position}");
 
                 Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
 
@@ -73,7 +58,14 @@ public class PlayerCubePlacement : MonoBehaviour
                     //z
                     placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
                 }
-                Instantiate(inventoryHandler.GetSelectedCube(), placementLocation, Quaternion.identity);
+
+                Cube newCube = new Cube(placementLocation, inventoryHandler.GetSelectedCube());
+
+                if (!newCube.doesCoordinateExist(newCube.coordinates))
+                {
+                    mapGenerator.SetList(newCube);
+                    Instantiate(inventoryHandler.GetSelectedCube(), placementLocation, Quaternion.identity);
+                }
             }
         }
     }
