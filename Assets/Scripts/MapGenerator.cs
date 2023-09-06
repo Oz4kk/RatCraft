@@ -22,24 +22,43 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private GameObject cubePrefab;
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
-    //private float gridSpacing = 1.0f;
 
-    GameObject[,,] mapField = null;
+    public static Dictionary<Vector3, CubeParametres> mapField = new Dictionary<Vector3, CubeParametres>();
 
-    void Start()
+    private void Start()
     {
-        mapField = new GameObject[gridSize.x, gridSize.y, gridSize.z];
-        for (int x = 0; x < mapField.GetLength(0); x++)
+        for (int x = 0; x < gridSize.x; x++)
         {
-            for (int y = 0; y < mapField.GetLength(1); y++)
+            for (int y = 0; y < gridSize.y; y++)
             {
-                for (int z = 0; z < mapField.GetLength(2); z++)
+                for (int z = 0; z < gridSize.z; z++)
                 {
                     Vector3 spawnPosition = new Vector3(x, y, z);
 
-                    mapField[x,y,z] = Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
+                    CubeParametres newCube = new CubeParametres(cubePrefab);
+
+                    ulong totalOfDictionaryBefore = CountValuesInCollection(mapField);
+
+                    mapField.Add(spawnPosition, newCube);
+
+                    ulong totalOfDictionaryAfter = CountValuesInCollection(mapField);
+
+                    if (totalOfDictionaryAfter > totalOfDictionaryBefore)
+                    {
+                        Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
+                    }
                 }
             }
         }
+    }
+
+    private ulong CountValuesInCollection(Dictionary<Vector3, CubeParametres> mapField)
+    {
+        ulong total = 0;
+        foreach (KeyValuePair<Vector3, CubeParametres> item in mapField)
+        {
+            total++;
+        }
+        return total;
     }
 }
