@@ -2,11 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeParametres : MonoBehaviour
+public class CubeParametres
 {
-    [SerializeField] private float brittleness;
-
-    GameObject cubePrefab;
+    //private float brittleness;
+    public GameObject cubePrefab;
 
     public CubeParametres(GameObject cubePrefab) 
     { 

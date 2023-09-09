@@ -22,10 +22,17 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private GameObject cubePrefab;
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
+    private PlayerSpawn playerSpawn;
 
     public static Dictionary<Vector3, CubeParametres> mapField = new Dictionary<Vector3, CubeParametres>();
 
+
     private void Start()
+    {
+        GeneratePlainOfCubes();
+    }
+
+    private void GeneratePlainOfCubes()
     {
         for (int x = 0; x < gridSize.x; x++)
         {
@@ -34,31 +41,20 @@ public class MapGenerator : MonoBehaviour
                 for (int z = 0; z < gridSize.z; z++)
                 {
                     Vector3 spawnPosition = new Vector3(x, y, z);
-
-                    CubeParametres newCube = new CubeParametres(cubePrefab);
-
-                    ulong totalOfDictionaryBefore = CountValuesInCollection(mapField);
-
-                    mapField.Add(spawnPosition, newCube);
-
-                    ulong totalOfDictionaryAfter = CountValuesInCollection(mapField);
-
-                    if (totalOfDictionaryAfter > totalOfDictionaryBefore)
-                    {
-                        Instantiate(cubePrefab, spawnPosition, Quaternion.identity);
-                    }
+                    InstantiateCube(spawnPosition, cubePrefab);
                 }
             }
         }
     }
 
-    private ulong CountValuesInCollection(Dictionary<Vector3, CubeParametres> mapField)
+    public void InstantiateCube(Vector3 spawnPosition, GameObject cubePrefab)
     {
-        ulong total = 0;
-        foreach (KeyValuePair<Vector3, CubeParametres> item in mapField)
+        if (!mapField.ContainsKey(spawnPosition))
         {
-            total++;
+            CubeParametres newCube = new CubeParametres(cubePrefab);
+            mapField.Add(spawnPosition, newCube);
+            Instantiate(newCube.cubePrefab, spawnPosition, Quaternion.identity);
         }
-        return total;
+        Debug.Log($"Count of mapField: {mapField.Count}");
     }
 }

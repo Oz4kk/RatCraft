@@ -9,6 +9,6 @@ public class PlayerSpawn : MonoBehaviour
 
     void Start()
     {
-        GameObject spawnedPefab = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+        Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
     }
 }
