@@ -20,11 +20,11 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    [SerializeField] private GameObject cubePrefab;
+    [SerializeField] public GameObject cubePrefab;
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
     private PlayerSpawn playerSpawn;
 
-    public static Dictionary<Vector3, CubeParametres> mapField = new Dictionary<Vector3, CubeParametres>();
+    private Dictionary<Vector3, CubeParametres> mapField = new Dictionary<Vector3, CubeParametres>();
 
 
     private void Start()
@@ -51,9 +51,10 @@ public class MapGenerator : MonoBehaviour
     {
         if (!mapField.ContainsKey(spawnPosition))
         {
-            CubeParametres newCube = new CubeParametres(cubePrefab);
-            mapField.Add(spawnPosition, newCube);
-            Instantiate(newCube.cubePrefab, spawnPosition, Quaternion.identity);
+            GameObject cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
+            CubeParametres cubeParametres = cube.GetComponent<CubeParametres>();
+            //fixnout syntaxi cp
+            mapField.Add(spawnPosition, cubeParametres);
         }
         Debug.Log($"Count of mapField: {mapField.Count}");
     }

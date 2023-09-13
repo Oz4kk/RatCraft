@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxDistance: 1000
-  inventoryHandler: {fileID: 4559356150114023157}
+  player: {fileID: 0}
 --- !u!114 &4559356150114023157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -284,10 +284,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory:
-  - {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
-  - {fileID: 8591505072687008416, guid: 22627b804d2489a4293217cc20b24581, type: 3}
-  - {fileID: 4379399405519702302, guid: 1db18f9f01062ab4481090540dba20d4, type: 3}
-  - {fileID: 648501518413717210, guid: 12585a7c819a5524db9c941e0f695ee3, type: 3}
+  - {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
+  - {fileID: 6359409211213089741, guid: 0343563596531974a83c4b475bc84a50, type: 3}
+  - {fileID: 8858395604543915494, guid: 89585ddd036f8404cb2b74e50fe0770e, type: 3}
+  - {fileID: 7430137143123442753, guid: b4d188245cae81f45b055bfd98389aa8, type: 3}
   keyCodeIndexPairs:
   - keycode: 49
     index: 0

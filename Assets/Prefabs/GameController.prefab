@@ -59,8 +59,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3836632e329005a4bae3a3ef7515b0cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubePrefab: {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+  cubePrefab: {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
   gridSize:
     x: 5
-    y: 2
+    y: 1
     z: 5
