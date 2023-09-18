@@ -49,6 +49,12 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawCube(groundCheck.transform.position, groundCheckBoxExtents);
     }
 
+    //getkeydown
+    //getkeyup
+    //getkey
+    //getaxis
+    //getaxisraw
+
     private void Jump()
     {
         if (!isGrounded)

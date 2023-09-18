@@ -8,11 +8,14 @@ using UnityEngine.Rendering.RendererUtils;
 public class PlayerCubePlacement : MonoBehaviour
 {
     [SerializeField] private float maxDistance = 10000.0f;
+    [SerializeField] private LayerMask playerLayer;
+
+    private Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
     private InventoryHandler inventoryHandler;
     private MapGenerator mapGenerator;
     //Mit input v jedny klase = //Napsat vlastni input manager?
-    public GameObject player;
+    //public GameObject player;
 
     void Awake()
     {
@@ -51,52 +54,50 @@ public class PlayerCubePlacement : MonoBehaviour
 
                 if (isXHighest)
                 {
-                    //x
                     placementLocation.x += GetSideModifier(hitTransform.position.x, hitPoint.x);
-                    //doesPlayerCollideWithBlockPlacementLocation = 
-                        //DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
+                    doesPlayerCollideWithBlockPlacementLocation = DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
                 }
                 else if (isYHighest)
                 {
-                    //y
                     placementLocation.y += GetSideModifier(hitTransform.position.y, hitPoint.y);
-                    //doesPlayerCollideWithBlockPlacementLocation = 
-                        //DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
+                    doesPlayerCollideWithBlockPlacementLocation = DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
                 }
                 else
                 {
-                    //z
                     placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
-                    //doesPlayerCollideWithBlockPlacementLocation = 
-                        //DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
+                    doesPlayerCollideWithBlockPlacementLocation = DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
                 }
-
-                mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
+                
+                if (doesPlayerCollideWithBlockPlacementLocation)
+                {
+                    mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
+                }
             }
         }
     }
 
     private bool DoesPlayerCollideWithBlockPlacementLocation(Vector3 placementLocation)
     {
-        Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
-
-        RaycastHit[] hits = Physics.BoxCastAll(placementLocation, halfExtents, Vector3.up, Quaternion.identity, 1.0f);
-
-        Gizmos.DrawWireCube(placementLocation, halfExtents);
-
-        Debug.Log($"Placement location: {placementLocation}, Hits lengts: {hits.Length}");
-
-        foreach (RaycastHit item in hits)
+        if (Physics.CheckBox(placementLocation, halfExtents, Quaternion.identity, playerLayer))
         {
-            Debug.Log($"Hit: {item.collider.gameObject.name}");
-
-            if (item.Equals(player))
-            {
-                return false;
-            }
+            return false;
         }
+
+        //Debug.Log($"Placement location: {placementLocation}, Hits lengts: {hits.Length}");
+
         return true;
-    }
+    }    
+    
+    //private bool DoesPlayerCollideWithBlockPlacementLocation2(Vector3 placementLocation)
+    //{
+    //    Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
+
+    //    Physics.OverlapBox(placementLocation, halfExtents, Quaternion.identity, 7);
+
+    //    //Debug.Log($"Placement location: {placementLocation}, Hits lengts: {hits.Length}");
+
+    //    return true;
+    //}
 
     private int GetSideModifier(float hitTransform, float hitPoint)
     {
