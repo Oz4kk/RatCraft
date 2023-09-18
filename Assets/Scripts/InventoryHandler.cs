@@ -7,7 +7,6 @@ using UnityEngine.Assertions;
 public class InventoryHandler : MonoBehaviour
 {
     [SerializeField] private GameObject[] inventory;
-
     [SerializeField] List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
 
     int activeSlot = 0;

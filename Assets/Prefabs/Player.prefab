@@ -270,10 +270,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 332fb415507e5e1458a3a19d97fa3801, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDistance: 1000
+  gameController: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
   playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  cubePlacementDistance: 10000
 --- !u!114 &4559356150114023157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,7 +301,6 @@ MonoBehaviour:
     index: 2
   - keycode: 52
     index: 3
-  inputManager: {fileID: 0}
 --- !u!114 &7596526484433257929
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CubeParametres : MonoBehaviour
+public class CubeParameters : MonoBehaviour
 {
     [SerializeField] private float brittleness;
 }

@@ -7,28 +7,58 @@ using UnityEngine.Rendering.RendererUtils;
 
 public class PlayerCubePlacement : MonoBehaviour
 {
-    [SerializeField] private float maxDistance = 10000.0f;
+    [SerializeField] private GameObject gameController;
     [SerializeField] private LayerMask playerLayer;
 
+    [SerializeField] private float cubePlacementDistance = 10000.0f;
     private Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
     private MapGenerator mapGenerator;
     private InventoryHandler inventoryHandler;
     private InputManager inputManager;
-    //Mit input v jedny klase = //Napsat vlastni input manager?
-    //public GameObject player;
 
     void Awake()
     {
-        //Co dela metoda FindObjectOfType?
-        mapGenerator = FindObjectOfType<MapGenerator>();
         inventoryHandler = GetComponent<InventoryHandler>();
         inputManager = GetComponent<InputManager>();
+        mapGenerator = gameController.GetComponent<MapGenerator>();
     }
 
     void Update()
     {
         PlaceBlock();
+    }
+
+    private void PrepareBlock()
+    {
+        //Make own transparent material
+        RaycastHit hit;
+        
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubePlacementDistance))
+        {
+            Transform hitTransform = hit.transform;
+            Vector3 hitPoint = hit.point;
+
+            Vector3 delta = (hitPoint - hitTransform.position).Abs();
+
+            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
+
+            bool isXHighest = delta.x > delta.y && delta.x > delta.z;
+            bool isYHighest = delta.y > delta.x && delta.y > delta.z;
+
+            if (isXHighest)
+            {
+                placementLocation.x += GetSideModifier(hitTransform.position.x, hitPoint.x);
+            }
+            else if (isYHighest)
+            {
+                placementLocation.y += GetSideModifier(hitTransform.position.y, hitPoint.y);
+            }
+            else
+            {
+                placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
+            }
+        }
     }
 
     private void PlaceBlock()
@@ -37,7 +67,7 @@ public class PlayerCubePlacement : MonoBehaviour
         {
             RaycastHit hit;
 
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, maxDistance))
+            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubePlacementDistance))
             {
                 Transform hitTransform = hit.transform;
                 Vector3 hitPoint = hit.point;

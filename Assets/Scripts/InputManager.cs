@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {   
-    //  I
-    // \I/ Rada od Tadease
+    //-Tadeas advice-
     //getkeydown
     //getkeyup
     //getkey

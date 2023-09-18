@@ -18,10 +18,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float cameraSensitivity = 50.0f;
     [SerializeField] private float minVerticalCameraClamp = -90.0f;
     [SerializeField] private float maxVerticalCameraClamp = 90.0f;
+    
     private float verticalCameraRotation;
-
     private bool isGrounded;
-
 
     private void Awake()
     {
@@ -45,9 +44,9 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics.CheckBox(groundCheck.transform.position, groundCheckBoxExtents);
     }
 
-    //Debug that I don't use rn (need to connect it in code, in the moment I need it).
     private void OnDrawGizmosSelected()
     {
+        //Debug that I don't use rn. (need to connect it in code, in the moment I need it).
         Gizmos.color = Color.green;
         Gizmos.DrawCube(groundCheck.transform.position, groundCheckBoxExtents);
     }
