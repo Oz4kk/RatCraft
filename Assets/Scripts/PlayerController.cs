@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Vector3 groundCheckBoxExtents;
+    private InputManager inputManager;
 
     [SerializeField] private float movementSpeed = 10.0f;
 
@@ -24,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        inputManager = GetComponent<InputManager>();
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -43,17 +45,12 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics.CheckBox(groundCheck.transform.position, groundCheckBoxExtents);
     }
 
+    //Debug that I don't use rn (need to connect it in code, in the moment I need it).
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
         Gizmos.DrawCube(groundCheck.transform.position, groundCheckBoxExtents);
     }
-
-    //getkeydown
-    //getkeyup
-    //getkey
-    //getaxis
-    //getaxisraw
 
     private void Jump()
     {
@@ -61,7 +58,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        if (Input.GetButtonDown("Jump"))
+        if (inputManager.GetButtonDown("Jump"))
         {
             rigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
@@ -69,8 +66,8 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        float horizontal = inputManager.GetAxis("Horizontal");
+        float vertical = inputManager.GetAxis("Vertical");
 
         if (Mathf.Approximately(horizontal, 0.0f) && Mathf.Approximately(vertical, 0.0f))
         {
@@ -87,8 +84,8 @@ public class PlayerController : MonoBehaviour
     }
     private void CameraRotation()
     {
-        float mouseX = Input.GetAxis("Mouse X") * Time.deltaTime * cameraSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * Time.deltaTime * cameraSensitivity;
+        float mouseX = inputManager.GetAxis("Mouse X") * Time.deltaTime * cameraSensitivity;
+        float mouseY = inputManager.GetAxis("Mouse Y") * Time.deltaTime * cameraSensitivity;
 
         verticalCameraRotation -= mouseY;
         verticalCameraRotation = Mathf.Clamp(verticalCameraRotation, minVerticalCameraClamp, maxVerticalCameraClamp);

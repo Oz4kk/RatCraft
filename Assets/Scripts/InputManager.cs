@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour
-{
-    void Start()
+{   
+    //  I
+    // \I/ Rada od Tadease
+    //getkeydown
+    //getkeyup
+    //getkey
+    //getaxis
+    //getaxisraw
+
+    public float GetAxis(string inputName)
     {
-        
+        return Input.GetAxis(inputName);
     }
 
-    void Update()
+    public bool GetKeyDown(KeyCode keyCode)
     {
-        
+        return Input.GetKeyDown(keyCode);
     }
 
-    public float GetMouseScrollWheelInput()
+    public bool GetButtonDown(string inputName)
     {
-        return Input.GetAxis("Mouse ScrollWheel");
+        return Input.GetButtonDown(inputName);
     }
 }

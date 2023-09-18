@@ -12,8 +12,9 @@ public class PlayerCubePlacement : MonoBehaviour
 
     private Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
-    private InventoryHandler inventoryHandler;
     private MapGenerator mapGenerator;
+    private InventoryHandler inventoryHandler;
+    private InputManager inputManager;
     //Mit input v jedny klase = //Napsat vlastni input manager?
     //public GameObject player;
 
@@ -22,6 +23,7 @@ public class PlayerCubePlacement : MonoBehaviour
         //Co dela metoda FindObjectOfType?
         mapGenerator = FindObjectOfType<MapGenerator>();
         inventoryHandler = GetComponent<InventoryHandler>();
+        inputManager = GetComponent<InputManager>();
     }
 
     void Update()
@@ -31,7 +33,7 @@ public class PlayerCubePlacement : MonoBehaviour
 
     private void PlaceBlock()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        if (inputManager.GetKeyDown(KeyCode.Mouse0))
         {
             RaycastHit hit;
 
@@ -75,9 +77,9 @@ public class PlayerCubePlacement : MonoBehaviour
     {
         if (Physics.CheckBox(placementLocation, halfExtents, Quaternion.identity, playerLayer))
         {
+            VisualiseBox.DisplayBox(placementLocation, halfExtents, Quaternion.identity, playerLayer);
             return false;
         }
-        VisualiseBox.DisplayBox(placementLocation, halfExtents, Quaternion.identity, playerLayer);
         return true;
     }    
 

@@ -16,9 +16,8 @@ public class InventoryHandler : MonoBehaviour
 
     private void Start()
     {
-        inputManager = FindObjectOfType<InputManager>();
+        inputManager = GetComponent<InputManager>();
     }
-
     void Update()
     {
         ChooseItem();
@@ -37,7 +36,7 @@ public class InventoryHandler : MonoBehaviour
 
     private void ChooseCubeWithMouseScroll()
     {
-        float mouseScroll = Input.GetAxis("Mouse ScrollWheel");
+        float mouseScroll = inputManager.GetAxis("Mouse ScrollWheel");
         if (mouseScroll != 0)
         {
             if (mouseScroll > 0.0f)
@@ -75,7 +74,7 @@ public class InventoryHandler : MonoBehaviour
     {
         foreach (KeyCodeIndexPair item in keyCodeIndexPairs)
         {
-            if (Input.GetKeyDown(item.keycode))
+            if (inputManager.GetKeyDown(item.keycode))
             {
                 SetSlot(item.index);
                 break;
