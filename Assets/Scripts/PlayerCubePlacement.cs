@@ -50,25 +50,20 @@ public class PlayerCubePlacement : MonoBehaviour
                 bool isXHighest = delta.x > delta.y && delta.x > delta.z;
                 bool isYHighest = delta.y > delta.x && delta.y > delta.z;
 
-                bool doesPlayerCollideWithBlockPlacementLocation = false;
-
                 if (isXHighest)
                 {
                     placementLocation.x += GetSideModifier(hitTransform.position.x, hitPoint.x);
-                    doesPlayerCollideWithBlockPlacementLocation = DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
                 }
                 else if (isYHighest)
                 {
                     placementLocation.y += GetSideModifier(hitTransform.position.y, hitPoint.y);
-                    doesPlayerCollideWithBlockPlacementLocation = DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
                 }
                 else
                 {
                     placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
-                    doesPlayerCollideWithBlockPlacementLocation = DoesPlayerCollideWithBlockPlacementLocation(placementLocation);
                 }
                 
-                if (doesPlayerCollideWithBlockPlacementLocation)
+                if (DoesPlayerCollideWithBlockPlacementLocation(placementLocation))
                 {
                     mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
                 }
@@ -83,21 +78,8 @@ public class PlayerCubePlacement : MonoBehaviour
             return false;
         }
 
-        //Debug.Log($"Placement location: {placementLocation}, Hits lengts: {hits.Length}");
-
         return true;
     }    
-    
-    //private bool DoesPlayerCollideWithBlockPlacementLocation2(Vector3 placementLocation)
-    //{
-    //    Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
-
-    //    Physics.OverlapBox(placementLocation, halfExtents, Quaternion.identity, 7);
-
-    //    //Debug.Log($"Placement location: {placementLocation}, Hits lengts: {hits.Length}");
-
-    //    return true;
-    //}
 
     private int GetSideModifier(float hitTransform, float hitPoint)
     {
