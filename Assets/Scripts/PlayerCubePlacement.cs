@@ -77,7 +77,7 @@ public class PlayerCubePlacement : MonoBehaviour
         {
             return false;
         }
-
+        VisualiseBox.DisplayBox(placementLocation, halfExtents, Quaternion.identity, playerLayer);
         return true;
     }    
 

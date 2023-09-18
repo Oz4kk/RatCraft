@@ -13,4 +13,9 @@ public class InputManager : MonoBehaviour
     {
         
     }
+
+    public float GetMouseScrollWheelInput()
+    {
+        return Input.GetAxis("Mouse ScrollWheel");
+    }
 }

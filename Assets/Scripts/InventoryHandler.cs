@@ -12,6 +12,13 @@ public class InventoryHandler : MonoBehaviour
 
     int activeSlot = 0;
 
+    private InputManager inputManager;
+
+    private void Start()
+    {
+        inputManager = FindObjectOfType<InputManager>();
+    }
+
     void Update()
     {
         ChooseItem();
