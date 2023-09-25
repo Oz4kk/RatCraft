@@ -6,10 +6,12 @@ using UnityEngine.Assertions;
 
 public class InventoryHandler : MonoBehaviour
 {
+    [SerializeField] private LayerMask solidBlockLayer;
+
     [SerializeField] private GameObject[] inventory;
     [SerializeField] List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
 
-    int activeSlot = 0;
+    private int activeSlot = 0;
 
     private InputManager inputManager;
 
@@ -30,7 +32,12 @@ public class InventoryHandler : MonoBehaviour
     public void SetSlot(int newSlot)
     {
         activeSlot = newSlot;
-        Debug.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
+        //Debug.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
+    }
+
+    public Material ReturnActiveBlockMaterial()
+    {
+        return inventory[activeSlot].GetComponent<MeshRenderer>().sharedMaterial;
     }
 
     private void ChooseCubeWithMouseScroll()

@@ -288,6 +288,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f8a62c242f4f9a43bb358f0510cf71d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  solidBlockLayer:
+    serializedVersion: 2
+    m_Bits: 8
   inventory:
   - {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
   - {fileID: 6359409211213089741, guid: 0343563596531974a83c4b475bc84a50, type: 3}
@@ -328,6 +331,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseCubePrefab: {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
   gameController: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
+  materialPrefab1: {fileID: 2100000, guid: 7aeccd374406c774193b88083d81ce21, type: 2}
+  materialPrefab2: {fileID: 2100000, guid: 948c8f2da0e1b8d47a49b470267af341, type: 2}
+  materialPrefab3: {fileID: 2100000, guid: 39b4eeef041f1ea438ce258c7ac406bb, type: 2}
+  materialPrefab4: {fileID: 2100000, guid: eac9ae8b323c7e142b489a8a19144964, type: 2}
 --- !u!1 &8912566402229700352
 GameObject:
   m_ObjectHideFlags: 0
