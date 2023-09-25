@@ -24,11 +24,6 @@ public class PlayerCubePlacement : MonoBehaviour
         mapGenerator = gameController.GetComponent<MapGenerator>();
     }
 
-    void Update()
-    {
-        PlaceBlock();
-    }
-
     private void PrepareBlock()
     {
         //Make own transparent material
@@ -61,7 +56,9 @@ public class PlayerCubePlacement : MonoBehaviour
         }
     }
 
-    private void PlaceBlock()
+    //dat do PlayerControlleru
+    //smazat update
+    public void PlaceBlock()
     {
         if (inputManager.GetKeyDown(KeyCode.Mouse0))
         {
@@ -107,7 +104,10 @@ public class PlayerCubePlacement : MonoBehaviour
     {
         if (Physics.CheckBox(placementLocation, halfExtents, Quaternion.identity, playerLayer))
         {
+            //build macro
+#if UNITY_EDITOR
             VisualiseBox.DisplayBox(placementLocation, halfExtents, Quaternion.identity, playerLayer);
+#endif
             return false;
         }
         return true;

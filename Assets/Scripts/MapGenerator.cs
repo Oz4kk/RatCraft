@@ -23,13 +23,14 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] public GameObject cubePrefab;
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
     private PlayerSpawn playerSpawn;
-
+    
+    
     private Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
 
 
     private void Start()
     {
-        GeneratePlainOfCubes();//
+        GeneratePlainOfCubes();
     }
 
     private void GeneratePlainOfCubes()
@@ -41,7 +42,7 @@ public class MapGenerator : MonoBehaviour
                 for (int z = 0; z < gridSize.z; z++)
                 {
                     Vector3 spawnPosition = new Vector3(x, y, z);
-                    InstantiateCube(spawnPosition, cubePrefab);//
+                    InstantiateCube(spawnPosition, cubePrefab);
                 }
             }
         }
@@ -51,10 +52,21 @@ public class MapGenerator : MonoBehaviour
     {
         if (!mapField.ContainsKey(spawnPosition))
         {
-            GameObject cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);//
+            GameObject cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
             CubeParameters cubeParameters = cube.GetComponent<CubeParameters>();
             mapField.Add(spawnPosition, cubeParameters);
         }
         Debug.Log($"Count of mapField: {mapField.Count}");
+    }
+
+    public void ShowCubePosition(Vector3 spawnPosition, GameObject cubePrefab)
+    {
+        if (!mapField.ContainsKey(spawnPosition))
+        {
+            GameObject cube;
+            //cube.GetComponent<BoxCollider>().enabled = false;
+            //cube.GetComponent<Material>();
+            cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
+        }
     }
 }
