@@ -329,7 +329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bca119db4b0f48643af8ff8476743047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseCubePrefab: {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+  pointerCubePrefab: {fileID: 3571542748594326555, guid: fcee83cd8f147444dbf749e0f0af9007, type: 3}
   gameController: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
   materialPrefab1: {fileID: 2100000, guid: 7aeccd374406c774193b88083d81ce21, type: 2}
   materialPrefab2: {fileID: 2100000, guid: 948c8f2da0e1b8d47a49b470267af341, type: 2}

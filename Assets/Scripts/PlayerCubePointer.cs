@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCubePointer : MonoBehaviour
 {
-    [SerializeField] private GameObject baseCubePrefab;
+    [SerializeField] private GameObject pointerCubePrefab;
     [SerializeField] private GameObject gameController;
     private MapGenerator mapGenerator;
     private PlayerCubePlacement playerCubePlacement;
@@ -19,13 +19,13 @@ public class PlayerCubePointer : MonoBehaviour
 
     void Start()
     {
-        mapGenerator = baseCubePrefab.GetComponent<MapGenerator>();
+        mapGenerator = pointerCubePrefab.GetComponent<MapGenerator>();
         playerCubePlacement = GetComponent<PlayerCubePlacement>();
         inventoryHandler = GetComponent<InventoryHandler>();
 
-        baseCubePrefab.GetComponent<BoxCollider>().enabled = false;
-        baseCubePrefab.GetComponent<MeshRenderer>().enabled = true;
-        pointerCube = Instantiate(baseCubePrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        pointerCubePrefab.GetComponent<BoxCollider>().enabled = false;
+        pointerCubePrefab.GetComponent<MeshRenderer>().enabled = true;
+        pointerCube = Instantiate(pointerCubePrefab, new Vector3(0, 0, 0), Quaternion.identity);
     }
 
     public void ShowCubePosition()
