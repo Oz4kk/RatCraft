@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 groundCheckBoxExtents;
     private InputManager inputManager;
     private PlayerCubePlacement playerCubePlacement;
+    private PlayerCubePointer playerCubePointer;
 
     [SerializeField] private float movementSpeed = 10.0f;
 
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         playerCubePlacement = GetComponent<PlayerCubePlacement>();
+        playerCubePointer = GetComponent<PlayerCubePointer>();
         inputManager = GetComponent<InputManager>();
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         playerCubePlacement.PlaceBlock();
+        playerCubePointer.ShowCubePosition();
         Jump();
         CameraRotation();
     }

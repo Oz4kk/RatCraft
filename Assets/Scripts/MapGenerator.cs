@@ -25,7 +25,7 @@ public class MapGenerator : MonoBehaviour
     private PlayerSpawn playerSpawn;
     
     
-    private Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
+    public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
 
 
     private void Start()
@@ -57,16 +57,5 @@ public class MapGenerator : MonoBehaviour
             mapField.Add(spawnPosition, cubeParameters);
         }
         Debug.Log($"Count of mapField: {mapField.Count}");
-    }
-
-    public void ShowCubePosition(Vector3 spawnPosition, GameObject cubePrefab)
-    {
-        if (!mapField.ContainsKey(spawnPosition))
-        {
-            GameObject cube;
-            //cube.GetComponent<BoxCollider>().enabled = false;
-            //cube.GetComponent<Material>();
-            cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
-        }
     }
 }

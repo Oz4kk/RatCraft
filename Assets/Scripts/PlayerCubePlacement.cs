@@ -24,7 +24,7 @@ public class PlayerCubePlacement : MonoBehaviour
         mapGenerator = gameController.GetComponent<MapGenerator>();
     }
 
-    private void PrepareBlock()
+    public Vector3 PrepareBlock()
     {
         //Make own transparent material
         RaycastHit hit;
@@ -53,7 +53,11 @@ public class PlayerCubePlacement : MonoBehaviour
             {
                 placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
             }
+
+            return placementLocation;
         }
+
+        return new Vector3(0,0,0);
     }
 
     //dat do PlayerControlleru
@@ -62,40 +66,45 @@ public class PlayerCubePlacement : MonoBehaviour
     {
         if (inputManager.GetKeyDown(KeyCode.Mouse0))
         {
-            RaycastHit hit;
+            CalculateUpcomingBlockPosition();
+        }
+    }
 
-            if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubePlacementDistance))
+    private void CalculateUpcomingBlockPosition()
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubePlacementDistance))
+        {
+            Transform hitTransform = hit.transform;
+            Vector3 hitPoint = hit.point;
+
+            Vector3 delta = (hitPoint - hitTransform.position).Abs();
+
+            //Debug.Log("Zasahl jsi objekt: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
+            //Debug.Log($"{delta.GetString()}");
+
+            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
+
+            bool isXHighest = delta.x > delta.y && delta.x > delta.z;
+            bool isYHighest = delta.y > delta.x && delta.y > delta.z;
+
+            if (isXHighest)
             {
-                Transform hitTransform = hit.transform;
-                Vector3 hitPoint = hit.point;
+                placementLocation.x += GetSideModifier(hitTransform.position.x, hitPoint.x);
+            }
+            else if (isYHighest)
+            {
+                placementLocation.y += GetSideModifier(hitTransform.position.y, hitPoint.y);
+            }
+            else
+            {
+                placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
+            }
 
-                Vector3 delta = (hitPoint - hitTransform.position).Abs();
-
-                //Debug.Log("Zasahl jsi objekt: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
-                //Debug.Log($"{delta.GetString()}");
-
-                Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
-
-                bool isXHighest = delta.x > delta.y && delta.x > delta.z;
-                bool isYHighest = delta.y > delta.x && delta.y > delta.z;
-
-                if (isXHighest)
-                {
-                    placementLocation.x += GetSideModifier(hitTransform.position.x, hitPoint.x);
-                }
-                else if (isYHighest)
-                {
-                    placementLocation.y += GetSideModifier(hitTransform.position.y, hitPoint.y);
-                }
-                else
-                {
-                    placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
-                }
-                
-                if (DoesPlayerCollideWithBlockPlacementLocation(placementLocation))
-                {
-                    mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
-                }
+            if (DoesPlayerCollideWithBlockPlacementLocation(placementLocation))
+            {
+                mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
             }
         }
     }
