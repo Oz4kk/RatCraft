@@ -26,7 +26,6 @@ public class PlayerCubePlacement : MonoBehaviour
 
     public Vector3? CalculateUpcomingCubePosition()
     {
-        //Make own transparent material
         RaycastHit hit;
         
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubePlacementDistance))
@@ -72,16 +71,11 @@ public class PlayerCubePlacement : MonoBehaviour
             if(CalculateUpcomingCubePosition() != null)
             {
                 Vector3? placementLocation = CalculateUpcomingCubePosition();
-                CheckIfPlayerColidesWithCubePlacementLocationAndInstantiateCube((Vector3)placementLocation);
+                if (!DoesPlayerCollideWithCubePlacementLocation((Vector3)placementLocation))
+                {
+                    mapGenerator.InstantiateCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());
+                }
             }
-        }
-    }
-
-    private void CheckIfPlayerColidesWithCubePlacementLocationAndInstantiateCube(Vector3 placementLocation)
-    {
-        if (!DoesPlayerCollideWithCubePlacementLocation(placementLocation))
-        {
-            mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
         }
     }
 

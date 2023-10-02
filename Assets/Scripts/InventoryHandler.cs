@@ -8,7 +8,7 @@ public class InventoryHandler : MonoBehaviour
 {
     [SerializeField] private LayerMask solidBlockLayer;
 
-    [SerializeField] private GameObject[] inventory;
+    public GameObject[] inventory;
     [SerializeField] List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
 
     private int activeSlot = 0;
@@ -43,7 +43,7 @@ public class InventoryHandler : MonoBehaviour
         }
         return null;
     }
-
+    
     private void ChooseCubeWithMouseScroll()
     {
         float mouseScroll = inputManager.GetAxis("Mouse ScrollWheel");

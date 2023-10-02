@@ -10,13 +10,8 @@ public class PlayerCubePointer : MonoBehaviour
     private PlayerCubePlacement playerCubePlacement;
     private GameObject pointerCube;
     private InventoryHandler inventoryHandler;
-    [SerializeField] float transparency = 0.1f;
 
-    //[SerializeField] private Material materialPrefab1;
-    //[SerializeField] private Material materialPrefab2;
-    //[SerializeField] private Material materialPrefab3;
-    //[SerializeField] private Material materialPrefab4;
-
+    [SerializeField] Material[] fieldOfTransparentMaterials; 
 
     void Start()
     {
@@ -25,7 +20,7 @@ public class PlayerCubePointer : MonoBehaviour
         inventoryHandler = GetComponent<InventoryHandler>();
 
         pointerCubePrefab.GetComponent<BoxCollider>().enabled = false;
-        pointerCubePrefab.GetComponent<MeshRenderer>().enabled = true;
+        pointerCubePrefab.GetComponent<MeshRenderer>().enabled = false;
         pointerCube = Instantiate(pointerCubePrefab, new Vector3(0, 0, 0), Quaternion.identity);
     }
 
@@ -35,10 +30,28 @@ public class PlayerCubePointer : MonoBehaviour
         {
             if (inventoryHandler.ReturnActiveCubeMaterial() != null)
             {
+                //nesahat vic krat do getcomponent
+                //nevolat vice krat stejnou metodu, delat to pres instance
+                //ShowCubePosition volam v update < event driven programovani (actions/eventy/delegati)
+
+                pointerCube.GetComponent<MeshRenderer>().enabled = true;
+
                 pointerCube.GetComponent<MeshRenderer>().sharedMaterial = inventoryHandler.ReturnActiveCubeMaterial();
+
+                Material newMaterial = new Material(inventoryHandler.ReturnActiveCubeMaterial());
+                Color newColor = newMaterial.color;
+                newColor.a = 0.5f;
+                newMaterial.color = newColor;
+
+                pointerCube.GetComponent<MeshRenderer>().sharedMaterial = newMaterial;
+
                 Vector3? pointerPosition = playerCubePlacement.CalculateUpcomingCubePosition();
                 pointerCube.transform.position = (Vector3)pointerPosition;
             }
+        }
+        else
+        {
+            pointerCube.GetComponent<MeshRenderer>().enabled = false;
         }
     }
 }
