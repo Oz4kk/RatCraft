@@ -35,9 +35,13 @@ public class InventoryHandler : MonoBehaviour
         //Debug.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
     }
 
-    public Material ReturnActiveBlockMaterial()
+    public Material ReturnActiveCubeMaterial()
     {
-        return inventory[activeSlot].GetComponent<MeshRenderer>().sharedMaterial;
+        if (inventory[activeSlot].layer != solidBlockLayer)
+        {
+            return inventory[activeSlot].GetComponent<MeshRenderer>().sharedMaterial;
+        }
+        return null;
     }
 
     private void ChooseCubeWithMouseScroll()

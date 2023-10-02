@@ -58,7 +58,7 @@ public class PlayerCubePlacement : MonoBehaviour
         }
 
         return new Vector3(0,0,0);
-    }
+    }    
 
     //dat do PlayerControlleru
     //smazat update
