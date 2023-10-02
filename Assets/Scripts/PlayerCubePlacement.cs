@@ -24,56 +24,11 @@ public class PlayerCubePlacement : MonoBehaviour
         mapGenerator = gameController.GetComponent<MapGenerator>();
     }
 
-    public Vector3 PointCube()
+    public Vector3? CalculateUpcomingCubePosition()
     {
         //Make own transparent material
         RaycastHit hit;
         
-        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubePlacementDistance))
-        {
-            Transform hitTransform = hit.transform;
-            Vector3 hitPoint = hit.point;
-
-            Vector3 delta = (hitPoint - hitTransform.position).Abs();
-
-            Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
-
-            bool isXHighest = delta.x > delta.y && delta.x > delta.z;
-            bool isYHighest = delta.y > delta.x && delta.y > delta.z;
-
-            if (isXHighest)
-            {
-                placementLocation.x += GetSideModifier(hitTransform.position.x, hitPoint.x);
-            }
-            else if (isYHighest)
-            {
-                placementLocation.y += GetSideModifier(hitTransform.position.y, hitPoint.y);
-            }
-            else
-            {
-                placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
-            }
-
-            return placementLocation;
-        }
-
-        return new Vector3(0,0,0);
-    }    
-
-    //dat do PlayerControlleru
-    //smazat update
-    public void PlaceCube()
-    {
-        if (inputManager.GetKeyDown(KeyCode.Mouse0))
-        {
-            CalculateUpcomingCubePosition();
-        }
-    }
-
-    private void CalculateUpcomingCubePosition()
-    {
-        RaycastHit hit;
-
         if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubePlacementDistance))
         {
             Transform hitTransform = hit.transform;
@@ -102,10 +57,31 @@ public class PlayerCubePlacement : MonoBehaviour
                 placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
             }
 
-            if (DoesPlayerCollideWithCubePlacementLocation(placementLocation))
+            return placementLocation;
+        }
+
+        return null;
+    }    
+
+    //dat do PlayerControlleru
+    //smazat update
+    public void PlaceCube()
+    {
+        if (inputManager.GetKeyDown(KeyCode.Mouse0))
+        {
+            if(CalculateUpcomingCubePosition() != null)
             {
-                mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
+                Vector3? placementLocation = CalculateUpcomingCubePosition();
+                CheckIfPlayerColidesWithCubePlacementLocationAndInstantiateCube((Vector3)placementLocation);
             }
+        }
+    }
+
+    private void CheckIfPlayerColidesWithCubePlacementLocationAndInstantiateCube(Vector3 placementLocation)
+    {
+        if (!DoesPlayerCollideWithCubePlacementLocation(placementLocation))
+        {
+            mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
         }
     }
 
@@ -113,13 +89,12 @@ public class PlayerCubePlacement : MonoBehaviour
     {
         if (Physics.CheckBox(placementLocation, halfExtents, Quaternion.identity, playerLayer))
         {
-            //build macro
 #if UNITY_EDITOR
             VisualiseBox.DisplayBox(placementLocation, halfExtents, Quaternion.identity, playerLayer);
 #endif
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }    
 
     private int GetSideModifier(float hitTransform, float hitPoint)

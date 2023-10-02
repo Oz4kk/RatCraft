@@ -331,10 +331,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointerCubePrefab: {fileID: 3571542748594326555, guid: fcee83cd8f147444dbf749e0f0af9007, type: 3}
   gameController: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-  materialPrefab1: {fileID: 2100000, guid: 7aeccd374406c774193b88083d81ce21, type: 2}
-  materialPrefab2: {fileID: 2100000, guid: 948c8f2da0e1b8d47a49b470267af341, type: 2}
-  materialPrefab3: {fileID: 2100000, guid: 39b4eeef041f1ea438ce258c7ac406bb, type: 2}
-  materialPrefab4: {fileID: 2100000, guid: eac9ae8b323c7e142b489a8a19144964, type: 2}
+  transparency: 0.26
 --- !u!1 &8912566402229700352
 GameObject:
   m_ObjectHideFlags: 0

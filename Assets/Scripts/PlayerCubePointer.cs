@@ -10,6 +10,7 @@ public class PlayerCubePointer : MonoBehaviour
     private PlayerCubePlacement playerCubePlacement;
     private GameObject pointerCube;
     private InventoryHandler inventoryHandler;
+    [SerializeField] float transparency = 0.1f;
 
     //[SerializeField] private Material materialPrefab1;
     //[SerializeField] private Material materialPrefab2;
@@ -30,11 +31,14 @@ public class PlayerCubePointer : MonoBehaviour
 
     public void ShowCubePosition()
     {
-        if (inventoryHandler.ReturnActiveCubeMaterial() != null)
+        if (playerCubePlacement.CalculateUpcomingCubePosition() != null)
         {
-            pointerCube.GetComponent<MeshRenderer>().sharedMaterial = inventoryHandler.ReturnActiveCubeMaterial();
-            Vector3 pointerPosition = playerCubePlacement.PointCube();
-            pointerCube.transform.position = pointerPosition;
+            if (inventoryHandler.ReturnActiveCubeMaterial() != null)
+            {
+                pointerCube.GetComponent<MeshRenderer>().sharedMaterial = inventoryHandler.ReturnActiveCubeMaterial();
+                Vector3? pointerPosition = playerCubePlacement.CalculateUpcomingCubePosition();
+                pointerCube.transform.position = (Vector3)pointerPosition;
+            }
         }
     }
 }
