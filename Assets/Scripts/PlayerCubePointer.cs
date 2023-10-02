@@ -31,7 +31,7 @@ public class PlayerCubePointer : MonoBehaviour
     public void ShowCubePosition()
     {
         pointerCube.GetComponent<MeshRenderer>().sharedMaterial = inventoryHandler.ReturnActiveBlockMaterial();
-        Vector3 pointerPosition = playerCubePlacement.PrepareBlock();
+        Vector3 pointerPosition = playerCubePlacement.PointCube();
         pointerCube.transform.position = pointerPosition;
     }
 }

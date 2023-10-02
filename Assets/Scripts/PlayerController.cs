@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        playerCubePlacement.PlaceBlock();
+        playerCubePlacement.PlaceCube();
         playerCubePointer.ShowCubePosition();
         Jump();
         CameraRotation();

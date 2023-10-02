@@ -24,7 +24,7 @@ public class PlayerCubePlacement : MonoBehaviour
         mapGenerator = gameController.GetComponent<MapGenerator>();
     }
 
-    public Vector3 PrepareBlock()
+    public Vector3 PointCube()
     {
         //Make own transparent material
         RaycastHit hit;
@@ -62,15 +62,15 @@ public class PlayerCubePlacement : MonoBehaviour
 
     //dat do PlayerControlleru
     //smazat update
-    public void PlaceBlock()
+    public void PlaceCube()
     {
         if (inputManager.GetKeyDown(KeyCode.Mouse0))
         {
-            CalculateUpcomingBlockPosition();
+            CalculateUpcomingCubePosition();
         }
     }
 
-    private void CalculateUpcomingBlockPosition()
+    private void CalculateUpcomingCubePosition()
     {
         RaycastHit hit;
 
@@ -102,14 +102,14 @@ public class PlayerCubePlacement : MonoBehaviour
                 placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
             }
 
-            if (DoesPlayerCollideWithBlockPlacementLocation(placementLocation))
+            if (DoesPlayerCollideWithCubePlacementLocation(placementLocation))
             {
                 mapGenerator.InstantiateCube(placementLocation, inventoryHandler.GetSelectedCube());
             }
         }
     }
 
-    private bool DoesPlayerCollideWithBlockPlacementLocation(Vector3 placementLocation)
+    private bool DoesPlayerCollideWithCubePlacementLocation(Vector3 placementLocation)
     {
         if (Physics.CheckBox(placementLocation, halfExtents, Quaternion.identity, playerLayer))
         {
