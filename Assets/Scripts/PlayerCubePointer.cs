@@ -5,20 +5,25 @@ using UnityEngine;
 public class PlayerCubePointer : MonoBehaviour
 {
     [SerializeField] private GameObject pointerCubePrefab;
-    [SerializeField] private GameObject gameController;
+
+    //Touching other scripts
     private MapGenerator mapGenerator;
     private PlayerCubePlacement playerCubePlacement;
-    private GameObject pointerCube;
     private InventoryHandler inventoryHandler;
 
-    [SerializeField] Material[] fieldOfTransparentMaterials; 
+    private GameObject pointerCube;
+    private MeshRenderer pointerCubeMeshRenderer;
+
 
     void Start()
     {
+        //Touching other scripts
         mapGenerator = pointerCubePrefab.GetComponent<MapGenerator>();
         playerCubePlacement = GetComponent<PlayerCubePlacement>();
         inventoryHandler = GetComponent<InventoryHandler>();
 
+        //Setting pointer cube
+        pointerCubeMeshRenderer = pointerCube.GetComponent<MeshRenderer>();
         pointerCubePrefab.GetComponent<BoxCollider>().enabled = false;
         pointerCubePrefab.GetComponent<MeshRenderer>().enabled = false;
         pointerCube = Instantiate(pointerCubePrefab, new Vector3(0, 0, 0), Quaternion.identity);
@@ -34,16 +39,15 @@ public class PlayerCubePointer : MonoBehaviour
                 //nevolat vice krat stejnou metodu, delat to pres instance
                 //ShowCubePosition volam v update < event driven programovani (actions/eventy/delegati)
 
-                pointerCube.GetComponent<MeshRenderer>().enabled = true;
-
-                pointerCube.GetComponent<MeshRenderer>().sharedMaterial = inventoryHandler.ReturnActiveCubeMaterial();
+                pointerCubeMeshRenderer.enabled = true;
+                pointerCubeMeshRenderer.sharedMaterial = inventoryHandler.ReturnActiveCubeMaterial();
 
                 Material newMaterial = new Material(inventoryHandler.ReturnActiveCubeMaterial());
                 Color newColor = newMaterial.color;
                 newColor.a = 0.5f;
                 newMaterial.color = newColor;
 
-                pointerCube.GetComponent<MeshRenderer>().sharedMaterial = newMaterial;
+                pointerCubeMeshRenderer.sharedMaterial = newMaterial;
 
                 Vector3? pointerPosition = playerCubePlacement.CalculateUpcomingCubePosition();
                 pointerCube.transform.position = (Vector3)pointerPosition;
@@ -51,7 +55,7 @@ public class PlayerCubePointer : MonoBehaviour
         }
         else
         {
-            pointerCube.GetComponent<MeshRenderer>().enabled = false;
+            pointerCubeMeshRenderer.enabled = false;
         }
     }
 }
