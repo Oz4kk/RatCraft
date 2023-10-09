@@ -34,6 +34,7 @@ public class InventoryHandler : MonoBehaviour
         //Debug.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
     }
 
+    //UGLY(Richard) - Change name of the method because there isn't mentioned that cube material will change to transparent
     public Material ReturnActiveTransparentCubeMaterial()
     {
         if (inventory[activeSlot].layer != solidBlockLayer)

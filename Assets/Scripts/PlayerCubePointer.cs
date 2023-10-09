@@ -31,25 +31,23 @@ public class PlayerCubePointer : MonoBehaviour
         pointerCubeMeshRenderer.enabled = false;
     }
 
-    public void ShowCubePosition()
+    public void RefreshPointerCube()
     {
-        //UGLY(Richard)
-        if (playerCubePlacement.CalculateUpcomingCubePosition() == null)
+        Vector3? upcomingCubePosition = playerCubePlacement.CalculateUpcomingCubePosition();
+        if (upcomingCubePosition == null)
         {
             pointerCubeMeshRenderer.enabled = false;
             return;
         }
-        if (inventoryHandler.ReturnActiveTransparentCubeMaterial() != null)
+        Material materialOfActiveCube = inventoryHandler.ReturnActiveTransparentCubeMaterial();
+        if (materialOfActiveCube != null)
         {
-            //don't touch getcomponent multiple times
-            //don't call same methode multiple times, do it through the instances
-            //ShowCubePosition call in update < event driven programming (actions/events/delegats)
+            //ShowCubePosition call in update < event driven programming (actions/events/delegats) - wip
 
             pointerCubeMeshRenderer.enabled = true;
-            pointerCubeMeshRenderer.sharedMaterial = inventoryHandler.ReturnActiveTransparentCubeMaterial();
+            pointerCubeMeshRenderer.sharedMaterial = materialOfActiveCube;
 
-            Vector3? pointerPosition = playerCubePlacement.CalculateUpcomingCubePosition();
-            pointerCube.transform.position = (Vector3)pointerPosition;
+            pointerCube.transform.position = (Vector3)upcomingCubePosition;
         }
     }
 }

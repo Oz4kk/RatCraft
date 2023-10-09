@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         PlaceCube();
-        playerCubePointer.ShowCubePosition();
+        playerCubePointer.RefreshPointerCube();
         Jump();
         CameraRotation();
     }
