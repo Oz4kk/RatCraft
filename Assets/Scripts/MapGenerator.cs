@@ -22,10 +22,10 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] public GameObject cubePrefab;
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
+    
+    public static Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
     private PlayerSpawn playerSpawn;
     
-    
-    public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
 
 
     private void Start()

@@ -7,12 +7,11 @@ using UnityEngine.Assertions;
 public class InventoryHandler : MonoBehaviour
 {
     [SerializeField] private LayerMask solidBlockLayer;
+    [SerializeField] private List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
 
     public GameObject[] inventory;
-    [SerializeField] List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
 
     private int activeSlot = 0;
-
     private InputManager inputManager;
 
     private void Start()
@@ -43,33 +42,34 @@ public class InventoryHandler : MonoBehaviour
         }
         return null;
     }
-    
+
     private void ChooseCubeWithMouseScroll()
     {
         float mouseScroll = inputManager.GetAxis("Mouse ScrollWheel");
-        if (mouseScroll != 0)
+        if (mouseScroll == .0f)
         {
-            if (mouseScroll > 0.0f)
+            return;
+        }
+        if (mouseScroll > .0f)
+        {
+            if (activeSlot == inventory.Length - 1)
             {
-                if (activeSlot == inventory.Length - 1)
-                {
-                    SetSlot(0);
-                }
-                else
-                {
-                    SetSlot(activeSlot + 1);
-                }
+                SetSlot(0);
             }
             else
             {
-                if (activeSlot == 0)
-                {
-                    SetSlot(inventory.Length - 1);
-                }
-                else
-                {
-                    SetSlot(activeSlot - 1);
-                }
+                SetSlot(activeSlot + 1);
+            }
+        }
+        else
+        {
+            if (activeSlot == 0)
+            {
+                SetSlot(inventory.Length - 1);
+            }
+            else
+            {
+                SetSlot(activeSlot - 1);
             }
         }
     }
@@ -77,6 +77,7 @@ public class InventoryHandler : MonoBehaviour
 
     public GameObject GetSelectedCube()
     {
+        Debug.Log(inventory[activeSlot].name);
         return inventory[activeSlot];
     }
 

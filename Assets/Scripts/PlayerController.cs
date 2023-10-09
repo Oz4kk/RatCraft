@@ -5,22 +5,28 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    // Serialize fields
     [SerializeField] private Rigidbody rigidBody;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Vector3 groundCheckBoxExtents;
-    private InputManager inputManager;
-    private PlayerCubePlacement playerCubePlacement;
-    private PlayerCubePointer playerCubePointer;
+    [SerializeField] private GameObject gameController;
 
+    // Serialize fields
     [SerializeField] private float movementSpeed = 10.0f;
-
     [SerializeField] private float jumpForce = 10.0f;
-
     [SerializeField] private float cameraSensitivity = 50.0f;
     [SerializeField] private float minVerticalCameraClamp = -90.0f;
     [SerializeField] private float maxVerticalCameraClamp = 90.0f;
-    
+
+    // Touching other scripts
+    private InputManager inputManager;
+    private PlayerCubePlacement playerCubePlacement;
+    private PlayerCubePointer playerCubePointer;
+    private MapGenerator mapGenerator;
+    private InventoryHandler inventoryHandler;
+
+
     private float verticalCameraRotation;
     private bool isGrounded;
 
@@ -29,6 +35,9 @@ public class PlayerController : MonoBehaviour
         playerCubePlacement = GetComponent<PlayerCubePlacement>();
         playerCubePointer = GetComponent<PlayerCubePointer>();
         inputManager = GetComponent<InputManager>();
+        inventoryHandler = GetComponent<InventoryHandler>();
+        mapGenerator = gameController.GetComponent<MapGenerator>();
+
         Cursor.lockState = CursorLockMode.Locked;
     }
 
@@ -40,7 +49,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        playerCubePlacement.PlaceCube();
+        PlaceCube();
         playerCubePointer.ShowCubePosition();
         Jump();
         CameraRotation();
@@ -97,5 +106,22 @@ public class PlayerController : MonoBehaviour
 
         playerCamera.transform.localRotation = Quaternion.Euler(Vector3.right * verticalCameraRotation);
         transform.Rotate(Vector3.up * mouseX);
+    }
+
+    private void PlaceCube()
+    {
+        if (!inputManager.GetKeyDown(KeyCode.Mouse0))
+        {
+            return;
+        }
+        if (playerCubePlacement.CalculateUpcomingCubePosition() == null)
+        {
+            return;
+        }
+        Vector3? placementLocation = playerCubePlacement.CalculateUpcomingCubePosition();
+        if (!playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)placementLocation))
+        {
+            mapGenerator.InstantiateCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());
+        }
     }
 }

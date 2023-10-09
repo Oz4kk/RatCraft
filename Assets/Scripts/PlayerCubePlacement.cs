@@ -9,13 +9,14 @@ public class PlayerCubePlacement : MonoBehaviour
 {
     [SerializeField] private GameObject gameController;
     [SerializeField] private LayerMask playerLayer;
-
     [SerializeField] private float cubePlacementDistance = 10000.0f;
-    private Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
+    //Touching other scripts
     private MapGenerator mapGenerator;
     private InventoryHandler inventoryHandler;
     private InputManager inputManager;
+
+    private Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
     void Awake()
     {
@@ -35,7 +36,7 @@ public class PlayerCubePlacement : MonoBehaviour
 
             Vector3 delta = (hitPoint - hitTransform.position).Abs();
 
-            //Debug.Log("Zasahl jsi objekt: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
+            //Debug.Log("Hitted object name: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
             //Debug.Log($"{delta.GetString()}");
 
             Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
@@ -58,19 +59,17 @@ public class PlayerCubePlacement : MonoBehaviour
 
             return placementLocation;
         }
-
         return null;
-    }    
+    }
 
-    //dat do PlayerControlleru
-    //smazat update
     public void PlaceCube()
     {
         if (inputManager.GetKeyDown(KeyCode.Mouse0))
         {
-            if(CalculateUpcomingCubePosition() != null)
+            if (CalculateUpcomingCubePosition() != null)
             {
                 Vector3? placementLocation = CalculateUpcomingCubePosition();
+
                 if (!DoesPlayerCollideWithCubePlacementLocation((Vector3)placementLocation))
                 {
                     mapGenerator.InstantiateCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());
@@ -79,7 +78,7 @@ public class PlayerCubePlacement : MonoBehaviour
         }
     }
 
-    private bool DoesPlayerCollideWithCubePlacementLocation(Vector3 placementLocation)
+    public bool DoesPlayerCollideWithCubePlacementLocation(Vector3 placementLocation)
     {
         if (Physics.CheckBox(placementLocation, halfExtents, Quaternion.identity, playerLayer))
         {

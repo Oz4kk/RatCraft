@@ -254,6 +254,7 @@ MonoBehaviour:
   playerCamera: {fileID: 4753265341900488802}
   groundCheck: {fileID: 5197378831824002700}
   groundCheckBoxExtents: {x: 0.5, y: 0, z: 0.5}
+  gameController: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
   movementSpeed: 1000
   jumpForce: 10
   cameraSensitivity: 300
@@ -305,15 +306,6 @@ MonoBehaviour:
     index: 2
   - keycode: 52
     index: 3
-  materialPairs:
-  - mainMaterial: {fileID: 2100000, guid: 7aeccd374406c774193b88083d81ce21, type: 2}
-    transparentMaterial: {fileID: 2100000, guid: 524e9e58127b4654abee15e82ca46451, type: 2}
-  - mainMaterial: {fileID: 2100000, guid: 948c8f2da0e1b8d47a49b470267af341, type: 2}
-    transparentMaterial: {fileID: 2100000, guid: 8b214a3ba7f07584dbf56eed09c7c02a, type: 2}
-  - mainMaterial: {fileID: 2100000, guid: 39b4eeef041f1ea438ce258c7ac406bb, type: 2}
-    transparentMaterial: {fileID: 2100000, guid: 16ffa3cf115989742854028f1ecaea7c, type: 2}
-  - mainMaterial: {fileID: 2100000, guid: eac9ae8b323c7e142b489a8a19144964, type: 2}
-    transparentMaterial: {fileID: 2100000, guid: 73b74424ea338524d92f67a50cd3d850, type: 2}
 --- !u!114 &7596526484433257929
 MonoBehaviour:
   m_ObjectHideFlags: 0

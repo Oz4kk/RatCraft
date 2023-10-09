@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class VisualiseBox : MonoBehaviour
 {
-    //I steal this code!
+    //I stealed this code!
     public static void DisplayBox(Vector3 center, Vector3 HalfExtend, Quaternion rotation, float Duration = 0)
     {
         Vector3[] Vertices = new Vector3[8];

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerCubePointer : MonoBehaviour
 {
+    //SerializeFields
     [SerializeField] private GameObject pointerCubePrefab;
     [SerializeField] private GameObject gameController;
 
@@ -13,8 +14,6 @@ public class PlayerCubePointer : MonoBehaviour
     private InventoryHandler inventoryHandler;
 
     private GameObject pointerCube;
-
-    [SerializeField] Material[] fieldOfTransparentMaterials;
 
     void Start()
     {
@@ -31,31 +30,30 @@ public class PlayerCubePointer : MonoBehaviour
 
     public void ShowCubePosition()
     {
-        if (playerCubePlacement.CalculateUpcomingCubePosition() != null)
-        {
-            if (inventoryHandler.ReturnActiveCubeMaterial() != null)
-            {
-                //nesahat vic krat do getcomponent
-                //nevolat vice krat stejnou metodu, delat to pres instance
-                //ShowCubePosition volam v update < event driven programovani (actions/eventy/delegati)
-
-                pointerCube.GetComponent<MeshRenderer>().enabled = true;
-                pointerCube.GetComponent<MeshRenderer>().sharedMaterial = inventoryHandler.ReturnActiveCubeMaterial();
-
-                Material newMaterial = new Material(inventoryHandler.ReturnActiveCubeMaterial());
-                Color newColor = newMaterial.color;
-                newColor.a = 0.5f;
-                newMaterial.color = newColor;
-
-                pointerCube.GetComponent<MeshRenderer>().sharedMaterial = newMaterial;
-
-                Vector3? pointerPosition = playerCubePlacement.CalculateUpcomingCubePosition();
-                pointerCube.transform.position = (Vector3)pointerPosition;
-            }
-        }
-        else
+        //UGLY(Richard)
+        if (playerCubePlacement.CalculateUpcomingCubePosition() == null)
         {
             pointerCube.GetComponent<MeshRenderer>().enabled = false;
+            return;
+        }
+        if (inventoryHandler.ReturnActiveCubeMaterial() != null)
+        {
+            //don't touch getcomponent multiple times
+            //don't call same methode multiple times, do it through the instances
+            //ShowCubePosition call in update < event driven programming (actions/events/delegats)
+
+            pointerCube.GetComponent<MeshRenderer>().enabled = true;
+            pointerCube.GetComponent<MeshRenderer>().sharedMaterial = inventoryHandler.ReturnActiveCubeMaterial();
+
+            Material newMaterial = new Material(inventoryHandler.ReturnActiveCubeMaterial());
+            Color newColor = newMaterial.color;
+            newColor.a = 0.5f;
+            newMaterial.color = newColor;
+
+            pointerCube.GetComponent<MeshRenderer>().sharedMaterial = newMaterial;
+
+            Vector3? pointerPosition = playerCubePlacement.CalculateUpcomingCubePosition();
+            pointerCube.transform.position = (Vector3)pointerPosition;
         }
     }
 }
