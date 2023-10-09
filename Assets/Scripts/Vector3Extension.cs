@@ -7,8 +7,6 @@ using UnityEngine;
 
 public static class Vector3Extension
 {
-    //c# extension methods = study
-    //study about "direction vector"
     public static Vector3 Abs(this Vector3 value)
     {
         return new Vector3(Math.Abs(value.x), Math.Abs(value.y), Math.Abs(value.z));

@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 groundCheckBoxExtents;
     [SerializeField] private GameObject gameController;
 
-    // Serialize fields
+    // Serialize fields for player movement
     [SerializeField] private float movementSpeed = 10.0f;
     [SerializeField] private float jumpForce = 10.0f;
     [SerializeField] private float cameraSensitivity = 50.0f;

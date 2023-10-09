@@ -4,13 +4,6 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour
 {   
-    //-Tadeas advice-
-    //getkeydown
-    //getkeyup
-    //getkey
-    //getaxis
-    //getaxisraw
-
     public float GetAxis(string inputName)
     {
         return Input.GetAxis(inputName);

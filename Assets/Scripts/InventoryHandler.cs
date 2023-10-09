@@ -34,11 +34,16 @@ public class InventoryHandler : MonoBehaviour
         //Debug.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
     }
 
-    public Material ReturnActiveCubeMaterial()
+    public Material ReturnActiveTransparentCubeMaterial()
     {
         if (inventory[activeSlot].layer != solidBlockLayer)
         {
-            return inventory[activeSlot].GetComponent<MeshRenderer>().sharedMaterial;
+            Material newMaterial = new Material(inventory[activeSlot].GetComponent<MeshRenderer>().sharedMaterial);
+            Color newColor = newMaterial.color;
+            newColor.a = 0.5f;
+            newMaterial.color = newColor;
+
+            return newMaterial;
         }
         return null;
     }

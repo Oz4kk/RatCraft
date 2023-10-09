@@ -36,8 +36,8 @@ public class PlayerCubePlacement : MonoBehaviour
 
             Vector3 delta = (hitPoint - hitTransform.position).Abs();
 
-            //Debug.Log("Hitted object name: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
-            //Debug.Log($"{delta.GetString()}");
+            Debug.Log("Hitted object name: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
+            Debug.Log($"{delta.GetString()}");
 
             Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
 
