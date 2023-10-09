@@ -48,13 +48,6 @@ public class PlayerCubePointer : MonoBehaviour
             pointerCubeMeshRenderer.enabled = true;
             pointerCubeMeshRenderer.sharedMaterial = inventoryHandler.ReturnActiveTransparentCubeMaterial();
 
-            Material newMaterial = new Material(inventoryHandler.ReturnActiveTransparentCubeMaterial());
-            Color newColor = newMaterial.color;
-            newColor.a = 0.5f;
-            newMaterial.color = newColor;
-
-            pointerCubeMeshRenderer.sharedMaterial = newMaterial;
-
             Vector3? pointerPosition = playerCubePlacement.CalculateUpcomingCubePosition();
             pointerCube.transform.position = (Vector3)pointerPosition;
         }
