@@ -61,6 +61,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cubePrefab: {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
   gridSize:
-    x: 5
-    y: 1
-    z: 5
+    x: 100
+    y: 5
+    z: 100
