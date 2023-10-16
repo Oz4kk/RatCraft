@@ -36,8 +36,8 @@ public class PlayerCubePlacement : MonoBehaviour
 
             Vector3 delta = (hitPoint - hitTransform.position).Abs();
 
-            Debug.Log("Hitted object name: " + hitTransform.name + " - " + hitTransform.position.x + hitTransform.position.y + hitTransform.position.z + " /// " + hitPoint.x + " | " + hitPoint.y + " | " + hitPoint.z);
-            Debug.Log($"{delta.GetString()}");
+            Debug.Log($"Hitted object name: {hitTransform.name} - {hitTransform.position.GetStringOfVector3()} /// {hitPoint.GetStringOfVector3()}");
+            Debug.Log($"{delta.GetStringOfVector3()}");
 
             Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
 
@@ -57,25 +57,10 @@ public class PlayerCubePlacement : MonoBehaviour
                 placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
             }
 
+            Debug.Log($"Cube has changed location to {placementLocation.GetStringOfVector3()}");
             return placementLocation;
         }
         return null;
-    }
-
-    public void PlaceCube()
-    {
-        if (inputManager.GetKeyDown(KeyCode.Mouse0))
-        {
-            if (CalculateUpcomingCubePosition() != null)
-            {
-                Vector3? placementLocation = CalculateUpcomingCubePosition();
-
-                if (!DoesPlayerCollideWithCubePlacementLocation((Vector3)placementLocation))
-                {
-                    mapGenerator.InstantiateCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());
-                }
-            }
-        }
     }
 
     public bool DoesPlayerCollideWithCubePlacementLocation(Vector3 placementLocation)

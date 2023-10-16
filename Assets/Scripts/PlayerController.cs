@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public Action onRaycastHitDifferentCube;
+
     // Serialize fields
     [SerializeField] private Rigidbody rigidBody;
     [SerializeField] private Camera playerCamera;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Vector3 groundCheckBoxExtents;
-    [SerializeField] private GameObject gameController;
 
     // Serialize fields for player movement
     [SerializeField] private float movementSpeed = 10.0f;
@@ -20,17 +21,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxVerticalCameraClamp = 90.0f;
 
     // Touching other scripts
+    private GameObject gameController;
     private InputManager inputManager;
     private PlayerCubePlacement playerCubePlacement;
     private PlayerCubePointer playerCubePointer;
     private MapGenerator mapGenerator;
     private InventoryHandler inventoryHandler;
 
-
     private float verticalCameraRotation;
     private bool isGrounded;
 
-    private void Awake()
+    private Vector3 previousPlacementLocation;
+
+    public void SetGameController(GameObject gameController)
+    {
+        this.gameController = gameController;
+    }
+
+    private void Start()
     {
         playerCubePlacement = GetComponent<PlayerCubePlacement>();
         playerCubePointer = GetComponent<PlayerCubePointer>();
@@ -50,7 +58,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         PlaceCube();
-        playerCubePointer.RefreshPointerCube();
         Jump();
         CameraRotation();
     }
@@ -103,22 +110,27 @@ public class PlayerController : MonoBehaviour
 
         verticalCameraRotation -= mouseY;
         verticalCameraRotation = Mathf.Clamp(verticalCameraRotation, minVerticalCameraClamp, maxVerticalCameraClamp);
-
+        
         playerCamera.transform.localRotation = Quaternion.Euler(Vector3.right * verticalCameraRotation);
         transform.Rotate(Vector3.up * mouseX);
     }
 
     private void PlaceCube()
     {
+        Vector3? placementLocation = playerCubePlacement.CalculateUpcomingCubePosition();
+        if (placementLocation != previousPlacementLocation)
+        {
+            onRaycastHitDifferentCube?.Invoke();
+        }
         if (!inputManager.GetKeyDown(KeyCode.Mouse0))
         {
             return;
         }
-        if (playerCubePlacement.CalculateUpcomingCubePosition() == null)
+        if (placementLocation == null)
         {
             return;
         }
-        Vector3? placementLocation = playerCubePlacement.CalculateUpcomingCubePosition();
+
         if (!playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)placementLocation))
         {
             mapGenerator.InstantiateCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());

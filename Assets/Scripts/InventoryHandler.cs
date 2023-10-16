@@ -6,17 +6,19 @@ using UnityEngine.Assertions;
 
 public class InventoryHandler : MonoBehaviour
 {
+    public Action onActiveSlotChanged;
+    public GameObject[] inventory;
+
     [SerializeField] private LayerMask solidBlockLayer;
     [SerializeField] private List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
 
-    public GameObject[] inventory;
-
-    private int activeSlot = 0;
+    private int activeSlot = -1;
     private InputManager inputManager;
 
     private void Start()
     {
         inputManager = GetComponent<InputManager>();
+        SetSlot(0);
     }
     void Update()
     {
@@ -30,8 +32,14 @@ public class InventoryHandler : MonoBehaviour
 
     public void SetSlot(int newSlot)
     {
+        if (activeSlot == newSlot)
+        {
+            return;
+        }
+
         activeSlot = newSlot;
-        //Debug.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
+        onActiveSlotChanged?.Invoke();
+        Debug.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
     }
 
     //UGLY(Richard) - Change name of the method because there isn't mentioned that cube material will change to transparent

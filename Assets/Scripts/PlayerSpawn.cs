@@ -9,6 +9,9 @@ public class PlayerSpawn : MonoBehaviour
 
     void Start()
     {
-        Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+        //Send also MapGenerator. Because I shouldn't touch prefabs.
+        GameObject spawnedPlayer = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
+        PlayerController playerController = spawnedPlayer.GetComponent<PlayerController>();
+        playerController.SetGameController(gameObject);
     }
 }

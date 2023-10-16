@@ -12,42 +12,53 @@ public class PlayerCubePointer : MonoBehaviour
     private MapGenerator mapGenerator;
     private PlayerCubePlacement playerCubePlacement;
     private InventoryHandler inventoryHandler;
+    private PlayerController playerController;
 
     private GameObject pointerCube;
     private MeshRenderer pointerCubeMeshRenderer;
 
-
-    void Start()
+    private void Awake()
     {
         //Touching other scripts
-        mapGenerator = pointerCubePrefab.GetComponent<MapGenerator>();
+        mapGenerator = gameController.GetComponent<MapGenerator>();
         playerCubePlacement = GetComponent<PlayerCubePlacement>();
         inventoryHandler = GetComponent<InventoryHandler>();
+        playerController = GetComponent<PlayerController>();
 
-        //Setting pointer cube
-        pointerCubePrefab.GetComponent<BoxCollider>().enabled = false;
         pointerCube = Instantiate(pointerCubePrefab, new Vector3(0, 0, 0), Quaternion.identity);
         pointerCubeMeshRenderer = pointerCube.GetComponent<MeshRenderer>();
-        pointerCubeMeshRenderer.enabled = false;
+
+        //Subscriptions
+        inventoryHandler.onActiveSlotChanged += ChangePointerCubeMaterial;
+        playerController.onRaycastHitDifferentCube += ChangePointerCubePosition;        
     }
 
-    public void RefreshPointerCube()
+    private void ChangePointerCubePosition()
     {
         Vector3? upcomingCubePosition = playerCubePlacement.CalculateUpcomingCubePosition();
+
         if (upcomingCubePosition == null)
         {
-            pointerCubeMeshRenderer.enabled = false;
+            if (pointerCubeMeshRenderer.enabled)
+            {
+                pointerCubeMeshRenderer.enabled = false;
+            }
             return;
         }
+        else
+        {
+            pointerCubeMeshRenderer.enabled = true;
+        }
+
+        pointerCube.transform.position = (Vector3)upcomingCubePosition;
+    }
+
+    private void ChangePointerCubeMaterial()
+    {
         Material materialOfActiveCube = inventoryHandler.ReturnActiveTransparentCubeMaterial();
         if (materialOfActiveCube != null)
         {
-            //ShowCubePosition call in update < event driven programming (actions/events/delegats) - wip
-
-            pointerCubeMeshRenderer.enabled = true;
             pointerCubeMeshRenderer.sharedMaterial = materialOfActiveCube;
-
-            pointerCube.transform.position = (Vector3)upcomingCubePosition;
         }
     }
 }

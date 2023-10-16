@@ -12,7 +12,7 @@ public static class Vector3Extension
         return new Vector3(Math.Abs(value.x), Math.Abs(value.y), Math.Abs(value.z));
     }
 
-    public static string GetString(this Vector3 value)
+    public static string GetStringOfVector3(this Vector3 value)
     {
         return $"X = {value.x}, Y = {value.y}, Z = {value.z}";
     }
