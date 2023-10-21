@@ -254,7 +254,6 @@ MonoBehaviour:
   playerCamera: {fileID: 4753265341900488802}
   groundCheck: {fileID: 5197378831824002700}
   groundCheckBoxExtents: {x: 0.5, y: 0, z: 0.5}
-  gameController: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
   movementSpeed: 1000
   jumpForce: 10
   cameraSensitivity: 300
@@ -289,14 +288,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f8a62c242f4f9a43bb358f0510cf71d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  solidBlockLayer:
-    serializedVersion: 2
-    m_Bits: 8
   inventory:
   - {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
   - {fileID: 6359409211213089741, guid: 0343563596531974a83c4b475bc84a50, type: 3}
   - {fileID: 8858395604543915494, guid: 89585ddd036f8404cb2b74e50fe0770e, type: 3}
   - {fileID: 7430137143123442753, guid: b4d188245cae81f45b055bfd98389aa8, type: 3}
+  solidBlockLayer:
+    serializedVersion: 2
+    m_Bits: 8
   keyCodeIndexPairs:
   - keycode: 49
     index: 0
@@ -306,6 +305,7 @@ MonoBehaviour:
     index: 2
   - keycode: 52
     index: 3
+  gameController: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
 --- !u!114 &7596526484433257929
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -332,11 +332,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointerCubePrefab: {fileID: 3571542748594326555, guid: fcee83cd8f147444dbf749e0f0af9007, type: 3}
   gameController: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-  fieldOfTransparentMaterials:
-  - {fileID: 2100000, guid: 524e9e58127b4654abee15e82ca46451, type: 2}
-  - {fileID: 2100000, guid: 8b214a3ba7f07584dbf56eed09c7c02a, type: 2}
-  - {fileID: 2100000, guid: 16ffa3cf115989742854028f1ecaea7c, type: 2}
-  - {fileID: 2100000, guid: 73b74424ea338524d92f67a50cd3d850, type: 2}
 --- !u!1 &8912566402229700352
 GameObject:
   m_ObjectHideFlags: 0

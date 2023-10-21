@@ -15,11 +15,15 @@ public class PlayerCubePlacement : MonoBehaviour
     private MapGenerator mapGenerator;
     private InventoryHandler inventoryHandler;
     private InputManager inputManager;
+    private DebugManager debugManager;
 
     private Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
     void Awake()
     {
+#if UNITY_EDITOR
+        debugManager = gameController.GetComponent<DebugManager>();
+#endif
         inventoryHandler = GetComponent<InventoryHandler>();
         inputManager = GetComponent<InputManager>();
         mapGenerator = gameController.GetComponent<MapGenerator>();
@@ -36,8 +40,13 @@ public class PlayerCubePlacement : MonoBehaviour
 
             Vector3 delta = (hitPoint - hitTransform.position).Abs();
 
-            //Debug.Log($"Hitted object name: {hitTransform.name} - {hitTransform.position.GetStringOfVector3()} /// {hitPoint.GetStringOfVector3()}");
-            //Debug.Log($"{delta.GetStringOfVector3()}");
+#if UNITY_EDITOR
+            if (debugManager.debugManagerEnabled)
+            {
+                debugManager.ShowDebugOfHittedObject(hitTransform, hitPoint);
+                debugManager.ShowDebugOfDelta(delta);
+            }
+#endif
 
             Vector3 placementLocation = new Vector3(hitTransform.position.x, hitTransform.position.y, hitTransform.position.z);
 
@@ -57,7 +66,6 @@ public class PlayerCubePlacement : MonoBehaviour
                 placementLocation.z += GetSideModifier(hitTransform.position.z, hitPoint.z);
             }
 
-            //Debug.Log($"Cube has changed location to {placementLocation.GetStringOfVector3()}");
             return placementLocation;
         }
         return null;

@@ -13,5 +13,6 @@ public class PlayerSpawn : MonoBehaviour
         GameObject spawnedPlayer = Instantiate(prefabToSpawn, spawnPosition, Quaternion.identity);
         PlayerController playerController = spawnedPlayer.GetComponent<PlayerController>();
         playerController.SetGameController(gameObject);
+
     }
 }
