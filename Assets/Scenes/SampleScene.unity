@@ -228,10 +228,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameController
       objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gameController
-      value: 
-      objectReference: {fileID: 1998038014}
     - target: {fileID: 1960336968039664911, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -278,8 +274,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d75b503534647944a84bd6fc036b617f, type: 3}
---- !u!1 &1998038014 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-  m_PrefabInstance: {fileID: 1839846293}
-  m_PrefabAsset: {fileID: 0}
