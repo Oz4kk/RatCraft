@@ -26,6 +26,7 @@ public class MapGenerator : MonoBehaviour
 
     public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
     private PlayerSpawn playerSpawn;
+    private int i = 1;
 
 
     private void Start()
@@ -43,13 +44,6 @@ public class MapGenerator : MonoBehaviour
             {
                 for (float z = 0; z < gridSize.z; z++)
                 {
-                    float sample = Mathf.PerlinNoise(x * 0.1f, z * 0.1f);
-                    if (sample > 0.2f * y)
-                    {
-                        Vector3 spawnPosition = new Vector3(x, y, z);
-                        InstantiateCube(spawnPosition, cubePrefab);
-                    }
-                    Debug.Log(sample);
                 }
             }
         }
@@ -63,6 +57,6 @@ public class MapGenerator : MonoBehaviour
             CubeParameters cubeParameters = cube.GetComponent<CubeParameters>();
             mapField.Add(spawnPosition, cubeParameters);
         }
-        Debug.Log($"Count of mapField: {mapField.Count}");
+        //Debug.Log($"Count of mapField: {mapField.Count}");
     }
 }

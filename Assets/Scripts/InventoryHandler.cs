@@ -91,7 +91,7 @@ public class InventoryHandler : MonoBehaviour
 
     public GameObject GetSelectedCube()
     {
-        Debug.Log(inventory[activeSlot].name);
+        //Debug.Log(inventory[activeSlot].name);
         return inventory[activeSlot];
     }
 
