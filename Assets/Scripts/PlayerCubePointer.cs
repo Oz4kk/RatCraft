@@ -13,7 +13,6 @@ public class PlayerCubePointer : MonoBehaviour
     private PlayerCubePlacement playerCubePlacement;
     private InventoryHandler inventoryHandler;
     private PlayerController playerController;
-    private DebugManager debugManager;
 
     private GameObject pointerCube;
     private MeshRenderer pointerCubeMeshRenderer;
@@ -21,9 +20,6 @@ public class PlayerCubePointer : MonoBehaviour
     private void Awake()
     {
         //Touching other scripts
-#if UNITY_EDITOR
-        debugManager = gameController.GetComponent<DebugManager>();
-#endif
         mapGenerator = gameController.GetComponent<MapGenerator>();
         playerCubePlacement = GetComponent<PlayerCubePlacement>();
         inventoryHandler = GetComponent<InventoryHandler>();
@@ -56,12 +52,7 @@ public class PlayerCubePointer : MonoBehaviour
 
         pointerCube.transform.position = (Vector3)upcomingCubePosition;
 
-#if UNITY_EDITOR
-        if (debugManager.debugManagerEnabled)
-        {
-            debugManager.ShowDebugOfPointerCube((Vector3)upcomingCubePosition);
-        }
-#endif
+        DebugManager.Log($"Cube has changed location to {upcomingCubePosition?.GetStringOfVector3()}");
     }
 
     private void ChangePointerCubeMaterial()

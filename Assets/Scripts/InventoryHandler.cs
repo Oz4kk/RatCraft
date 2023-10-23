@@ -11,18 +11,12 @@ public class InventoryHandler : MonoBehaviour
 
     [SerializeField] private LayerMask solidBlockLayer;
     [SerializeField] private List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
-    [SerializeField] private GameObject gameController;
 
     private int activeSlot = -1;
     private InputManager inputManager;
-    private DebugManager debugManager;
-
 
     private void Start()
     {
-#if UNITY_EDITOR
-        debugManager = gameController.GetComponent<DebugManager>();
-#endif
         inputManager = GetComponent<InputManager>();
 
         SetSlot(0);
@@ -47,12 +41,7 @@ public class InventoryHandler : MonoBehaviour
         activeSlot = newSlot;
         onActiveSlotChanged?.Invoke();
 
-#if UNITY_EDITOR
-        if (debugManager.debugManagerEnabled)
-        {
-            debugManager.ShowDebugOfActiveSlot(activeSlot, inventory);
-        }
-#endif
+        DebugManager.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
     }
 
     //UGLY(Richard) - Change name of the method because there isn't mentioned that cube material will change to transparent
@@ -104,12 +93,8 @@ public class InventoryHandler : MonoBehaviour
 
     public GameObject GetSelectedCube()
     {
-#if UNITY_EDITOR
-        if (debugManager.debugManagerEnabled)
-        {
-            debugManager.ShowDebugOfGetSelectedCube(activeSlot, inventory);
-        }
-#endif
+        DebugManager.Log(inventory[activeSlot].name);
+
         return inventory[activeSlot];
     }
 

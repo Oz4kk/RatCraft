@@ -24,13 +24,9 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
 
     public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
-    private DebugManager debugManager;
 
     private void Start()
     {
-#if UNITY_EDITOR
-        debugManager = GetComponent<DebugManager>();
-#endif
         GeneratePlainOfCubes();
     }
 
@@ -42,7 +38,7 @@ public class MapGenerator : MonoBehaviour
             {
                 for (float z = 0; z < gridSize.z; z++)
                 {
-                    float perlinValue = Mathf.PerlinNoise(x*0.1f,z*0.1f);
+                    float perlinValue = Mathf.PerlinNoise(x * 0.1f, z * 0.1f);
                     Debug.Log(perlinValue);
                     if (perlinValue > 0.2 * y)
                     {
@@ -63,11 +59,6 @@ public class MapGenerator : MonoBehaviour
             mapField.Add(spawnPosition, cubeParameters);
         }
 
-#if UNITY_EDITOR
-        if (debugManager.debugManagerEnabled)
-        {
-            debugManager.ShowDebugOfCubeInstatiation(mapField);
-        }
-#endif
-    }
+        DebugManager.Log($"Count of mapField: {mapField.Count}");
+    }    
 }
