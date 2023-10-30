@@ -215,7 +215,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &1839846293
 PrefabInstance:
@@ -229,44 +229,20 @@ PrefabInstance:
       value: GameController
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: blueCube
-      value: 
-      objectReference: {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: pinkCube
-      value: 
-      objectReference: {fileID: 7430137143123442753, guid: b4d188245cae81f45b055bfd98389aa8, type: 3}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: brownCube
-      value: 
-      objectReference: {fileID: 6359409211213089741, guid: 0343563596531974a83c4b475bc84a50, type: 3}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: greenCube
-      value: 
-      objectReference: {fileID: 8858395604543915494, guid: 89585ddd036f8404cb2b74e50fe0770e, type: 3}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSize.y
-      value: 100
+      propertyPath: heightLimit
+      value: 0.0625
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: HeightQuantity
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: PerlinQuantity
-      value: 0.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: xPerlinQuantity
+      propertyPath: xPerlinScale
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: zPerlinQuantity
+      propertyPath: zPerlinScale
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664911, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664911, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: m_LocalPosition.x

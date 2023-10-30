@@ -26,15 +26,10 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] public GameObject pinkCube;
     [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
 
-    //[Range(0.0f, 0.9f)]
-    [SerializeField] private float xPerlinScale = 0.0f;    
-
-    //[Range(0.0f, 0.9f)]
-    [SerializeField] private float zPerlinScale = 0.0f;
-
+    [SerializeField] private float sidesPerlinScale = 0.0f;    
+    [SerializeField] private float yPerlinScale = 0.1f;
     [SerializeField] private float heightLimit = 0.0f;
-    [SerializeField] private int seed = 0;
-
+    [SerializeField] private float seed;
 
     public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
 
@@ -45,40 +40,61 @@ public class MapGenerator : MonoBehaviour
 
     private void GenerateMap()
     {
-        float a = -gridSize.x * xPerlinScale;
-        //float a = UnityEngine.Random.Range(0,500);
+        uint debugBlueCubeCounter = 0;
+        uint dubugGreenCubeCounter = 0;
+        uint debugBrownCubeCounter = 0;
+        uint debugPinkCubeCounter = 0;
+        float[] debugSample = new float[gridSize.x * gridSize.y * gridSize.z];
+        int debugSampleCounter = 0;
+
+
         for (float x = 0; x < gridSize.x; x++)
         {
             for (float y = 0; y < gridSize.y; y++)
             {
                 for (float z = 0; z < gridSize.z; z++)
                 {
-                    float perlinValue = Mathf.PerlinNoise(x * xPerlinScale + a, z * zPerlinScale + a);
+                    float perlinValueCubes = Mathf.PerlinNoise(x * sidesPerlinScale + seed, z * sidesPerlinScale + seed);
                     
-                    if (perlinValue > heightLimit * y)
+                    if (perlinValueCubes > heightLimit * y)
                     {
-                        float sample = Mathf.PerlinNoise(Mathf.Floor(z/5) * zPerlinScale + a, Mathf.Floor(x/5) * xPerlinScale + a);
+                        float sample = Mathf.PerlinNoise(Mathf.Floor(x/5) * sidesPerlinScale + seed, Mathf.Floor(z/5) * sidesPerlinScale + seed);
+                        float sampleY = Mathf.PerlinNoise(Mathf.Floor(y/2) * yPerlinScale + seed, Mathf.Floor(y/2) * yPerlinScale + seed);
+
+                        debugSample[debugSampleCounter++] = sample + sampleY;
+
                         Vector3 upcomingCubePosition = new Vector3(x, y, z);
-                        if (sample > 0.75f)
+
+                        if (sample + sampleY > 0.875)
                         {
                             InstantiateCube(upcomingCubePosition, greenCube);
+                            dubugGreenCubeCounter++;
                         }
-                        else if (sample > 0.50f)
+                        else if (sample + sampleY > 0.75)
                         {
                             InstantiateCube(upcomingCubePosition, blueCube);
+                            debugBlueCubeCounter++;
                         }
-                        else if (sample > 0.25f)
+                        else if (sample + sampleY > 0.675)
                         {
                             InstantiateCube(upcomingCubePosition, brownCube);
+                            debugBrownCubeCounter++;
                         }
                         else
                         {
                             InstantiateCube(upcomingCubePosition, pinkCube);
+                            debugPinkCubeCounter++;
                         }
                     }
                 }
             }
         }
+        DebugManager.Log($"DebugSample Max - {Mathf.Max(debugSample)}");
+        DebugManager.Log($"DebugSample Min - {Mathf.Min(debugSample)}");
+        DebugManager.Log($"Count of green cubes - {dubugGreenCubeCounter}");
+        DebugManager.Log($"Count of blue cubes - {debugBlueCubeCounter}");
+        DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
+        DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
     }
 
     public void InstantiateCube(Vector3 spawnPosition, GameObject cubePrefab)
