@@ -229,6 +229,22 @@ PrefabInstance:
       value: GameController
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
+      propertyPath: seed
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
+      propertyPath: gridSize.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
+      propertyPath: gridSize.y
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
+      propertyPath: gridSize.z
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: heightLimit
       value: 0.0625
       objectReference: {fileID: 0}
@@ -238,6 +254,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: zPerlinScale
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
+      propertyPath: sidesPerlinScale
       value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664911, guid: d75b503534647944a84bd6fc036b617f, type: 3}
