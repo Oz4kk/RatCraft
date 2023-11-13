@@ -32,7 +32,7 @@ public class ChunkGenerator : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
     }
 
-    public void GenerateChunk()
+    public void GenerateChunk(Vector3 playerPosition)
     {
         uint debugBlueCubeCounter = 0;
         uint dubugGreenCubeCounter = 0;
@@ -40,7 +40,6 @@ public class ChunkGenerator : MonoBehaviour
         uint debugPinkCubeCounter = 0;
         float[] debugSample = new float[gridSize.x * gridSize.y * gridSize.z];
         int debugSampleCounter = 0;
-
 
         for (float x = 0; x < gridSize.x; x++)
         {
@@ -57,7 +56,7 @@ public class ChunkGenerator : MonoBehaviour
 
                         debugSample[debugSampleCounter++] = sample + sampleY;
 
-                        Vector3 upcomingCubePosition = new Vector3(x, y, z);
+                        Vector3 upcomingCubePosition = new Vector3(x+playerPosition.x, y, z+playerPosition.z);
 
                         if (sample + sampleY > 0.875)
                         {
