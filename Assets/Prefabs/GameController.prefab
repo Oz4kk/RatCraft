@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1960336968039664911}
   - component: {fileID: 1960336968039664908}
   - component: {fileID: 1960336968039664910}
+  - component: {fileID: 2769546080822182058}
   - component: {fileID: 159310025209883692}
   m_Layer: 0
   m_Name: GameController
@@ -64,14 +65,26 @@ MonoBehaviour:
   blueCube: {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
   brownCube: {fileID: 6359409211213089741, guid: 0343563596531974a83c4b475bc84a50, type: 3}
   pinkCube: {fileID: 7430137143123442753, guid: b4d188245cae81f45b055bfd98389aa8, type: 3}
+  seed: 0
+--- !u!114 &2769546080822182058
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960336968039664909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa59f3ea84af3264f93002098efa7bc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   gridSize:
     x: 100
     y: 16
     z: 100
-  xPerlinScale: 0.1
-  zPerlinScale: 0.1
-  HeightQuantity: 0.2
-  seed: 0
+  sidesPerlinScale: 0.1
+  yPerlinScale: 0.1
+  heightLimit: 0.0625
 --- !u!114 &159310025209883692
 MonoBehaviour:
   m_ObjectHideFlags: 0
