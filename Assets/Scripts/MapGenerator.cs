@@ -18,11 +18,7 @@ public class MapGenerator : MonoBehaviour
     public float seed;
 
     private List<Vector3> listOfCenters = new List<Vector3>();
-    private Vector3 middlePointOfCurrentChunk;
-    private Vector3 playerLocation;
-
-    private Action onActualMiddlePointChanged;
-
+    private Vector3 middlePointOfLastChunk;
     private float xPositivePrediction;
     private float xNegativePrediction;
     private float zPositivePrediction;
@@ -37,76 +33,77 @@ public class MapGenerator : MonoBehaviour
     private void Start()
     {
         player = playerSpawn.spawnedPlayer;
-        playerLocation = player.transform.position;
-        middlePointOfCurrentChunk = new Vector3(playerLocation.x, 0.0f, playerLocation.z);
-        listOfCenters.Add(middlePointOfCurrentChunk);
-        onActualMiddlePointChanged += SetNewPredictionValues;
-        onActualMiddlePointChanged.Invoke();
+        Vector3 middlePointOfActualChunk = new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
+        ChunkGenerationSequence(middlePointOfActualChunk);
+        SetNewPredictionValues(middlePointOfActualChunk);
 
-        Vector3 initialSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
+        Vector3 initialSpawnPosition = ReturnNewChunkPosition(middlePointOfActualChunk);
         chunkGenerator.GenerateChunk(initialSpawnPosition);
     }
 
     private void Update()
     {
-        playerLocation = player.transform.position;
         NextChunkPrediction();
     }
 
-    private void SetNewPredictionValues()
+    private void SetNewPredictionValues(Vector3 middlePointOfActualChunk)
     {
-        xPositivePrediction = middlePointOfCurrentChunk.x + 50.0f;
-        xNegativePrediction = middlePointOfCurrentChunk.x - 50.0f;
-        zPositivePrediction = middlePointOfCurrentChunk.z + 50.0f;
-        zNegativePrediction = middlePointOfCurrentChunk.z - 50.0f;
+        xPositivePrediction = middlePointOfActualChunk.x + 50.0f;
+        xNegativePrediction = middlePointOfActualChunk.x - 50.0f;
+        zPositivePrediction = middlePointOfActualChunk.z + 50.0f;
+        zNegativePrediction = middlePointOfActualChunk.z - 50.0f;
     }
 
     private void NextChunkPrediction()
     {
-        Debug.Log(middlePointOfCurrentChunk.ToString());
+        DebugManager.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
 
-        if (playerLocation.x > xPositivePrediction)
+        if (player.transform.position.x > xPositivePrediction)
         {
-            middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x + 100.0f, 0.0f, middlePointOfCurrentChunk.z);
-            if (!listOfCenters.Contains(middlePointOfCurrentChunk))
+            Vector3 middlePointOfActualChunk = new Vector3(middlePointOfLastChunk.x + 100.0f, 0.0f, middlePointOfLastChunk.z);
+            middlePointOfLastChunk = middlePointOfActualChunk;
+            if (!listOfCenters.Contains(middlePointOfActualChunk))
             {
-                ChunkGenerationSequence();
+                ChunkGenerationSequence(middlePointOfActualChunk);
             }
-            onActualMiddlePointChanged?.Invoke();
+            SetNewPredictionValues(middlePointOfActualChunk);
         }
-        else if (playerLocation.x < xNegativePrediction)
+        else if (player.transform.position.x < xNegativePrediction)
         {
-            middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x - 100.0f, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z);
-            if (!listOfCenters.Contains(middlePointOfCurrentChunk))
+            Vector3 middlePointOfActualChunk = new Vector3(middlePointOfLastChunk.x - 100.0f, 0.0f, middlePointOfLastChunk.z);
+            middlePointOfLastChunk = middlePointOfActualChunk;
+            if (!listOfCenters.Contains(middlePointOfActualChunk))
             {
-                ChunkGenerationSequence();
+                ChunkGenerationSequence(middlePointOfActualChunk);
             }
-            onActualMiddlePointChanged?.Invoke();
+            SetNewPredictionValues(middlePointOfActualChunk);
         }
-        else if(playerLocation.z > zPositivePrediction)
+        else if(player.transform.position.z > zPositivePrediction)
         {
-            middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z + 100.0f);
-            if (!listOfCenters.Contains(middlePointOfCurrentChunk))
+            Vector3 middlePointOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z + 100.0f);
+            middlePointOfLastChunk = middlePointOfActualChunk;
+            if (!listOfCenters.Contains(middlePointOfActualChunk))
             {
-                ChunkGenerationSequence();
+                ChunkGenerationSequence(middlePointOfActualChunk);
             }
-            onActualMiddlePointChanged?.Invoke();
+            SetNewPredictionValues(middlePointOfActualChunk);
         }
-        else if(playerLocation.z < zNegativePrediction)
+        else if(player.transform.position.z < zNegativePrediction)
         {
-            middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z - 100.0f);
-            if (!listOfCenters.Contains(middlePointOfCurrentChunk))
+            Vector3 middlePointOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z - 100.0f);
+            middlePointOfLastChunk = middlePointOfActualChunk;
+            if (!listOfCenters.Contains(middlePointOfActualChunk))
             {
-                ChunkGenerationSequence();
+                ChunkGenerationSequence(middlePointOfActualChunk);
             }
-            onActualMiddlePointChanged?.Invoke();
+            SetNewPredictionValues(middlePointOfActualChunk);
         }
     }
 
-    private void ChunkGenerationSequence()
+    private void ChunkGenerationSequence(Vector3 middlePointOfActualChunk)
     {
-        listOfCenters.Add(middlePointOfCurrentChunk);
-        Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
+        listOfCenters.Add(middlePointOfActualChunk);
+        Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfActualChunk);
         chunkGenerator.GenerateChunk(newChunkSpawnPosition);
     }
 
