@@ -34,7 +34,7 @@ public class MapGenerator : MonoBehaviour
         middlePointOfCurrentChunk = new Vector3(playerLocation.x, 0.0f, playerLocation.z);
         listOfCenters.Add(middlePointOfCurrentChunk);
 
-        Vector3 initialSpawnPosition = new Vector3(playerLocation.x-50.0f, playerLocation.y, playerLocation.z-50.0f);
+        Vector3 initialSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
         chunkGenerator.GenerateChunk(initialSpawnPosition);
     }
 
@@ -58,9 +58,7 @@ public class MapGenerator : MonoBehaviour
             middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x + 100.0f, 0.0f, middlePointOfCurrentChunk.z);
             if (!listOfCenters.Contains(middlePointOfCurrentChunk))
             {
-                listOfCenters.Add(middlePointOfCurrentChunk);
-                Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
-                chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+                ChunkGenerationSequence();
             }
         }
         else if (playerLocation.x < xNegativePrediction)
@@ -68,9 +66,7 @@ public class MapGenerator : MonoBehaviour
             middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x - 100.0f, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z);
             if (!listOfCenters.Contains(middlePointOfCurrentChunk))
             {
-                listOfCenters.Add(middlePointOfCurrentChunk);
-                Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
-                chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+                ChunkGenerationSequence();
             }
         }
         else if(playerLocation.z > zPositivePrediction)
@@ -78,9 +74,7 @@ public class MapGenerator : MonoBehaviour
             middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z + 100.0f);
             if (!listOfCenters.Contains(middlePointOfCurrentChunk))
             {
-                listOfCenters.Add(middlePointOfCurrentChunk);
-                Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
-                chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+                ChunkGenerationSequence();
             }
         }
         else if(playerLocation.z < zNegativePrediction)
@@ -88,11 +82,16 @@ public class MapGenerator : MonoBehaviour
             middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z - 100.0f);
             if (!listOfCenters.Contains(middlePointOfCurrentChunk))
             {
-                listOfCenters.Add(middlePointOfCurrentChunk);
-                Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
-                chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+                ChunkGenerationSequence();
             }
         }
+    }
+
+    private void ChunkGenerationSequence()
+    {
+        listOfCenters.Add(middlePointOfCurrentChunk);
+        Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
+        chunkGenerator.GenerateChunk(newChunkSpawnPosition);
     }
 
     private Vector3 ReturnNewChunkPosition(Vector3 centerOfChunk)
