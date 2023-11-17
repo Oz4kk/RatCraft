@@ -56,43 +56,48 @@ public class MapGenerator : MonoBehaviour
         if (playerLocation.x > xPositivePrediction)
         {
             middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x + 100.0f, 0.0f, middlePointOfCurrentChunk.z);
-            if (!listOfCenters.Contains(new Vector3(middlePointOfCurrentChunk.x + 100.0f, 0.0f, middlePointOfCurrentChunk.z)))
+            if (!listOfCenters.Contains(middlePointOfCurrentChunk))
             {
                 listOfCenters.Add(middlePointOfCurrentChunk);
-                Vector3 newChunkSpawnPosition = new Vector3(middlePointOfCurrentChunk.x - 50.0f, 0.0f, middlePointOfCurrentChunk.z - 50.0f);
+                Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
                 chunkGenerator.GenerateChunk(newChunkSpawnPosition);
             }
         }
         else if (playerLocation.x < xNegativePrediction)
         {
             middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x - 100.0f, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z);
-            if (!listOfCenters.Contains(new Vector3(middlePointOfCurrentChunk.x - 100.0f, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z)))
+            if (!listOfCenters.Contains(middlePointOfCurrentChunk))
             {
                 listOfCenters.Add(middlePointOfCurrentChunk);
-                Vector3 newChunkSpawnPosition = new Vector3(middlePointOfCurrentChunk.x - 50.0f, 0.0f, middlePointOfCurrentChunk.z - 50.0f);
+                Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
                 chunkGenerator.GenerateChunk(newChunkSpawnPosition);
             }
         }
         else if(playerLocation.z > zPositivePrediction)
         {
             middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z + 100.0f);
-            if (!listOfCenters.Contains(new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z + 100.0f)))
+            if (!listOfCenters.Contains(middlePointOfCurrentChunk))
             {
                 listOfCenters.Add(middlePointOfCurrentChunk);
-                Vector3 newChunkSpawnPosition = new Vector3(middlePointOfCurrentChunk.x - 50.0f, 0.0f, middlePointOfCurrentChunk.z - 50.0f);
+                Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
                 chunkGenerator.GenerateChunk(newChunkSpawnPosition);
             }
         }
         else if(playerLocation.z < zNegativePrediction)
         {
             middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z - 100.0f);
-            if (!listOfCenters.Contains(new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z - 100.0f)))
+            if (!listOfCenters.Contains(middlePointOfCurrentChunk))
             {
                 listOfCenters.Add(middlePointOfCurrentChunk);
-                Vector3 newChunkSpawnPosition = new Vector3(middlePointOfCurrentChunk.x - 50.0f, 0.0f, middlePointOfCurrentChunk.z - 50.0f);
+                Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
                 chunkGenerator.GenerateChunk(newChunkSpawnPosition);
             }
         }
+    }
+
+    private Vector3 ReturnNewChunkPosition(Vector3 centerOfChunk)
+    {
+        return new Vector3(centerOfChunk.x - 50.0f, 0.0f, centerOfChunk.z - 50.0f);
     }
 
     public void InstantiateCube(Vector3 spawnPosition, GameObject cubePrefab)
