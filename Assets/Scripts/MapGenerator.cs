@@ -21,6 +21,13 @@ public class MapGenerator : MonoBehaviour
     private Vector3 middlePointOfCurrentChunk;
     private Vector3 playerLocation;
 
+    private Action onActualMiddlePointChanged;
+
+    private float xPositivePrediction;
+    private float xNegativePrediction;
+    private float zPositivePrediction;
+    private float zNegativePrediction;
+
     private void Awake()
     {
         playerSpawn = GetComponent<PlayerSpawn>();
@@ -33,6 +40,8 @@ public class MapGenerator : MonoBehaviour
         playerLocation = player.transform.position;
         middlePointOfCurrentChunk = new Vector3(playerLocation.x, 0.0f, playerLocation.z);
         listOfCenters.Add(middlePointOfCurrentChunk);
+        onActualMiddlePointChanged += SetNewPredictionValues;
+        onActualMiddlePointChanged.Invoke();
 
         Vector3 initialSpawnPosition = ReturnNewChunkPosition(middlePointOfCurrentChunk);
         chunkGenerator.GenerateChunk(initialSpawnPosition);
@@ -41,17 +50,20 @@ public class MapGenerator : MonoBehaviour
     private void Update()
     {
         playerLocation = player.transform.position;
-        nextChunkPredicter(chunkGenerator.gridSize.x, chunkGenerator.gridSize.z);
+        NextChunkPrediction();
     }
 
-    private void nextChunkPredicter(float x, float z)
+    private void SetNewPredictionValues()
+    {
+        xPositivePrediction = middlePointOfCurrentChunk.x + 50.0f;
+        xNegativePrediction = middlePointOfCurrentChunk.x - 50.0f;
+        zPositivePrediction = middlePointOfCurrentChunk.z + 50.0f;
+        zNegativePrediction = middlePointOfCurrentChunk.z - 50.0f;
+    }
+
+    private void NextChunkPrediction()
     {
         Debug.Log(middlePointOfCurrentChunk.ToString());
-
-        float xPositivePrediction = middlePointOfCurrentChunk.x + 50.0f;
-        float xNegativePrediction = middlePointOfCurrentChunk.x - 50.0f;
-        float zPositivePrediction = middlePointOfCurrentChunk.z + 50.0f;
-        float zNegativePrediction = middlePointOfCurrentChunk.z - 50.0f;
 
         if (playerLocation.x > xPositivePrediction)
         {
@@ -60,6 +72,7 @@ public class MapGenerator : MonoBehaviour
             {
                 ChunkGenerationSequence();
             }
+            onActualMiddlePointChanged?.Invoke();
         }
         else if (playerLocation.x < xNegativePrediction)
         {
@@ -68,6 +81,7 @@ public class MapGenerator : MonoBehaviour
             {
                 ChunkGenerationSequence();
             }
+            onActualMiddlePointChanged?.Invoke();
         }
         else if(playerLocation.z > zPositivePrediction)
         {
@@ -76,6 +90,7 @@ public class MapGenerator : MonoBehaviour
             {
                 ChunkGenerationSequence();
             }
+            onActualMiddlePointChanged?.Invoke();
         }
         else if(playerLocation.z < zNegativePrediction)
         {
@@ -84,6 +99,7 @@ public class MapGenerator : MonoBehaviour
             {
                 ChunkGenerationSequence();
             }
+            onActualMiddlePointChanged?.Invoke();
         }
     }
 
