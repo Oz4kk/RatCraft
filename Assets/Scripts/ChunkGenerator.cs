@@ -6,7 +6,7 @@ using UnityEngine;
 public class ChunkGenerator : MonoBehaviour
 {
     [Serializable]
-    private struct GridSize
+    public struct GridSize
     {
         public int x;
         public int y;
@@ -22,7 +22,7 @@ public class ChunkGenerator : MonoBehaviour
 
     private MapGenerator mapGenerator;
 
-    [SerializeField] private GridSize gridSize = new GridSize(5, 5, 5);
+    [SerializeField] public GridSize gridSize = new GridSize(5, 5, 5);
     [SerializeField] private float sidesPerlinScale = 0.0f;
     [SerializeField] private float yPerlinScale = 0.1f;
     [SerializeField] private float heightLimit = 0.0f;

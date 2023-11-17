@@ -16,6 +16,9 @@ public class MapGenerator : MonoBehaviour
 
     public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
     public float seed;
+
+    private Vector3 middlePointOfCurrentChunk;
+
     private Vector3 playerLocation;
 
     private void Awake()
@@ -28,6 +31,7 @@ public class MapGenerator : MonoBehaviour
     {
         player = playerSpawn.spawnedPlayer;
         playerLocation = player.transform.position;
+        middlePointOfCurrentChunk = new Vector3(playerLocation.x, 0.0f, playerLocation.z);
 
         Vector3 initialSpawnPosition = new Vector3(playerLocation.x-50.0f, playerLocation.y, playerLocation.z-50.0f);
         chunkGenerator.GenerateChunk(initialSpawnPosition);
@@ -36,6 +40,42 @@ public class MapGenerator : MonoBehaviour
     private void Update()
     {
         playerLocation = player.transform.position;
+        nextChunkPredicter(chunkGenerator.gridSize.x, chunkGenerator.gridSize.z);
+    }
+
+    private void nextChunkPredicter(float x, float z)
+    {
+        //Debug.Log(middlePointOfCurrentChunk.ToString());
+
+        float xPositivePrediction = middlePointOfCurrentChunk.x + 50.0f;
+        float xNegativePrediction = middlePointOfCurrentChunk.x - 50.0f;
+        float zPositivePrediction = middlePointOfCurrentChunk.z + 50.0f;
+        float zNegativePrediction = middlePointOfCurrentChunk.z - 50.0f;
+
+        if (playerLocation.x > xPositivePrediction)
+        {
+            middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x + 100.0f, 0.0f, middlePointOfCurrentChunk.z);
+            Vector3 newChunkSpawnPosition = new Vector3(middlePointOfCurrentChunk.x - 50.0f, 0.0f, middlePointOfCurrentChunk.z - 50.0f);
+            chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+        }
+        else if (playerLocation.x < xNegativePrediction)
+        {
+            middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x - 100.0f, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z);
+            Vector3 newChunkSpawnPosition = new Vector3(middlePointOfCurrentChunk.x - 50.0f, 0.0f, middlePointOfCurrentChunk.z - 50.0f);
+            chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+        }
+        else if(playerLocation.z > zPositivePrediction)
+        {
+            middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z + 100.0f);
+            Vector3 newChunkSpawnPosition = new Vector3(middlePointOfCurrentChunk.x - 50.0f, 0.0f, middlePointOfCurrentChunk.z - 50.0f);
+            chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+        }
+        else if(playerLocation.z < zNegativePrediction)
+        {
+            middlePointOfCurrentChunk = new Vector3(middlePointOfCurrentChunk.x, middlePointOfCurrentChunk.y, middlePointOfCurrentChunk.z - 100.0f);
+            Vector3 newChunkSpawnPosition = new Vector3(middlePointOfCurrentChunk.x - 50.0f, 0.0f, middlePointOfCurrentChunk.z - 50.0f);
+            chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+        }
     }
 
     public void InstantiateCube(Vector3 spawnPosition, GameObject cubePrefab)
