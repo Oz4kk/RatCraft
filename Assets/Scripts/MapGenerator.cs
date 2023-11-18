@@ -95,7 +95,7 @@ public class MapGenerator : MonoBehaviour
 
     private void SetNewActiveChunkPrediction()
     {
-        Debug.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
+        DebugManager.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
 
         if (player.transform.position.x > xPositivePrediction)
         {

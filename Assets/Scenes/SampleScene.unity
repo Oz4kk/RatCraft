@@ -264,6 +264,10 @@ PrefabInstance:
       propertyPath: sidesPerlinScale
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
+      propertyPath: chunkGenerationDistanceFromEndOfTheChunk
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664911, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: m_RootOrder
       value: 0
