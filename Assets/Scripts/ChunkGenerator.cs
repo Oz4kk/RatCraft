@@ -22,17 +22,18 @@ public class ChunkGenerator : MonoBehaviour
 
     private MapGenerator mapGenerator;
 
-    [SerializeField] public GridSize gridSize = new GridSize(5, 5, 5);
     [SerializeField] private float sidesPerlinScale = 0.0f;
-    [SerializeField] private float heightPerlinScale = 0.0f;
     [SerializeField] private float heightLimit = 0.0f;
+    [SerializeField] private float heightPerlinScale = 0.0f;
+
+    private GridSize gridSize = new GridSize(100, 16, 100);
 
     private void Awake()
     {
         mapGenerator = GetComponent<MapGenerator>();
     }
 
-    public void GenerateChunk(Vector3 centerOfChunk)
+    public void GenerateChunk(Vector3 centerOfActualChunk)
     {
         uint debugBlueCubeCounter = 0;
         uint dubugGreenCubeCounter = 0;
@@ -40,6 +41,8 @@ public class ChunkGenerator : MonoBehaviour
         uint debugPinkCubeCounter = 0;
         float[] debugSample = new float[gridSize.x * gridSize.y * gridSize.z];
         int debugSampleCounter = 0;
+
+        float debugSample2 = 0.0f;
 
         for (float x = 0; x < gridSize.x; x++)
         {
@@ -51,24 +54,41 @@ public class ChunkGenerator : MonoBehaviour
 
                     if (perlinValueCubes > heightLimit * y)
                     {
-                        float sample = Mathf.PerlinNoise(Mathf.Floor(x / 5) * sidesPerlinScale + mapGenerator.seed, Mathf.Floor(z / 5) * sidesPerlinScale + mapGenerator.seed);
+
+                        float sampleXZ = Mathf.PerlinNoise(Mathf.Floor(x / 5) * sidesPerlinScale + mapGenerator.seed, Mathf.Floor(z / 5) * sidesPerlinScale + mapGenerator.seed);
                         float sampleY = Mathf.PerlinNoise(Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed, Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed);
 
-                        debugSample[debugSampleCounter++] = sample + sampleY;
+                        if (x == z)
+                        {
+                            Debug.Log("----------------------------------------------------------------");
+                        }
+                        if (sampleXZ != debugSample2)
+                        {
+                            Debug.Log("/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/");
+                        }
+                        Debug.Log($"{x} {z} - {sampleXZ}");
+                        Debug.Log($"{y} - {sampleY}");
+                        debugSample2 = sampleXZ;
+                        if (x == z)
+                        {
+                            Debug.Log("----------------------------------------------------------------");
+                        }
 
-                        Vector3 upcomingCubePosition = new Vector3(x+centerOfChunk.x, y, z+centerOfChunk.z);
+                        debugSample[debugSampleCounter++] = sampleXZ + sampleY;
 
-                        if (sample + sampleY > 0.875)
+                        Vector3 upcomingCubePosition = new Vector3(x + centerOfActualChunk.x, y, z + centerOfActualChunk.z);
+
+                        if (sampleXZ + sampleY > 0.875)
                         {
                             mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.greenCube);
                             dubugGreenCubeCounter++;
                         }
-                        else if (sample + sampleY > 0.75)
+                        else if (sampleXZ + sampleY > 0.75)
                         {
                             mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.blueCube);
                             debugBlueCubeCounter++;
                         }
-                        else if (sample + sampleY > 0.675)
+                        else if (sampleXZ + sampleY > 0.625)
                         {
                             mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.brownCube);
                             debugBrownCubeCounter++;
@@ -82,6 +102,7 @@ public class ChunkGenerator : MonoBehaviour
                 }
             }
         }
+
         DebugManager.Log($"DebugSample Max - {Mathf.Max(debugSample)}");
         DebugManager.Log($"DebugSample Min - {Mathf.Min(debugSample)}");
         DebugManager.Log($"Count of green cubes - {dubugGreenCubeCounter}");
