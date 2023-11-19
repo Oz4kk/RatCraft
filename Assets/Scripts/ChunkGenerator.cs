@@ -24,7 +24,7 @@ public class ChunkGenerator : MonoBehaviour
 
     [SerializeField] public GridSize gridSize = new GridSize(5, 5, 5);
     [SerializeField] private float sidesPerlinScale = 0.0f;
-    [SerializeField] private float yPerlinScale = 0.1f;
+    [SerializeField] private float heightPerlinScale = 0.0f;
     [SerializeField] private float heightLimit = 0.0f;
 
     private void Awake()
@@ -52,7 +52,7 @@ public class ChunkGenerator : MonoBehaviour
                     if (perlinValueCubes > heightLimit * y)
                     {
                         float sample = Mathf.PerlinNoise(Mathf.Floor(x / 5) * sidesPerlinScale + mapGenerator.seed, Mathf.Floor(z / 5) * sidesPerlinScale + mapGenerator.seed);
-                        float sampleY = Mathf.PerlinNoise(Mathf.Floor(y / 2) * yPerlinScale + mapGenerator.seed, Mathf.Floor(y / 2) * yPerlinScale + mapGenerator.seed);
+                        float sampleY = Mathf.PerlinNoise(Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed, Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed);
 
                         debugSample[debugSampleCounter++] = sample + sampleY;
 
