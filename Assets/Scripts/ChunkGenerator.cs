@@ -74,8 +74,8 @@ public class ChunkGenerator : MonoBehaviour
             }
         }
 
-        Debug.Log($"DebugSample Max - {Mathf.Max(debugSample)}");
-        Debug.Log($"DebugSample Min - {Mathf.Min(debugSample)}");
+        DebugManager.Log($"DebugSample Max - {Mathf.Max(debugSample)}");
+        DebugManager.Log($"DebugSample Min - {Mathf.Min(debugSample)}");
         DebugManager.Log($"Count of green cubes - {dubugGreenCubeCounter}");
         DebugManager.Log($"Count of blue cubes - {debugBlueCubeCounter}");
         DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");

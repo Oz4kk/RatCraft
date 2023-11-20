@@ -269,6 +269,10 @@ PrefabInstance:
       value: 0.0625
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
+      propertyPath: sizeOfChunk
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: xPerlinScale
       value: 0.1
       objectReference: {fileID: 0}
