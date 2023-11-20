@@ -40,9 +40,9 @@ public class ChunkGenerator : MonoBehaviour
         uint debugBrownCubeCounter = 0;
         uint debugPinkCubeCounter = 0;
         float[] debugSample = new float[gridSize.x * gridSize.y * gridSize.z];
-        int debugSampleCounter = 0;
 
-        float debugSample2 = 0.0f;
+        List<bool> countOfCubesInChunk = new List<bool>();
+        bool[,,] doesBlockExistOnUpcomingCoordinate = new bool[100,16,100];
 
         for (float x = 0; x < gridSize.x; x++)
         {
@@ -56,27 +56,22 @@ public class ChunkGenerator : MonoBehaviour
                     {
 
                         float sampleXZ = Mathf.PerlinNoise(Mathf.Floor(x / 5) * sidesPerlinScale + mapGenerator.seed, Mathf.Floor(z / 5) * sidesPerlinScale + mapGenerator.seed);
-                        float sampleY = Mathf.PerlinNoise(Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed, Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed);
+                        float sampleY = Mathf.PerlinNoise(Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed, Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed);     
+                        
+                        //0.43423
+                        //0.5343
 
-                        if (x == z)
-                        {
-                            Debug.Log("----------------------------------------------------------------");
-                        }
-                        if (sampleXZ != debugSample2)
-                        {
-                            Debug.Log("/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/-/");
-                        }
-                        Debug.Log($"{x} {z} - {sampleXZ}");
-                        Debug.Log($"{y} - {sampleY}");
-                        debugSample2 = sampleXZ;
-                        if (x == z)
-                        {
-                            Debug.Log("----------------------------------------------------------------");
-                        }
-
-                        debugSample[debugSampleCounter++] = sampleXZ + sampleY;
+                        //debugSample[debugSampleCounter++] = sampleXZ + sampleY;
+                        //debugSample[debugSampleCounter++] = sampleY;
+                        //if (sampleY != debug2)
+                        //{
+                        //    Debug.Log(sampleY);
+                        //    debug2 = sampleY;
+                        //}
 
                         Vector3 upcomingCubePosition = new Vector3(x + centerOfActualChunk.x, y, z + centerOfActualChunk.z);
+
+
 
                         if (sampleXZ + sampleY > 0.875)
                         {
