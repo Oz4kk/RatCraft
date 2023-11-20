@@ -78,17 +78,17 @@ public class ChunkGenerator : MonoBehaviour
                         }
                         else if (sampleXZ + sampleY > 0.75)
                         {
-                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.blueCube);
+                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.greenCube);
                             debugBlueCubeCounter++;
                         }
                         else if (sampleXZ + sampleY > 0.625)
                         {
-                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.brownCube);
+                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.greenCube);
                             debugBrownCubeCounter++;
                         }
                         else
                         {
-                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.pinkCube);
+                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.greenCube);
                             debugPinkCubeCounter++;
                         }
                     }

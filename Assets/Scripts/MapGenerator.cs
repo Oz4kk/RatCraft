@@ -22,7 +22,7 @@ public class MapGenerator : MonoBehaviour
     public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
     public float seed;
 
-    [SerializeField] float chunkGenerationDistanceFromEndOfTheChunk;
+    [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
     private List<Vector3> listOfCenters = new List<Vector3>();
     private Vector3 middlePointOfLastChunk;
     private float xPositivePrediction;
@@ -39,9 +39,8 @@ public class MapGenerator : MonoBehaviour
     private void Start()
     {
         player = playerSpawn.spawnedPlayer;
-        middlePointOfLastChunk = new Vector3(player.transform.position.x, 0.0f, player.transform.position.z);
+        SetNewPredictionValues(new Vector3(player.transform.position.x, 0.0f, player.transform.position.z));
         ChunkGenerationSequence(middlePointOfLastChunk);
-        SetNewPredictionValues(middlePointOfLastChunk);
     }
 
     private void Update()
@@ -60,68 +59,76 @@ public class MapGenerator : MonoBehaviour
         zNegativePrediction = middlePointOfActualChunk.z - 50.0f;
     }
 
+    //UGLY - Change name of methode, it's not descriptive
     private void PlayerReachedChunkGenerationDistance()
     {
+        Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
         if (player.transform.position.x > xPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
-            Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x + 100.0f, 0.0f, middlePointOfLastChunk.z);
-            DoesCenterOfActualChunkExist(centerOfActualChunk);
+            centerOfActualChunk.x += 100.0f;
         }
         else if (player.transform.position.x < xNegativePrediction + chunkGenerationDistanceFromEndOfTheChunk)
         {
-            Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x - 100.0f, 0.0f, middlePointOfLastChunk.z);
-            DoesCenterOfActualChunkExist(centerOfActualChunk);
+            centerOfActualChunk.x -= 100.0f;
         }
         else if (player.transform.position.z > zPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
-            Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z + 100.0f);
-            DoesCenterOfActualChunkExist(centerOfActualChunk);
+            centerOfActualChunk.z += 100.0f;
         }
         else if (player.transform.position.z < zNegativePrediction + chunkGenerationDistanceFromEndOfTheChunk)
         {
-            Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z - 100.0f);
-            DoesCenterOfActualChunkExist(centerOfActualChunk);
+            centerOfActualChunk.z -= 100.0f;
         }
+        else
+        {
+            return;
+        }
+        GenerateChunkIfMiddlePointDontExist(centerOfActualChunk);
     }
 
-    private void DoesCenterOfActualChunkExist(Vector3 centerOfActualChunk)
+    private void GenerateChunkIfMiddlePointDontExist(Vector3 centerOfActualChunk)
     {
         if (!listOfCenters.Contains(centerOfActualChunk))
         {
             ChunkGenerationSequence(centerOfActualChunk);
         }
     }
-
+ 
     private void SetNewActiveChunkPrediction()
     {
         DebugManager.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
 
+        Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
+
         if (player.transform.position.x > xPositivePrediction)
         {
-            Vector3 middlePointOfActualChunk = new Vector3(middlePointOfLastChunk.x + 100.0f, 0.0f, middlePointOfLastChunk.z);
-            SetNewPredictionValues(middlePointOfActualChunk);
+            centerOfActualChunk.x += 100.0f;
         }
         else if (player.transform.position.x < xNegativePrediction)
         {
-            Vector3 middlePointOfActualChunk = new Vector3(middlePointOfLastChunk.x - 100.0f, 0.0f, middlePointOfLastChunk.z);
-            SetNewPredictionValues(middlePointOfActualChunk);
+            centerOfActualChunk.x -= 100.0f;
         }
-        else if(player.transform.position.z > zPositivePrediction)
+        else if (player.transform.position.z > zPositivePrediction)
         {
-            Vector3 middlePointOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z + 100.0f);
-            SetNewPredictionValues(middlePointOfActualChunk);
+            centerOfActualChunk.z += 100.0f;
+
         }
-        else if(player.transform.position.z < zNegativePrediction)
+        else if (player.transform.position.z < zNegativePrediction)
         {
-            Vector3 middlePointOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z - 100.0f);
-            SetNewPredictionValues(middlePointOfActualChunk);
+            centerOfActualChunk.z -= 100.0f;
         }
+        else
+        {
+            return;
+        }
+        SetNewPredictionValues(centerOfActualChunk);
     }
 
-    private void ChunkGenerationSequence(Vector3 middlePointOfActualChunk)
+
+    private void ChunkGenerationSequence(Vector3 centerOfActualChunk)
     {
-        listOfCenters.Add(middlePointOfActualChunk);
-        Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(middlePointOfActualChunk);
+        listOfCenters.Add(centerOfActualChunk);
+        Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(centerOfActualChunk);
         chunkGenerator.GenerateChunk(newChunkSpawnPosition);
     }
 
