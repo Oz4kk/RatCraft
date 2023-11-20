@@ -10,6 +10,11 @@ public class MapGenerator : MonoBehaviour
     public GameObject brownCube;
     public GameObject pinkCube;
 
+    public Material grass;
+    public Material dirt;
+    public Material rock;
+    public Material sand;
+
     private PlayerSpawn playerSpawn;
     private GameObject player;
     private ChunkGenerator chunkGenerator;
@@ -24,7 +29,6 @@ public class MapGenerator : MonoBehaviour
     private float xNegativePrediction;
     private float zPositivePrediction;
     private float zNegativePrediction;
-
 
     private void Awake()
     {

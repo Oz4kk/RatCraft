@@ -71,8 +71,6 @@ public class ChunkGenerator : MonoBehaviour
 
                         Vector3 upcomingCubePosition = new Vector3(x + centerOfActualChunk.x, y, z + centerOfActualChunk.z);
 
-
-
                         if (sampleXZ + sampleY > 0.875)
                         {
                             mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.greenCube);
