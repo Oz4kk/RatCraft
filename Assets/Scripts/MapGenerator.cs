@@ -98,30 +98,30 @@ public class MapGenerator : MonoBehaviour
     {
         DebugManager.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
 
-        Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
+        Vector3 centerPointOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
 
         if (player.transform.position.x > xPositivePrediction)
         {
-            centerOfActualChunk.x += 100.0f;
+            centerPointOfActualChunk.x += 100.0f;
         }
         else if (player.transform.position.x < xNegativePrediction)
         {
-            centerOfActualChunk.x -= 100.0f;
+            centerPointOfActualChunk.x -= 100.0f;
         }
         else if (player.transform.position.z > zPositivePrediction)
         {
-            centerOfActualChunk.z += 100.0f;
+            centerPointOfActualChunk.z += 100.0f;
 
         }
         else if (player.transform.position.z < zNegativePrediction)
         {
-            centerOfActualChunk.z -= 100.0f;
+            centerPointOfActualChunk.z -= 100.0f;
         }
         else
         {
             return;
         }
-        SetNewPredictionValues(centerOfActualChunk);
+        SetNewPredictionValues(centerPointOfActualChunk);
     }
 
 
