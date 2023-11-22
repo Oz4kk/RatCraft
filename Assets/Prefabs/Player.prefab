@@ -255,7 +255,7 @@ MonoBehaviour:
   groundCheck: {fileID: 5197378831824002700}
   groundCheckBoxExtents: {x: 0.5, y: 0, z: 0.5}
   movementSpeed: 1000
-  jumpForce: 10
+  jumpForce: 6
   cameraSensitivity: 300
   minVerticalCameraClamp: -90
   maxVerticalCameraClamp: 90

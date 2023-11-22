@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1110237990194205800, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 13400000, guid: 0b09a376e1a7fc94881b4fb38c76abe9, type: 2}
     - target: {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
       propertyPath: m_Name
       value: Brown cube
