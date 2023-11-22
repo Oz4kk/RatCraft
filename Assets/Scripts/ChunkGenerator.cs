@@ -61,34 +61,59 @@ public class ChunkGenerator : MonoBehaviour
 
                         if (resultSample > 0.5)
                         {
-                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.greenCube);
+                            GameObject actualCube = mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.greenCube, true);
                             dubugGreenCubeCounter++;
+                            ChooseTexture(actualCube);
                         }
                         else if (resultSample > 0.375)
                         {
-                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.brownCube);
+                            GameObject actualCube = mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.brownCube, true);
                             debugBlueCubeCounter++;
+                            ChooseTexture(actualCube);
                         }
                         else if (resultSample > 0.25)
                         {
-                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.blueCube);
+                            GameObject actualCube = mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.blueCube, true);
                             debugBrownCubeCounter++;
+                            ChooseTexture(actualCube);
                         }
                         else
                         {
-                            mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.pinkCube);
+                            GameObject actualCube = mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.pinkCube, true);
                             debugPinkCubeCounter++;
+                            ChooseTexture(actualCube);
                         }
                     }
                 }
             }
         }
-
         DebugManager.Log($"DebugSample Max - {Mathf.Max(debugSample)}");
         DebugManager.Log($"DebugSample Min - {Mathf.Min(debugSample)}");
         DebugManager.Log($"Count of green cubes - {dubugGreenCubeCounter}");
         DebugManager.Log($"Count of blue cubes - {debugBlueCubeCounter}");
         DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
         DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
+    }
+
+    private void ChooseTexture(GameObject actualCube)
+    {
+        Material actualMaterial = actualCube.GetComponent<Renderer>().material;
+
+        if (actualCube.transform.position.y > 10.0f)
+        {
+            actualMaterial.mainTexture = mapGenerator.grass;
+        }
+        else if (actualCube.transform.position.y > 7.0f)
+        {
+            actualMaterial.mainTexture = mapGenerator.dirt;
+        }
+        else if (actualCube.transform.position.y > 2.0f)
+        {
+            actualMaterial.mainTexture = mapGenerator.rock;
+        }
+        else
+        {
+            actualMaterial.mainTexture = mapGenerator.sand;
+        }
     }
 }

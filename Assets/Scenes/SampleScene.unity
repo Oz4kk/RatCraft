@@ -235,15 +235,15 @@ PrefabInstance:
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: dirt
       value: 
-      objectReference: {fileID: 2100000, guid: 1cef938def0b527469f8ef0720c534dc, type: 2}
+      objectReference: {fileID: 2800000, guid: c2e975e8a074dff45aee75e580a54344, type: 3}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: rock
       value: 
-      objectReference: {fileID: 2100000, guid: c3c8b2e7507849f43a31e15b9d7c3dc2, type: 2}
+      objectReference: {fileID: 2800000, guid: 851df1e5bd5100d4cb745a2dfcb4e46e, type: 3}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: sand
       value: 
-      objectReference: {fileID: 2100000, guid: 98e3d348c55e6a244b34dd502d9ed4cc, type: 2}
+      objectReference: {fileID: 2800000, guid: 5c38e2edb8ae412468d3186b2e38caf1, type: 3}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: seed
       value: 0
@@ -251,7 +251,7 @@ PrefabInstance:
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: grass
       value: 
-      objectReference: {fileID: 2100000, guid: f9a94780aa94b7c4985400ab0bedcdbb, type: 2}
+      objectReference: {fileID: 2800000, guid: e65e8c6f286469944a22f2777d8e870c, type: 3}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: gridSize.x
       value: 100
@@ -270,7 +270,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: sizeOfChunk
-      value: 100
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: xPerlinScale

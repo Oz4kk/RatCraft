@@ -25,10 +25,10 @@ public class MapGenerator : MonoBehaviour
     public GameObject brownCube;
     public GameObject pinkCube;
 
-    public Material grass;
-    public Material dirt;
-    public Material rock;
-    public Material sand;
+    public Texture grass;
+    public Texture dirt;
+    public Texture rock;
+    public Texture sand;
 
     private PlayerSpawn playerSpawn;
     private GameObject player;
@@ -163,5 +163,20 @@ public class MapGenerator : MonoBehaviour
         }
 
         DebugManager.Log($"Count of mapField: {mapField.Count}");
+    }        
+    
+    public GameObject? InstantiateCube(Vector3 spawnPosition, GameObject cubePrefab, bool a)
+    {
+        if (!mapField.ContainsKey(spawnPosition))
+        {
+            GameObject cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
+            CubeParameters cubeParameters = cube.GetComponent<CubeParameters>();
+            mapField.Add(spawnPosition, cubeParameters);
+
+            return cube;
+        }
+
+        DebugManager.Log($"Count of mapField: {mapField.Count}");
+        return null;
     }    
 }
