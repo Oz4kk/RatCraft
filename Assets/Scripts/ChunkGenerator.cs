@@ -5,28 +5,11 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    [Serializable]
-    public struct GridSize
-    {
-        public int x;
-        public int y;
-        public int z;
-
-        public GridSize(int x, int y, int z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-    }
-
     private MapGenerator mapGenerator;
 
     [SerializeField] private float sidesPerlinScale = 0.0f;
     [SerializeField] private float heightLimit = 0.0f;
     [SerializeField] private float heightPerlinScale = 0.0f;
-
-    private GridSize gridSize = new GridSize(100, 16, 100);
 
     private void Awake()
     {
@@ -39,18 +22,18 @@ public class ChunkGenerator : MonoBehaviour
         uint dubugGreenCubeCounter = 0;
         uint debugBrownCubeCounter = 0;
         uint debugPinkCubeCounter = 0;
-        float[] debugSample = new float[gridSize.x * gridSize.y * gridSize.z];
+        float[] debugSample = new float[mapGenerator.gridSize.x * mapGenerator.gridSize.y * mapGenerator.gridSize.z];
 
         List<bool> countOfCubesInChunk = new List<bool>();
         bool[,,] doesBlockExistOnUpcomingCoordinate = new bool[100, 16, 100];
 
         int debugSampleCounter = 0;
 
-        for (int x = (int)centerOfActualChunk.x; x < gridSize.x + (int)centerOfActualChunk.x; x++)
+        for (int x = (int)centerOfActualChunk.x; x < mapGenerator.gridSize.x + (int)centerOfActualChunk.x; x++)
         {
-            for (int y = 0; y < gridSize.y; y++)
+            for (int y = 0; y < mapGenerator.gridSize.y; y++)
             {
-                for (int z = (int)centerOfActualChunk.z; z < gridSize.z + (int)centerOfActualChunk.z; z++)
+                for (int z = (int)centerOfActualChunk.z; z < mapGenerator.gridSize.z + (int)centerOfActualChunk.z; z++)
                 {
                     float perlinValueCubes = Mathf.PerlinNoise(x * sidesPerlinScale + mapGenerator.seed, z * sidesPerlinScale + mapGenerator.seed);
 

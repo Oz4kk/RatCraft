@@ -5,6 +5,21 @@ using UnityEngine;
 
 public class MapGenerator : MonoBehaviour
 {
+    [Serializable]
+    public struct GridSize
+    {
+        public int x;
+        public int y;
+        public int z;
+
+        public GridSize(int x, int y, int z)
+        {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+    }
+
     public GameObject greenCube;
     public GameObject blueCube;
     public GameObject brownCube;
@@ -19,6 +34,7 @@ public class MapGenerator : MonoBehaviour
     private GameObject player;
     private ChunkGenerator chunkGenerator;
 
+    public GridSize gridSize = new GridSize(100, 16, 100);
     public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
     public float seed;
 
