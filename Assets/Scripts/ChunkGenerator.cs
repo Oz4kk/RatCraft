@@ -61,25 +61,25 @@ public class ChunkGenerator : MonoBehaviour
 
                         if (resultSample > 0.5)
                         {
-                            GameObject actualCube = mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.greenCube, true);
+                            GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, mapGenerator.greenCube);
                             dubugGreenCubeCounter++;
                             ChooseTexture(actualCube);
                         }
                         else if (resultSample > 0.375)
                         {
-                            GameObject actualCube = mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.brownCube, true);
+                            GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, mapGenerator.brownCube);
                             debugBlueCubeCounter++;
                             ChooseTexture(actualCube);
                         }
                         else if (resultSample > 0.25)
                         {
-                            GameObject actualCube = mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.blueCube, true);
+                            GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, mapGenerator.blueCube);
                             debugBrownCubeCounter++;
                             ChooseTexture(actualCube);
                         }
                         else
                         {
-                            GameObject actualCube = mapGenerator.InstantiateCube(upcomingCubePosition, mapGenerator.pinkCube, true);
+                            GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, mapGenerator.pinkCube);
                             debugPinkCubeCounter++;
                             ChooseTexture(actualCube);
                         }

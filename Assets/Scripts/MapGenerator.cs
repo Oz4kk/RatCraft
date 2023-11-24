@@ -165,7 +165,7 @@ public class MapGenerator : MonoBehaviour
         DebugManager.Log($"Count of mapField: {mapField.Count}");
     }        
     
-    public GameObject? InstantiateCube(Vector3 spawnPosition, GameObject cubePrefab, bool a)
+    public GameObject? InstantiateAndReturnCube(Vector3 spawnPosition, GameObject cubePrefab)
     {
         if (!mapField.ContainsKey(spawnPosition))
         {
