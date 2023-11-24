@@ -90,16 +90,21 @@ public class PlayerController : MonoBehaviour
         float horizontal = inputManager.GetAxis("Horizontal");
         float vertical = inputManager.GetAxis("Vertical");
 
+        Vector3 velocity = new Vector3(0.0f, rigidBody.velocity.y, 0.0f);
+
         if (Mathf.Approximately(horizontal, 0.0f) && Mathf.Approximately(vertical, 0.0f))
         {
+
+            rigidBody.velocity = velocity;
+
             return;
         }
 
         Vector3 forwardMovement = vertical * transform.forward * Time.fixedDeltaTime * movementSpeed;
         Vector3 sideMovement = horizontal * transform.right * Time.fixedDeltaTime * movementSpeed;
 
-        Vector3 velocity = forwardMovement + sideMovement;
-        velocity.y = rigidBody.velocity.y;
+        velocity = forwardMovement + sideMovement;
+        velocity.y = rigidBody.velocity.y;        
 
         rigidBody.velocity = velocity;
     }
