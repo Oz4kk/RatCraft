@@ -12,7 +12,7 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private LayerMask solidBlockLayer;
     [SerializeField] private List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
 
-    private int activeSlot = -1;
+    private int? activeSlot = null;
     private InputManager inputManager;
 
     private void Start()
@@ -31,7 +31,7 @@ public class InventoryHandler : MonoBehaviour
         ChooseItemWithKeyboard();
     }
 
-    public void SetSlot(int newSlot)
+    public void SetSlot(int? newSlot)
     {
         if (activeSlot == newSlot)
         {
@@ -41,15 +41,15 @@ public class InventoryHandler : MonoBehaviour
         activeSlot = newSlot;
         onActiveSlotChanged?.Invoke();
 
-        DebugManager.Log($"Active slot: {activeSlot}, Cube name: {inventory[activeSlot]}");
+        DebugManager.Log($"Active slot: {activeSlot}, Cube name: {inventory[(int)activeSlot]}");
     }
 
     //UGLY(Richard) - Change name of the method because there isn't mentioned that cube material will change to transparent
     public Material ReturnActiveTransparentCubeMaterial()
     {
-        if (inventory[activeSlot].layer != solidBlockLayer)
+        if (inventory[(int)activeSlot].layer != solidBlockLayer)
         {
-            Material newMaterial = new Material(inventory[activeSlot].GetComponent<MeshRenderer>().sharedMaterial);
+            Material newMaterial = new Material(inventory[(int)activeSlot].GetComponent<MeshRenderer>().sharedMaterial);
             Color newColor = newMaterial.color;
             newColor.a = 0.5f;
             newMaterial.color = newColor;
@@ -93,9 +93,9 @@ public class InventoryHandler : MonoBehaviour
 
     public GameObject GetSelectedCube()
     {
-        DebugManager.Log(inventory[activeSlot].name);
+        DebugManager.Log(inventory[(int)activeSlot].name);
 
-        return inventory[activeSlot];
+        return inventory[(int)activeSlot];
     }
 
     private void ChooseItemWithKeyboard()
