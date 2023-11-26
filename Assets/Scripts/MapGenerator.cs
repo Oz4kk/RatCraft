@@ -47,6 +47,7 @@ public class MapGenerator : MonoBehaviour
     private float xNegativePrediction;
     private float zPositivePrediction;
     private float zNegativePrediction;
+    private bool doesInitialChunkBeenCreated = false;
 
     private void Awake()
     {
@@ -62,6 +63,7 @@ public class MapGenerator : MonoBehaviour
         player = playerSpawn.spawnedPlayer;
         SetNewPredictionValues(new Vector3(player.transform.position.x, 0.0f, player.transform.position.z));
         ChunkGenerationSequence(middlePointOfLastChunk);
+        doesInitialChunkBeenCreated = true;
     }
 
     private void Update()
@@ -150,7 +152,14 @@ public class MapGenerator : MonoBehaviour
     {
         listOfCenters.Add(centerOfActualChunk);
         Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(centerOfActualChunk);
-        chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+        if (doesInitialChunkBeenCreated)
+        {
+            StartCoroutine(chunkGenerator.GenerateChunkCoroutine(newChunkSpawnPosition));
+        }
+        else
+        {
+            chunkGenerator.GenerateChunk(newChunkSpawnPosition);
+        }
     }
 
     private Vector3 ReturnNewChunkPosition(Vector3 centerOfChunk)
@@ -183,5 +192,5 @@ public class MapGenerator : MonoBehaviour
 
         DebugManager.Log($"Count of mapField: {mapField.Count}");
         return null;
-    }    
+    }
 }

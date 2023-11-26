@@ -94,6 +94,93 @@ public class ChunkGenerator : MonoBehaviour
         DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
         DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
     }
+    
+    public IEnumerator GenerateChunkCoroutine(Vector3 centerOfActualChunk)
+    {
+        uint debugBlueCubeCounter = 0;
+        uint dubugGreenCubeCounter = 0;
+        uint debugBrownCubeCounter = 0;
+        uint debugPinkCubeCounter = 0;
+        float[] debugSample = new float[mapGenerator.gridSize.x * mapGenerator.gridSize.y * mapGenerator.gridSize.z];
+
+        List<bool> countOfCubesInChunk = new List<bool>();
+        bool[,,] doesBlockExistOnUpcomingCoordinate = new bool[100, 16, 100];
+
+        int debugSampleCounter = 0;
+
+        int xCycleCounter = (int)centerOfActualChunk.x;
+
+        for (int x = (int)centerOfActualChunk.x; x < mapGenerator.gridSize.x + (int)centerOfActualChunk.x; x++)
+        {
+            for (int y = 0; y < mapGenerator.gridSize.y; y++)
+            {
+                for (int z = (int)centerOfActualChunk.z; z < mapGenerator.gridSize.z + (int)centerOfActualChunk.z; z++)
+                {
+                    float perlinValueCubes = Mathf.PerlinNoise(x * sidesPerlinScale + mapGenerator.seed, z * sidesPerlinScale + mapGenerator.seed);
+
+                    if (perlinValueCubes > heightLimit * y)
+                    {
+
+                        float sampleXZ = Mathf.PerlinNoise(Mathf.Floor(x / 5) * sidesPerlinScale + mapGenerator.seed, Mathf.Floor(z / 5) * sidesPerlinScale + mapGenerator.seed);
+                        float sampleY = Mathf.PerlinNoise(Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed, Mathf.Floor(x / 2) * heightPerlinScale + mapGenerator.seed);
+
+                        //0.43423
+                        //0.5343
+
+                        debugSample[debugSampleCounter++] = (sampleXZ + sampleY) / 2;
+
+                        //debugSample[debugSampleCounter++] = sampleY;
+                        //if (sampleY != debug2)
+                        //{
+                        //    Debug.Log(sampleY);
+                        //    debug2 = sampleY;
+                        //}
+
+                        Vector3 upcomingCubePosition = new Vector3(x, y, z);
+
+                        float resultSample = (sampleXZ + sampleY) / 2;
+
+                        if (resultSample > 0.5)
+                        {
+                            GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, mapGenerator.greenCube);
+                            dubugGreenCubeCounter++;
+                            ChooseTexture(actualCube);
+                        }
+                        else if (resultSample > 0.375)
+                        {
+                            GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, mapGenerator.brownCube);
+                            debugBlueCubeCounter++;
+                            ChooseTexture(actualCube);
+                        }
+                        else if (resultSample > 0.25)
+                        {
+                            GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, mapGenerator.blueCube);
+                            debugBrownCubeCounter++;
+                            ChooseTexture(actualCube);
+                        }
+                        else
+                        {
+                            GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, mapGenerator.pinkCube);
+                            debugPinkCubeCounter++;
+                            ChooseTexture(actualCube);
+                        }
+                    }
+                }
+                if (x > xCycleCounter + 5)
+                {
+                    yield return new WaitForSeconds(0.00000000000000000000000000000001f);
+
+                    xCycleCounter = x;
+                }
+            }
+        }
+        DebugManager.Log($"DebugSample Max - {Mathf.Max(debugSample)}");
+        DebugManager.Log($"DebugSample Min - {Mathf.Min(debugSample)}");
+        DebugManager.Log($"Count of green cubes - {dubugGreenCubeCounter}");
+        DebugManager.Log($"Count of blue cubes - {debugBlueCubeCounter}");
+        DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
+        DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
+    }
 
     private void ChooseTexture(GameObject actualCube)
     {
