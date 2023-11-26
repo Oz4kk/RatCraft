@@ -66,9 +66,11 @@ public class MapGenerator : MonoBehaviour
         doesInitialChunkBeenCreated = true;
     }
 
+    
+
     private void Update()
     {
-        PlayerReachedChunkGenerationDistance();
+        ProcessChunkGenerationDistance();
         SetNewActiveChunkPrediction();
     }
 
@@ -83,7 +85,7 @@ public class MapGenerator : MonoBehaviour
     }
 
     //UGLY - Change name of methode, it's not descriptive
-    private void PlayerReachedChunkGenerationDistance()
+    private void ProcessChunkGenerationDistance()
     {
         Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
         if (player.transform.position.x > xPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
@@ -106,10 +108,10 @@ public class MapGenerator : MonoBehaviour
         {
             return;
         }
-        GenerateChunkIfMiddlePointDontExist(centerOfActualChunk);
+        IfMiddlePointDontExistGenerateChunk(centerOfActualChunk);
     }
 
-    private void GenerateChunkIfMiddlePointDontExist(Vector3 centerOfActualChunk)
+    private void IfMiddlePointDontExistGenerateChunk(Vector3 centerOfActualChunk)
     {
         if (!listOfCenters.Contains(centerOfActualChunk))
         {
@@ -144,9 +146,9 @@ public class MapGenerator : MonoBehaviour
         {
             return;
         }
+
         SetNewPredictionValues(centerPointOfActualChunk);
     }
-
 
     private void ChunkGenerationSequence(Vector3 centerOfActualChunk)
     {
@@ -179,6 +181,7 @@ public class MapGenerator : MonoBehaviour
         DebugManager.Log($"Count of mapField: {mapField.Count}");
     }        
     
+    // Left it as two methodes or just as one?
     public GameObject? InstantiateAndReturnCube(Vector3 spawnPosition, GameObject cubePrefab)
     {
         if (!mapField.ContainsKey(spawnPosition))
