@@ -34,11 +34,13 @@ public class MapGenerator : MonoBehaviour
     private GameObject player;
     private ChunkGenerator chunkGenerator;
 
-    public GridSize gridSize = new GridSize(100, 16, 100);
+    [HideInInspector] public GridSize gridSize = new GridSize(100, 16, 100);
     public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
     public float seed;
 
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
+    [SerializeField] private uint gridSizeSides;
+    [SerializeField] private uint gridSizeHeight;
     private List<Vector3> listOfCenters = new List<Vector3>();
     private Vector3 middlePointOfLastChunk;
     private float xPositivePrediction;
@@ -50,6 +52,9 @@ public class MapGenerator : MonoBehaviour
     {
         playerSpawn = GetComponent<PlayerSpawn>();
         chunkGenerator = GetComponent<ChunkGenerator>();
+        gridSize.y = (int)gridSizeHeight;
+        gridSize.x = (int)gridSizeSides;
+        gridSize.z = (int)gridSizeSides;
     }
 
     private void Start()
@@ -69,10 +74,10 @@ public class MapGenerator : MonoBehaviour
     {
         middlePointOfLastChunk = middlePointOfActualChunk;
 
-        xPositivePrediction = middlePointOfActualChunk.x + 50.0f;
-        xNegativePrediction = middlePointOfActualChunk.x - 50.0f;
-        zPositivePrediction = middlePointOfActualChunk.z + 50.0f;
-        zNegativePrediction = middlePointOfActualChunk.z - 50.0f;
+        xPositivePrediction = middlePointOfActualChunk.x + gridSize.x / 2;
+        xNegativePrediction = middlePointOfActualChunk.x - gridSize.x / 2;
+        zPositivePrediction = middlePointOfActualChunk.z + gridSize.x / 2;
+        zNegativePrediction = middlePointOfActualChunk.z - gridSize.x / 2;
     }
 
     //UGLY - Change name of methode, it's not descriptive
@@ -81,19 +86,19 @@ public class MapGenerator : MonoBehaviour
         Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
         if (player.transform.position.x > xPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerOfActualChunk.x += 100.0f;
+            centerOfActualChunk.x += gridSize.x;
         }
         else if (player.transform.position.x < xNegativePrediction + chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerOfActualChunk.x -= 100.0f;
+            centerOfActualChunk.x -= gridSize.x;
         }
         else if (player.transform.position.z > zPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerOfActualChunk.z += 100.0f;
+            centerOfActualChunk.z += gridSize.x;
         }
         else if (player.transform.position.z < zNegativePrediction + chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerOfActualChunk.z -= 100.0f;
+            centerOfActualChunk.z -= gridSize.x;
         }
         else
         {
@@ -118,20 +123,20 @@ public class MapGenerator : MonoBehaviour
 
         if (player.transform.position.x > xPositivePrediction)
         {
-            centerPointOfActualChunk.x += 100.0f;
+            centerPointOfActualChunk.x += gridSize.x;
         }
         else if (player.transform.position.x < xNegativePrediction)
         {
-            centerPointOfActualChunk.x -= 100.0f;
+            centerPointOfActualChunk.x -= gridSize.x;
         }
         else if (player.transform.position.z > zPositivePrediction)
         {
-            centerPointOfActualChunk.z += 100.0f;
+            centerPointOfActualChunk.z += gridSize.x;
 
         }
         else if (player.transform.position.z < zNegativePrediction)
         {
-            centerPointOfActualChunk.z -= 100.0f;
+            centerPointOfActualChunk.z -= gridSize.x;
         }
         else
         {
@@ -150,7 +155,7 @@ public class MapGenerator : MonoBehaviour
 
     private Vector3 ReturnNewChunkPosition(Vector3 centerOfChunk)
     {
-        return new Vector3(centerOfChunk.x - 50.0f, 0.0f, centerOfChunk.z - 50.0f);
+        return new Vector3(centerOfChunk.x - gridSize.x / 2, 0.0f, centerOfChunk.z - gridSize.x / 2);
     }
 
     public void InstantiateCube(Vector3 spawnPosition, GameObject cubePrefab)
