@@ -35,7 +35,7 @@ public class MapGenerator : MonoBehaviour
     private ChunkGenerator chunkGenerator;
 
     [HideInInspector] public GridSize gridSize = new GridSize(100, 16, 100);
-    public Dictionary<Vector3, CubeParameters> mapField = new Dictionary<Vector3, CubeParameters>();
+    public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
     public float seed;
 
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
@@ -163,11 +163,11 @@ public class MapGenerator : MonoBehaviour
     {
         if (!mapField.ContainsKey(spawnPosition))
         {
-            GameObject cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
-            CubeParameters cubeParameters = cube.GetComponent<CubeParameters>();
-            mapField.Add(spawnPosition, cubeParameters);
+            GameObject actualCube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
+            actualCube.GetComponent<CubeParameters>();
+            mapField.Add(spawnPosition, actualCube);
 
-            return cube;
+            return actualCube;
         }
 
         DebugManager.Log($"Count of mapField: {mapField.Count}");

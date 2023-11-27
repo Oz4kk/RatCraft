@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
         inventoryHandler = GetComponent<InventoryHandler>();
         mapGenerator = gameController.GetComponent<MapGenerator>();
 
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;    
     }
 
     private void FixedUpdate()
@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        PlaceCube();
+        MouseHandler();
         Jump();
         CameraRotation();
     }
@@ -121,25 +121,52 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
-    private void PlaceCube()
+    private void MouseHandler()
     {
-        Vector3? placementLocation = playerCubePlacement.CalculateUpcomingCubePosition();
-        if (placementLocation != previousPlacementLocation)
+        Vector3? raycastHitLocation = playerCubePlacement.CalculateUpcomingCubePosition();
+        if (raycastHitLocation != previousPlacementLocation)
         {
             onRaycastHitDifferentCube?.Invoke();
+        }
+        BreakCube(raycastHitLocation);
+        PlaceCube(raycastHitLocation);
+    }
+
+    private void BreakCube(Vector3? raycastHitLocation)
+    {
+        if (raycastHitLocation == null)
+        {
+            return;
+        }
+        if (!inputManager.GetKeyDown(KeyCode.Mouse1))
+        {
+            return;
+        }
+
+        Vector3 raycastHitLocation2 = (Vector3)raycastHitLocation;
+        //raycastHitLocation2 = new Vector3(raycastHitLocation2.x, raycastHitLocation2.y-1.0f, raycastHitLocation2.z);
+        
+        //GameObject actualCube = mapGenerator.mapField[raycastHitLocation2];
+
+        //Destroy(actualCube);
+
+        //GameObject.Find(actualCube.name);
+    }
+
+    private void PlaceCube(Vector3? raycastHitLocation)
+    {
+        if (raycastHitLocation == null)
+        {
+            return;
         }
         if (!inputManager.GetKeyDown(KeyCode.Mouse0))
         {
             return;
         }
-        if (placementLocation == null)
-        {
-            return;
-        }
 
-        if (!playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)placementLocation))
+        if (!playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)raycastHitLocation))
         {
-            GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());
+            GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
         }
     }
 }
