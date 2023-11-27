@@ -47,7 +47,6 @@ public class MapGenerator : MonoBehaviour
     private float xNegativePrediction;
     private float zPositivePrediction;
     private float zNegativePrediction;
-    private bool doesInitialChunkBeenCreated = false;
 
     private void Awake()
     {
@@ -63,7 +62,6 @@ public class MapGenerator : MonoBehaviour
         player = playerSpawn.spawnedPlayer;
         SetNewPredictionValues(new Vector3(player.transform.position.x, 0.0f, player.transform.position.z));
         ChunkGenerationSequence(middlePointOfLastChunk);
-        doesInitialChunkBeenCreated = true;
     }
 
     
@@ -84,7 +82,6 @@ public class MapGenerator : MonoBehaviour
         zNegativePrediction = middlePointOfActualChunk.z - gridSize.x / 2;
     }
 
-    //UGLY - Change name of methode, it's not descriptive
     private void ProcessChunkGenerationDistance()
     {
         Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
@@ -154,34 +151,14 @@ public class MapGenerator : MonoBehaviour
     {
         listOfCenters.Add(centerOfActualChunk);
         Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(centerOfActualChunk);
-        if (doesInitialChunkBeenCreated)
-        {
-            StartCoroutine(chunkGenerator.GenerateChunkCoroutine(newChunkSpawnPosition));
-        }
-        else
-        {
-            chunkGenerator.GenerateChunk(newChunkSpawnPosition);
-        }
+        StartCoroutine(chunkGenerator.GenerateChunkCoroutine(newChunkSpawnPosition));
     }
 
     private Vector3 ReturnNewChunkPosition(Vector3 centerOfChunk)
     {
         return new Vector3(centerOfChunk.x - gridSize.x / 2, 0.0f, centerOfChunk.z - gridSize.x / 2);
-    }
-
-    public void InstantiateCube(Vector3 spawnPosition, GameObject cubePrefab)
-    {
-        if (!mapField.ContainsKey(spawnPosition))
-        {
-            GameObject cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
-            CubeParameters cubeParameters = cube.GetComponent<CubeParameters>();
-            mapField.Add(spawnPosition, cubeParameters);
-        }
-
-        DebugManager.Log($"Count of mapField: {mapField.Count}");
-    }        
+    }     
     
-    // Left it as two methodes or just as one?
     public GameObject? InstantiateAndReturnCube(Vector3 spawnPosition, GameObject cubePrefab)
     {
         if (!mapField.ContainsKey(spawnPosition))

@@ -92,9 +92,10 @@ public class PlayerController : MonoBehaviour
 
         Vector3 velocity = new Vector3(0.0f, rigidBody.velocity.y, 0.0f);
 
+
+        //If user isn't moving, keep his Y velocity and return
         if (Mathf.Approximately(horizontal, 0.0f) && Mathf.Approximately(vertical, 0.0f))
         {
-
             rigidBody.velocity = velocity;
 
             return;
@@ -138,7 +139,7 @@ public class PlayerController : MonoBehaviour
 
         if (!playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)placementLocation))
         {
-            mapGenerator.InstantiateCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());
+            GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());
         }
     }
 }
