@@ -160,7 +160,7 @@ public class ChunkGenerator : MonoBehaviour
                 }
                 if (x > xCycleCounter + 5)
                 {
-                    yield return new WaitForEndOfFrame();
+                    yield return new WaitForSeconds(0.00000000000000000000000000000001f);
 
                     xCycleCounter = x;
                 }
