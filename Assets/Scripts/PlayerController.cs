@@ -97,6 +97,7 @@ public class PlayerController : MonoBehaviour
 
         Vector3 velocity = new Vector3(0.0f, rigidBody.velocity.y, 0.0f);
 
+
         //If user isn't moving, keep his Y velocity and return
         if (Mathf.Approximately(horizontal, 0.0f) && Mathf.Approximately(vertical, 0.0f))
         {
@@ -127,37 +128,34 @@ public class PlayerController : MonoBehaviour
 
     private void PlaceCube()
     {
-        RaycastHit hit;
-        Vector3? raycastHitLocation = null;
-        if (playerCubePointer.RayCastSequence(playerCubePlacement.cubePlacementDistance, out hit))
-        {
-            raycastHitLocation = playerCubePointer.GetPlayerCubePlacementPosition(hit);
-            BreakCube(hit);
-            PlaceCube(raycastHitLocation);
-        }
+        Vector3? raycastHitLocation = playerCubePlacement.CalculateUpcomingCubePosition();
         if (raycastHitLocation != previousPlacementLocation)
         {
             onRaycastHitDifferentCube?.Invoke();
         }
+        BreakCube(raycastHitLocation);
+        PlaceCube(raycastHitLocation);
     }
 
-    private void BreakCube(RaycastHit raycastHitLocation)
+    private void BreakCube(Vector3? raycastHitLocation)
     {
-        //if (raycastHitLocation == null)
-        //{
-        //    return;
-        //}
-        //if (!inputManager.GetKeyDown(KeyCode.Mouse1))
-        //{
-        //    return;
-        //}
+        if (raycastHitLocation == null)
+        {
+            return;
+        }
+        if (!inputManager.GetKeyDown(KeyCode.Mouse1))
+        {
+            return;
+        }
 
-        //Vector3 raycastHitLocation2 = (Vector3)raycastHitLocation;
+        Vector3 raycastHitLocation2 = (Vector3)raycastHitLocation;
         //raycastHitLocation2 = new Vector3(raycastHitLocation2.x, raycastHitLocation2.y-1.0f, raycastHitLocation2.z);
         
         //GameObject actualCube = mapGenerator.mapField[raycastHitLocation2];
 
         //Destroy(actualCube);
+
+        //GameObject.Find(actualCube.name);
     }
 
     private void PlaceCube(Vector3? raycastHitLocation)
@@ -186,45 +184,5 @@ public class PlayerController : MonoBehaviour
         {
             GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
         }
-    }
-
-
-
-}
-
-
-
-
-
-class A
-{
-
-}
-
-class B : A
-{
-
-}
-
-class C : A
-{
-    
-}
-
-class S
-{
-    private T NovaMetoda<T>(A a) where T: A
-    {
-        return (T)a;
-    }
-
-    private void RendomMethoda()
-    {
-        A b = new B();
-        A c = new C();
-
-        
-        B d = NovaMetoda<B>(b);
-        C k = NovaMetoda<C>(c);
     }
 }
