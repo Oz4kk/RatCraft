@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
         inventoryHandler = GetComponent<InventoryHandler>();
         mapGenerator = gameController.GetComponent<MapGenerator>();
 
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Locked;    
     }
 
     private void FixedUpdate()
@@ -58,7 +58,6 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         MouseHandler();
-        PlaceCube();
         Jump();
         CameraRotation();
     }
@@ -86,10 +85,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void MouseHandler()
-    {
-
-    }
     private void MovePlayer()
     {
         float horizontal = inputManager.GetAxis("Horizontal");
@@ -125,7 +120,7 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
-    private void PlaceCube()
+    private void MouseHandler()
     {
         RaycastHit hit;
         Vector3? raycastHitLocation = null;
@@ -166,18 +161,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-
-        Vector3? placementLocation = playerCubePointer.GetPlayerCubePlacementPosition(raycastHitLocation);
-        if (placementLocation != previousPlacementLocation)
-        {
-            onRaycastHitDifferentCube?.Invoke();
-        }
-
         if (!inputManager.GetKeyDown(KeyCode.Mouse0))
-        {
-            return;
-        }
-        if (placementLocation == null)
         {
             return;
         }
