@@ -7,6 +7,6 @@ using UnityEngine;
 
 public class ConflictedMonobehaviour : MonoBehaviour
 {
-    string ahoj1;
+    string ahoj12;
     string ahoj2;
 }
