@@ -10,8 +10,8 @@ public class ConflictedMonobehaviour : MonoBehaviour
     string ahoj12;
     string ahoj2;
 
-    string ahoj32;
+    string ahoj322;
     string ahoj4;
     string ahoj5;
-    string ahoj45;
+    string ahoj435;
 }
