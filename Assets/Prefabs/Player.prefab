@@ -253,12 +253,13 @@ MonoBehaviour:
   rigidBody: {fileID: 5694507831387461935}
   playerCamera: {fileID: 4753265341900488802}
   groundCheck: {fileID: 5197378831824002700}
-  groundCheckBoxExtents: {x: 0.5, y: 0, z: 0.5}
+  groundCheckBoxExtents: {x: 0.25, y: 0, z: 0.25}
   movementSpeed: 1000
   jumpForce: 6
   cameraSensitivity: 300
   minVerticalCameraClamp: -90
   maxVerticalCameraClamp: 90
+  cubeBreakDistance: 2
 --- !u!114 &4944540343240117374
 MonoBehaviour:
   m_ObjectHideFlags: 0

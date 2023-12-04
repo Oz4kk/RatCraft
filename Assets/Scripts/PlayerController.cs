@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float cameraSensitivity = 50.0f;
     [SerializeField] private float minVerticalCameraClamp = -90.0f;
     [SerializeField] private float maxVerticalCameraClamp = 90.0f;
+    [SerializeField] private float cubeBreakDistance;
 
     // Touching other scripts
     private GameObject gameController;
@@ -46,7 +47,7 @@ public class PlayerController : MonoBehaviour
         inventoryHandler = GetComponent<InventoryHandler>();
         mapGenerator = gameController.GetComponent<MapGenerator>();
 
-        Cursor.lockState = CursorLockMode.Locked;    
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void FixedUpdate()
@@ -105,7 +106,7 @@ public class PlayerController : MonoBehaviour
         Vector3 sideMovement = horizontal * transform.right * Time.fixedDeltaTime * movementSpeed;
 
         velocity = forwardMovement + sideMovement;
-        velocity.y = rigidBody.velocity.y;        
+        velocity.y = rigidBody.velocity.y;
 
         rigidBody.velocity = velocity;
     }
@@ -116,45 +117,42 @@ public class PlayerController : MonoBehaviour
 
         verticalCameraRotation -= mouseY;
         verticalCameraRotation = Mathf.Clamp(verticalCameraRotation, minVerticalCameraClamp, maxVerticalCameraClamp);
-        
+
         playerCamera.transform.localRotation = Quaternion.Euler(Vector3.right * verticalCameraRotation);
         transform.Rotate(Vector3.up * mouseX);
     }
 
     private void MouseHandler()
     {
+        PlaceCube();
+        BreakCube();
+    }
+
+    private void BreakCube()
+    {
+        if (!inputManager.GetKeyDown(KeyCode.Mouse1))
+        {
+            return;
+        }
+        RaycastHit hit;
+        if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubeBreakDistance))
+        {
+            return;
+        }
+
+        GameObject actualCube = mapGenerator.mapField[hit.transform.position];
+
+        Destroy(actualCube);
+        mapGenerator.mapField.Remove(hit.transform.position);
+    }
+
+    private void PlaceCube()
+    {
         Vector3? raycastHitLocation = playerCubePlacement.CalculateUpcomingCubePosition();
         if (raycastHitLocation != previousPlacementLocation)
         {
             onRaycastHitDifferentCube?.Invoke();
         }
-        BreakCube(raycastHitLocation);
-        PlaceCube(raycastHitLocation);
-    }
-
-    private void BreakCube(Vector3? raycastHitLocation)
-    {
-        if (raycastHitLocation == null)
-        {
-            return;
-        }
-        if (!inputManager.GetKeyDown(KeyCode.Mouse1))
-        {
-            return;
-        }
-
-        Vector3 raycastHitLocation2 = (Vector3)raycastHitLocation;
-        //raycastHitLocation2 = new Vector3(raycastHitLocation2.x, raycastHitLocation2.y-1.0f, raycastHitLocation2.z);
-        
-        //GameObject actualCube = mapGenerator.mapField[raycastHitLocation2];
-
-        //Destroy(actualCube);
-
-        //GameObject.Find(actualCube.name);
-    }
-
-    private void PlaceCube(Vector3? raycastHitLocation)
-    {
         if (raycastHitLocation == null)
         {
             return;
