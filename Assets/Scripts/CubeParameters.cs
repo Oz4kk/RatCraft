@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class CubeParameters : MonoBehaviour
 {
-    [SerializeField] private float brittleness;
+    public float brittleness;
 }

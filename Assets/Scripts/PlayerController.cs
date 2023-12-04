@@ -32,6 +32,10 @@ public class PlayerController : MonoBehaviour
     private float verticalCameraRotation;
     private bool isGrounded;
 
+    private float miningTimer;
+    private GameObject miningCube;
+    private float miningBrittlenes;
+
     private Vector3 previousPlacementLocation;
 
     public void SetGameController(GameObject gameController)
@@ -125,25 +129,36 @@ public class PlayerController : MonoBehaviour
     private void MouseHandler()
     {
         PlaceCube();
-        BreakCube();
+        BreakCubeSequence();
     }
 
-    private void BreakCube()
+    private void BreakCubeSequence()
     {
-        if (!inputManager.GetKeyDown(KeyCode.Mouse1))
+        // If user don't hold key, null timer and return
+        if (!inputManager.GetKey(KeyCode.Mouse1))
         {
+            miningTimer = 0;
             return;
         }
         RaycastHit hit;
         if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubeBreakDistance))
         {
+            miningTimer = 0;
             return;
         }
-
         GameObject actualCube = mapGenerator.mapField[hit.transform.position];
-
+        miningTimer += Time.deltaTime;
+        if (miningTimer < actualCube.GetComponent<CubeParameters>().brittleness)
+        {
+            return;
+        }
         Destroy(actualCube);
         mapGenerator.mapField.Remove(hit.transform.position);
+        miningTimer = 0;
+    }
+
+    private void BreakCube()
+    {
     }
 
     private void PlaceCube()

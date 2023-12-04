@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -1612974539638800488, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+      propertyPath: brittleness
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1110237990194205800, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
       propertyPath: m_Material
       value: 
