@@ -176,7 +176,7 @@ public class MapGenerator : MonoBehaviour
         {
             GameObject cube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
             CubeParameters cubeParameters = cube.GetComponent<CubeParameters>();
-            mapField.Add(spawnPosition, cubeParameters);
+            //mapField.Add(spawnPosition, cubeParameters);
         }
 
         DebugManager.Log($"Count of mapField: {mapField.Count}");
