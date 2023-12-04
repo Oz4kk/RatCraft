@@ -38,7 +38,6 @@ public class MapGenerator : MonoBehaviour
     public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
     public float seed;
 
-
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
     [SerializeField] private uint gridSizeSides;
     [SerializeField] private uint gridSizeHeight;
