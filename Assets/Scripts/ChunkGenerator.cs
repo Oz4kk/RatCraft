@@ -140,6 +140,7 @@ public class ChunkGenerator : MonoBehaviour
 
                         float resultSample = (sampleXZ + sampleY) / 2;
 
+                        //UGLY - Transport to MapGenerator
                         if (resultSample > 0.5)
                         {
                             ChunkGenerationSequence(upcomingCubePosition, mapGenerator.greenCube, ref dubugGreenCubeCounter);
@@ -181,6 +182,7 @@ public class ChunkGenerator : MonoBehaviour
         ChooseTexture(actualCube);
     }
 
+    //UGLY - Transport to MapGenerator
     private void ChooseTexture(GameObject actualCube)
     {
         Material actualMaterial = actualCube.GetComponent<Renderer>().material;
