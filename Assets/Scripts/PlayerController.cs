@@ -33,8 +33,6 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
 
     private float miningTimer;
-    private GameObject miningCube;
-    private float miningBrittlenes;
 
     private Vector3 previousPlacementLocation;
 
