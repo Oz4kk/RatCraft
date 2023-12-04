@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         MouseHandler();
+        PlaceCube();
         Jump();
         CameraRotation();
     }
@@ -87,7 +88,7 @@ public class PlayerController : MonoBehaviour
 
     private void MouseHandler()
     {
-        PlaceCube();
+
     }
     private void MovePlayer()
     {
@@ -125,6 +126,17 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(Vector3.up * mouseX);
     }
 
+    private void PlaceCube()
+    {
+        Vector3? raycastHitLocation = playerCubePlacement.CalculateUpcomingCubePosition();
+        if (raycastHitLocation != previousPlacementLocation)
+        {
+            onRaycastHitDifferentCube?.Invoke();
+        }
+        BreakCube(raycastHitLocation);
+        PlaceCube(raycastHitLocation);
+    }
+
     private void BreakCube(Vector3? raycastHitLocation)
     {
         if (raycastHitLocation == null)
@@ -146,14 +158,19 @@ public class PlayerController : MonoBehaviour
         //GameObject.Find(actualCube.name);
     }
 
-    private void PlaceCube()
+    private void PlaceCube(Vector3? raycastHitLocation)
     {
-        Vector3? placementLocation = playerCubePlacement.CalculateUpcomingCubePosition();
-        
+        if (raycastHitLocation == null)
+        {
+            return;
+        }
+
+        Vector3? placementLocation = playerCubePointer.GetPlayerCubePlacementPosition(raycastHitLocation);
         if (placementLocation != previousPlacementLocation)
         {
             onRaycastHitDifferentCube?.Invoke();
         }
+
         if (!inputManager.GetKeyDown(KeyCode.Mouse0))
         {
             return;
@@ -163,9 +180,9 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        if (!playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)placementLocation))
+        if (!playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)raycastHitLocation))
         {
-            GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)placementLocation, inventoryHandler.GetSelectedCube());
+            GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
         }
     }
 }
