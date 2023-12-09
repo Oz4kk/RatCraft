@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -152,6 +153,7 @@ public class PlayerController : MonoBehaviour
         }
         Destroy(actualCube);
         mapGenerator.mapField.Remove(hit.transform.position);
+        inventoryHandler.AddNewItem(actualCube.name);
         miningTimer = 0;
     }
 
@@ -166,14 +168,18 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        if (!inputManager.GetKeyDown(KeyCode.Mouse0))
+        if (inventoryHandler.inventory[(int)inventoryHandler.activeSlot].amount > 0)
         {
-            return;
-        }
-
-        if (!playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)raycastHitLocation))
-        {
+            if (!inputManager.GetKeyDown(KeyCode.Mouse0))
+            {
+                return;
+            }
+            if (playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)raycastHitLocation))
+            {
+                return;
+            }
             GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
+            inventoryHandler.RemoveItemFromInventory(actualCube.name);
         }
     }
 }

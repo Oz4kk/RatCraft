@@ -16,6 +16,7 @@ public class InventoryHandler : MonoBehaviour
             this.cube = cube;
             this.amount = amount;
         }
+
     }
 
     public Action onActiveSlotChanged;
@@ -28,7 +29,7 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private GameObject greenCube;
     [SerializeField] private GameObject pinkCube;
 
-    private int? activeSlot = null;
+    public int? activeSlot = null;
     private InputManager inputManager;
 
     private void Start()
@@ -47,12 +48,59 @@ public class InventoryHandler : MonoBehaviour
         inventory[1] = new Inventory(brownCube, 0);
         inventory[2] = new Inventory(greenCube, 0);
         inventory[3] = new Inventory(pinkCube, 0);
+
+        DebugShowInventory();
     }
 
     void Update()
     {
         ChooseItem();
     }
+
+    public byte? DoesItemExistInInventory(string actualCubeName)
+    {
+        for (byte i = 0; i < inventory.Length; i++)
+        {
+            string actualCubeInInventory = $"{inventory[i].cube.name}(Clone)";
+            if (actualCubeInInventory == actualCubeName)
+            {
+                return i;
+            }
+        }
+        return null;
+    }
+
+    public void AddNewItem(string actualCubeName)
+    {
+        byte? index = DoesItemExistInInventory(actualCubeName);
+        if (index == null)
+        {
+            return;
+        }
+        inventory[(byte)index].amount++;
+        DebugShowInventory();
+    }
+
+    public void RemoveItemFromInventory(string actualCubeName)
+    {
+        byte? index = DoesItemExistInInventory(actualCubeName);
+        if (index == null)
+        {
+            return;
+        }
+        inventory[(byte)index].amount--;
+        DebugShowInventory();
+    }
+
+    public void DebugShowInventory()
+    {
+        foreach (var item in inventory)
+        {
+            Debug.Log($"{item.cube} - {item.amount}");
+        }
+        Debug.Log("--------------------------------------------");
+    }
+
     private void ChooseItem()
     {
         ChooseCubeWithMouseScroll();
