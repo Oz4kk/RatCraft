@@ -155,10 +155,6 @@ public class PlayerController : MonoBehaviour
         miningTimer = 0;
     }
 
-    private void BreakCube()
-    {
-    }
-
     private void PlaceCube()
     {
         Vector3? raycastHitLocation = playerCubePlacement.CalculateUpcomingCubePosition();

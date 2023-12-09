@@ -306,6 +306,10 @@ MonoBehaviour:
     index: 2
   - keycode: 52
     index: 3
+  blueCube: {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
+  brownCube: {fileID: 6359409211213089741, guid: 0343563596531974a83c4b475bc84a50, type: 3}
+  greenCube: {fileID: 8858395604543915494, guid: 89585ddd036f8404cb2b74e50fe0770e, type: 3}
+  pinkCube: {fileID: 7430137143123442753, guid: b4d188245cae81f45b055bfd98389aa8, type: 3}
 --- !u!114 &7596526484433257929
 MonoBehaviour:
   m_ObjectHideFlags: 0
