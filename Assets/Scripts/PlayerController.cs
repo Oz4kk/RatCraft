@@ -139,14 +139,15 @@ public class PlayerController : MonoBehaviour
             miningTimer = 0;
             return;
         }
+        //If raycast don't hit anything, null timer and return
         RaycastHit hit;
         if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubeBreakDistance))
         {
             miningTimer = 0;
             return;
         }
-        GameObject actualCube = mapGenerator.mapField[hit.transform.position];
         miningTimer += Time.deltaTime;
+        GameObject actualCube = mapGenerator.mapField[hit.transform.position];
         if (miningTimer < actualCube.GetComponent<CubeParameters>().brittleness)
         {
             return;
