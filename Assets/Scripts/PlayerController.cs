@@ -139,19 +139,22 @@ public class PlayerController : MonoBehaviour
             miningTimer = 0;
             return;
         }
-        //If raycast don't hit anything, null timer and return
+        // If raycast don't hit anything, null timer and return
         RaycastHit hit;
         if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubeBreakDistance))
         {
             miningTimer = 0;
             return;
         }
+        // Add time.deltaTime to the mining timer and create gameObject of hitted cube
         miningTimer += Time.deltaTime;
         GameObject actualCube = mapGenerator.mapField[hit.transform.position];
+        // Return if mining timer is lower that brittenes of hitted cube
         if (miningTimer < actualCube.GetComponent<CubeParameters>().brittleness)
         {
             return;
         }
+        // Destroy cube in the world, remove it from the mapField dictionary, add increment ammount of hitted cube in the inventory and set mining time to 0
         Destroy(actualCube);
         mapGenerator.mapField.Remove(hit.transform.position);
         inventoryHandler.AddNewItem(actualCube.name);
@@ -169,18 +172,19 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        if (inventoryHandler.inventory[(int)inventoryHandler.activeSlot].amount > 0)
+        if (inventoryHandler.inventory[(int)inventoryHandler.activeSlot].amount < 1)
         {
-            if (!inputManager.GetKeyDown(KeyCode.Mouse0))
-            {
-                return;
-            }
-            if (playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)raycastHitLocation))
-            {
-                return;
-            }
-            GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
-            inventoryHandler.RemoveItemFromInventory(actualCube.name);
+            return;
         }
+        if (!inputManager.GetKeyDown(KeyCode.Mouse0))
+        {
+            return;
+        }
+        if (playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)raycastHitLocation))
+        {
+            return;
+        }
+        GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
+        inventoryHandler.RemoveItemFromInventory(actualCube.name);
     }
 }

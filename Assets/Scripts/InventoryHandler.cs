@@ -59,6 +59,7 @@ public class InventoryHandler : MonoBehaviour
 
     public byte? DoesItemExistInInventory(string actualCubeName)
     {
+        // Go through the inventory and return index of actualCube if there is so
         for (byte i = 0; i < inventory.Length; i++)
         {
             string actualCubeInInventory = $"{inventory[i].cube.name}(Clone)";
@@ -73,6 +74,7 @@ public class InventoryHandler : MonoBehaviour
     public void AddNewItem(string actualCubeName)
     {
         byte? index = DoesItemExistInInventory(actualCubeName);
+        // Increment selectedCube in inventory if there is so
         if (index == null)
         {
             return;
@@ -84,6 +86,7 @@ public class InventoryHandler : MonoBehaviour
     public void RemoveItemFromInventory(string actualCubeName)
     {
         byte? index = DoesItemExistInInventory(actualCubeName);
+        // Decrement selectedCube in inventory if there is so
         if (index == null)
         {
             return;
