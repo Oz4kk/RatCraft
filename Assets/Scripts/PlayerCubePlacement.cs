@@ -13,15 +13,11 @@ public class PlayerCubePlacement : MonoBehaviour
 
     //Touching other scripts
     private MapGenerator mapGenerator;
-    private InventoryHandler inventoryHandler;
-    private InputManager inputManager;
 
     private Vector3 halfExtents = new Vector3(0.5f, 0.5f, 0.5f);
 
     void Awake()
     {
-        inventoryHandler = GetComponent<InventoryHandler>();
-        inputManager = GetComponent<InputManager>();
         mapGenerator = gameController.GetComponent<MapGenerator>();
     }
 
