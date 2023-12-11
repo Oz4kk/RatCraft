@@ -148,19 +148,18 @@ public class PlayerController : MonoBehaviour
         }
         // Add time.deltaTime to the mining timer and create gameObject of hitted cube
         miningTimer += Time.deltaTime;
-        GameObject actualCube = mapGenerator.mapField[hit.transform.position];
-        //CubeParameters cube = hit.transform.gameObject.GetComponent<CubeParameters>();
-        //if (cube == null)
-        //{
-        //    return;
-        //}
-        // Return if mining timer is lower that brittenes of hitted cube
-        if (miningTimer < actualCube.GetComponent<CubeParameters>().brittleness)
+        CubeParameters actualCube = hit.transform.gameObject.GetComponent<CubeParameters>();
+        if (actualCube == null)
         {
             return;
         }
-        // Destroy cube in the world, remove it from the mapField dictionary, add increment ammount of hitted cube in the inventory and set mining time to 0
-        mapGenerator.DeleteCube(hit, actualCube);
+        // Return if mining timer is lower that brittenes of hitted cube
+        if (miningTimer < actualCube.brittleness)
+        {
+            return;
+        }
+        // Delete cube in the world, remove it from the mapField dictionary, add increment ammount of hitted cube in the inventory and set mining time to 0
+        mapGenerator.DeleteCube(actualCube);
         inventoryHandler.AddNewItem(actualCube.name);
         miningTimer = 0.0f;
     }

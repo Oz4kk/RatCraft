@@ -117,10 +117,10 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public void DeleteCube(RaycastHit hit, GameObject actualCube)
+    public void DeleteCube(CubeParameters actualCube)
     {
-        Destroy(actualCube);
-        mapField.Remove(hit.transform.position);
+        Destroy(actualCube.gameObject);
+        mapField.Remove(actualCube.gameObject.transform.position);
     }
 
     private void SetNewActiveChunkPrediction()
