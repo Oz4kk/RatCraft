@@ -21,6 +21,7 @@ public class InventoryHandler : MonoBehaviour
 
     public Action onActiveSlotChanged;
     public Inventory[] inventory;
+    //public Dictionary<CubeType, Inventory>
 
     [SerializeField] private LayerMask solidBlockLayer;
     [SerializeField] private List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();

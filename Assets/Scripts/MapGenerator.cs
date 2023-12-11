@@ -52,6 +52,7 @@ public class MapGenerator : MonoBehaviour
     {
         playerSpawn = GetComponent<PlayerSpawn>();
         chunkGenerator = GetComponent<ChunkGenerator>();
+
         gridSize.y = (int)gridSizeHeight;
         gridSize.x = (int)gridSizeSides;
         gridSize.z = (int)gridSizeSides;
@@ -115,7 +116,13 @@ public class MapGenerator : MonoBehaviour
             ChunkGenerationSequence(centerOfActualChunk);
         }
     }
- 
+
+    public void DeleteCube(RaycastHit hit, GameObject actualCube)
+    {
+        Destroy(actualCube);
+        mapField.Remove(hit.transform.position);
+    }
+
     private void SetNewActiveChunkPrediction()
     {
         DebugManager.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");

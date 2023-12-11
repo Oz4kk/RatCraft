@@ -136,29 +136,33 @@ public class PlayerController : MonoBehaviour
         // If user don't hold key, null timer and return
         if (!inputManager.GetKey(KeyCode.Mouse1))
         {
-            miningTimer = 0;
+            miningTimer = 0.0f;
             return;
         }
         // If raycast don't hit anything, null timer and return
         RaycastHit hit;
         if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubeBreakDistance))
         {
-            miningTimer = 0;
+            miningTimer = 0.0f;
             return;
         }
         // Add time.deltaTime to the mining timer and create gameObject of hitted cube
         miningTimer += Time.deltaTime;
         GameObject actualCube = mapGenerator.mapField[hit.transform.position];
+        //CubeParameters cube = hit.transform.gameObject.GetComponent<CubeParameters>();
+        //if (cube == null)
+        //{
+        //    return;
+        //}
         // Return if mining timer is lower that brittenes of hitted cube
         if (miningTimer < actualCube.GetComponent<CubeParameters>().brittleness)
         {
             return;
         }
         // Destroy cube in the world, remove it from the mapField dictionary, add increment ammount of hitted cube in the inventory and set mining time to 0
-        Destroy(actualCube);
-        mapGenerator.mapField.Remove(hit.transform.position);
+        mapGenerator.DeleteCube(hit, actualCube);
         inventoryHandler.AddNewItem(actualCube.name);
-        miningTimer = 0;
+        miningTimer = 0.0f;
     }
 
     private void PlaceCube()
