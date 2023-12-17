@@ -164,7 +164,7 @@ public class PlayerController : MonoBehaviour
         }
         // Delete cube in the world, remove it from the mapField dictionary, add increment ammount of hitted cube in the inventory and set mining time to 0
         mapGenerator.DeleteCube(actualCube);
-        inventoryHandler.AddNewItem(actualCube.name);
+        inventoryHandler.AddNewItem(actualCube);
     }
 
     private void PlaceCube()
@@ -191,6 +191,8 @@ public class PlayerController : MonoBehaviour
             return;
         }
         GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
-        inventoryHandler.RemoveItemFromInventory(actualCube.name);
+        CubeParameters actualCubeParametres = actualCube.GetComponent<CubeParameters>();
+
+        inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
     }
 }

@@ -58,13 +58,12 @@ public class InventoryHandler : MonoBehaviour
         ChooseItem();
     }
 
-    public byte? DoesItemExistInInventory(string actualCubeName)
+    public byte? DoesItemExistInInventory(CubeParameters actualCube)
     {
         // Go through the inventory and return index of actualCube if there is so
         for (byte i = 0; i < inventory.Length; i++)
         {
-            string actualCubeInInventory = $"{inventory[i].cube.name}(Clone)";
-            if (actualCubeInInventory == actualCubeName)
+            if (inventory[i].cube.gameObject.GetComponent<CubeParameters>().name == actualCube.name)
             {
                 return i;
             }
@@ -72,7 +71,7 @@ public class InventoryHandler : MonoBehaviour
         return null;
     }
 
-    public void AddNewItem(string actualCubeName)
+    public void AddNewItem(CubeParameters actualCubeName)
     {
         byte? index = DoesItemExistInInventory(actualCubeName);
         // Increment selectedCube in inventory if there is so
@@ -84,9 +83,9 @@ public class InventoryHandler : MonoBehaviour
         DebugShowInventory();
     }
 
-    public void RemoveItemFromInventory(string actualCubeName)
+    public void RemoveItemFromInventory(CubeParameters actualCube)
     {
-        byte? index = DoesItemExistInInventory(actualCubeName);
+        byte? index = DoesItemExistInInventory(actualCube);
         // Decrement selectedCube in inventory if there is so
         if (index == null)
         {
