@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+[Serializable]
+public struct KeyCodeIndexPair
+{
+    public KeyCode keycode;
+    public int index;
+}
 public class InventoryHandler : MonoBehaviour
 {
     public struct Inventory
@@ -21,10 +27,10 @@ public class InventoryHandler : MonoBehaviour
 
     public Action onActiveSlotChanged;
     public Inventory[] inventory;
+    public List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
     //public Dictionary<CubeType, Inventory>
 
     [SerializeField] private LayerMask solidBlockLayer;
-    [SerializeField] private List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
     [SerializeField] private GameObject blueCube;
     [SerializeField] private GameObject brownCube;
     [SerializeField] private GameObject greenCube;
@@ -55,7 +61,6 @@ public class InventoryHandler : MonoBehaviour
 
     void Update()
     {
-        ChooseItem();
     }
 
     public byte? DoesItemExistInInventory(CubeParameters actualCube)
@@ -104,12 +109,6 @@ public class InventoryHandler : MonoBehaviour
         Debug.Log("--------------------------------------------");
     }
 
-    private void ChooseItem()
-    {
-        ChooseCubeWithMouseScroll();
-        ChooseItemWithKeyboard();
-    }
-
     public void SetSlot(int? newSlot)
     {
         if (activeSlot == newSlot)
@@ -138,14 +137,9 @@ public class InventoryHandler : MonoBehaviour
         return null;
     }
 
-    private void ChooseCubeWithMouseScroll()
+    public void ChooseCubeWithMouseScroll(float mouseScrollValue)
     {
-        float mouseScroll = inputManager.GetAxis("Mouse ScrollWheel");
-        if (mouseScroll == .0f)
-        {
-            return;
-        }
-        if (mouseScroll > .0f)
+        if (mouseScrollValue > .0f)
         {
             if (activeSlot == inventory.Length - 1)
             {
@@ -175,24 +169,5 @@ public class InventoryHandler : MonoBehaviour
         DebugManager.Log(inventory[(int)activeSlot].cube.name);
 
         return inventory[(int)activeSlot].cube;
-    }
-
-    private void ChooseItemWithKeyboard()
-    {
-        foreach (KeyCodeIndexPair item in keyCodeIndexPairs)
-        {
-            if (inputManager.GetKeyDown(item.keycode))
-            {
-                SetSlot(item.index);
-                break;
-            }
-        }
-    }
-
-    [Serializable]
-    private struct KeyCodeIndexPair
-    {
-        public KeyCode keycode;
-        public int index;
     }
 }

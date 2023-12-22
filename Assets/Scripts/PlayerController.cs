@@ -64,7 +64,37 @@ public class PlayerController : MonoBehaviour
         MouseHandler();
         Jump();
         CameraRotation();
+        ChooseItemInInventory();
     }
+
+    private void ChooseItemInInventory()
+    {
+        ChooseCubeWithMouseScroll();
+        ChooseItemWithKeyboard();
+    }
+
+
+    private void ChooseCubeWithMouseScroll()
+    {
+        float mouseScrollValue = inputManager.GetAxis("Mouse ScrollWheel");
+        if (mouseScrollValue == .0f)
+        {
+            return;
+        }
+        inventoryHandler.ChooseCubeWithMouseScroll(mouseScrollValue);
+    }
+    private void ChooseItemWithKeyboard()
+    {
+        foreach (KeyCodeIndexPair item in inventoryHandler.keyCodeIndexPairs)
+        {
+            if (inputManager.GetKeyDown(item.keycode))
+            {
+                inventoryHandler.SetSlot(item.index);
+                break;
+            }
+        }
+    }
+
     private void GroundCheck()
     {
         isGrounded = Physics.CheckBox(groundCheck.transform.position, groundCheckBoxExtents);
