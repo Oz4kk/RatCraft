@@ -12,6 +12,10 @@ PrefabInstance:
       value: blueCube
       objectReference: {fileID: 0}
     - target: {fileID: -1612974539638800488, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+      propertyPath: cubeType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -1612974539638800488, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
       propertyPath: brittleness
       value: 1
       objectReference: {fileID: 0}

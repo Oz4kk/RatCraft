@@ -10,6 +10,14 @@ public struct KeyCodeIndexPair
     public KeyCode keycode;
     public int index;
 }
+public enum CubeType
+{
+    baseCube,
+    blueCube,
+    brownCube,
+    greenCube,
+    pinkCube,
+}
 public class InventoryHandler : MonoBehaviour
 {
     public struct Inventory
@@ -36,6 +44,7 @@ public class InventoryHandler : MonoBehaviour
     [SerializeField] private GameObject greenCube;
     [SerializeField] private GameObject pinkCube;
 
+
     public int? activeSlot = null;
     private InputManager inputManager;
 
@@ -50,7 +59,6 @@ public class InventoryHandler : MonoBehaviour
     private void SetInventory()
     {
         inventory = new Inventory[4];
-
         inventory[0] = new Inventory(blueCube, 0);
         inventory[1] = new Inventory(brownCube, 0);
         inventory[2] = new Inventory(greenCube, 0);
@@ -59,16 +67,12 @@ public class InventoryHandler : MonoBehaviour
         DebugShowInventory();
     }
 
-    void Update()
-    {
-    }
-
     public byte? DoesItemExistInInventory(CubeParameters actualCube)
     {
         // Go through the inventory and return index of actualCube if there is so
         for (byte i = 0; i < inventory.Length; i++)
         {
-            if (inventory[i].cube.gameObject.GetComponent<CubeParameters>().name == actualCube.name)
+            if (inventory[i].cube.gameObject.GetComponent<CubeParameters>().cubeType == actualCube.cubeType)
             {
                 return i;
             }
