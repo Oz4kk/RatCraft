@@ -171,6 +171,7 @@ public class MapGenerator : MonoBehaviour
         if (!mapField.ContainsKey(spawnPosition))
         {
             GameObject actualCube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
+            actualCube.transform.parent = transform;
             actualCube.GetComponent<CubeParameters>();
             mapField.Add(spawnPosition, actualCube);
 

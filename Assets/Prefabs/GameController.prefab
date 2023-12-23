@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabToSpawn: {fileID: 4753265343426609398, guid: d2698b9933bd618438dbee41f598ebbb, type: 3}
   spawnPosition: {x: 0, y: 20, z: 0}
+  spawnedPlayer: {fileID: 0}
 --- !u!114 &1960336968039664910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +66,19 @@ MonoBehaviour:
   blueCube: {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
   brownCube: {fileID: 6359409211213089741, guid: 0343563596531974a83c4b475bc84a50, type: 3}
   pinkCube: {fileID: 7430137143123442753, guid: b4d188245cae81f45b055bfd98389aa8, type: 3}
+  grass: {fileID: 0}
+  dirt: {fileID: 0}
+  rock: {fileID: 0}
+  sand: {fileID: 0}
+  gridSize:
+    x: 100
+    y: 16
+    z: 100
   seed: 0
+  mapFieldParent: {fileID: 5190876624324944236, guid: 796f9c6a894071a42aa2fdfdfd426060, type: 3}
+  chunkGenerationDistanceFromEndOfTheChunk: 0
+  gridSizeSides: 0
+  gridSizeHeight: 0
 --- !u!114 &2769546080822182058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,13 +91,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa59f3ea84af3264f93002098efa7bc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridSize:
-    x: 100
-    y: 16
-    z: 100
   sidesPerlinScale: 0.1
-  yPerlinScale: 0.1
   heightLimit: 0.0625
+  heightPerlinScale: 0
 --- !u!114 &159310025209883692
 MonoBehaviour:
   m_ObjectHideFlags: 0
