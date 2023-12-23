@@ -71,6 +71,44 @@ public class MapGenerator : MonoBehaviour
     {
         ProcessChunkGenerationDistance();
         SetNewActiveChunkPrediction();
+        RefreshVisibleCubes();
+    }
+
+    private void RefreshVisibleCubes()
+    {
+        foreach (KeyValuePair<Vector3, GameObject> actualCube in mapField)
+        {
+            byte counter = 0;
+            if (mapField.ContainsKey(new Vector3(actualCube.Key.x + 1.0f, actualCube.Key.y, actualCube.Key.z)))
+            {
+                counter++;
+            }            
+            if (mapField.ContainsKey(new Vector3(actualCube.Key.x - 1.0f, actualCube.Key.y, actualCube.Key.z)))
+            {
+                counter++;
+            }
+            if (mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y + 1.0f, actualCube.Key.z)))
+            {
+                counter++;
+            }
+            if (mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y - 1.0f, actualCube.Key.z)))
+            {
+                counter++;
+            }
+            if (mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y, actualCube.Key.z + 1.0f)))
+            {
+                counter++;
+            }
+            if (mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y, actualCube.Key.z - 1.0f)))
+            {
+                counter++;
+            }
+
+            if (counter == 6)
+            {
+                Destroy(actualCube.Value);
+            }
+        }
     }
 
     private void SetNewPredictionValues(Vector3 middlePointOfActualChunk)
