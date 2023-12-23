@@ -97,9 +97,9 @@ public class ChunkGenerator : MonoBehaviour
 
     private void ChunkGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint actualCubeCounter)
     {
-        CubeParameters actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, actualCubecColor);
+        GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, actualCubecColor);
         actualCubeCounter++;
-        ChooseTexture(actualCube.gameObject);
+        ChooseTexture(actualCube);
     }
 
     private void ChooseTexture(GameObject actualCube)

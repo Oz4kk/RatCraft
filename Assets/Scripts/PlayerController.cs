@@ -220,8 +220,9 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        CubeParameters actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
+        GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
+        CubeParameters actualCubeParametres = actualCube.GetComponent<CubeParameters>();
 
-        inventoryHandler.RemoveItemFromInventory(actualCube);
+        inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
     }
 }
