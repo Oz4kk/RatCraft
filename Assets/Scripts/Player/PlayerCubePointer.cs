@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerCubePointer : MonoBehaviour
 {
+    public MeshRenderer pointerCubeMeshRenderer;
+
     //SerializeFields
     [SerializeField] private GameObject pointerCubePrefab;
     [SerializeField] private GameObject gameController;
@@ -15,7 +17,6 @@ public class PlayerCubePointer : MonoBehaviour
     private PlayerController playerController;
 
     private GameObject pointerCube;
-    private MeshRenderer pointerCubeMeshRenderer;
 
     private void Awake()
     {

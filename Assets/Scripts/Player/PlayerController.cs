@@ -29,11 +29,13 @@ public class PlayerController : MonoBehaviour
     private PlayerCubePointer playerCubePointer;
     private MapGenerator mapGenerator;
     private InventoryHandler inventoryHandler;
+    private IState currentState;
+    private DestroyState destroyState;
+    private PlaceCubeState placeCubeState;
+
 
     private float verticalCameraRotation;
     private bool isGrounded;
-
-    private float miningTimer;
 
     private Vector3 previousPlacementLocation;
 
@@ -49,6 +51,9 @@ public class PlayerController : MonoBehaviour
         inputManager = GetComponent<InputManager>();
         inventoryHandler = GetComponent<InventoryHandler>();
         mapGenerator = gameController.GetComponent<MapGenerator>();
+        placeCubeState = new PlaceCubeState(playerCubePlacement, inventoryHandler, mapGenerator, inputManager);
+        destroyState = new DestroyState(inputManager, mapGenerator, inventoryHandler, cubeBreakDistance);
+        currentState = placeCubeState;
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -61,6 +66,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        PickState();
+        UpdatePointerCube();
         MouseHandler();
         Jump();
         CameraRotation();
@@ -157,72 +164,42 @@ public class PlayerController : MonoBehaviour
 
     private void MouseHandler()
     {
-        PlaceCube();
-        RaycastHitCubes();
+        if (!Input.GetKey(KeyCode.Mouse0))
+        {
+            return;
+        }
+        if (currentState == null)
+        {
+            return;
+        }
+
+        currentState.ExecuteState();
     }
 
-    private void RaycastHitCubes()
+    private void PickState()
     {
-        // If user don't hold key
-        if (!inputManager.GetKey(KeyCode.Mouse1))
+        if (!Input.GetKeyDown(KeyCode.Mouse1))
         {
             return;
         }
-        // If raycast don't hit anything
-        RaycastHit hit;
-        if (!Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, cubeBreakDistance))
+        if (currentState == placeCubeState)
         {
-            return;
+            playerCubePointer.pointerCubeMeshRenderer.enabled = false;
         }
-        // Add time.deltaTime to the mining timer and create gameObject of hitted cube
-        CubeParameters actualCube = hit.transform.gameObject.GetComponent<CubeParameters>();
-        if (actualCube == null)
-        {
-            return;
-        }
-        BreakCubeSequence(actualCube);
+
+        currentState = currentState == destroyState ? placeCubeState : destroyState;
     }
 
-    private void BreakCubeSequence(CubeParameters actualCube)
+    private void UpdatePointerCube()
     {
-        Debug.Log($"{actualCube.GetType()} - {actualCube.damage}");
-        actualCube.damage += Time.deltaTime;
-        // Return if damage is lower than brittenes of hitted cube
-        if (actualCube.damage <= actualCube.brittleness)
+        if (currentState != placeCubeState)
         {
             return;
         }
-        // Delete cube in the world, remove it from the mapField dictionary, add increment ammount of hitted cube in the inventory and set mining time to 0
-        mapGenerator.DeleteCube(actualCube);
-        inventoryHandler.AddNewItem(actualCube);
-    }
-
-    private void PlaceCube()
-    {
         Vector3? raycastHitLocation = playerCubePlacement.CalculateUpcomingCubePosition();
         if (raycastHitLocation != previousPlacementLocation)
         {
             onRaycastHitDifferentCube?.Invoke();
         }
-        if (raycastHitLocation == null)
-        {
-            return;
-        }
-        if (inventoryHandler.inventory[(int)inventoryHandler.activeSlot].amount < 1)
-        {
-            return;
-        }
-        if (!inputManager.GetKeyDown(KeyCode.Mouse0))
-        {
-            return;
-        }
-        if (playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)raycastHitLocation))
-        {
-            return;
-        }
-        GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
-        CubeParameters actualCubeParametres = actualCube.GetComponent<CubeParameters>();
-
-        inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
     }
 }
