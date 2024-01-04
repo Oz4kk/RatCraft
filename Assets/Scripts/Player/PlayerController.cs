@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     private MapGenerator mapGenerator;
     private InventoryHandler inventoryHandler;
     private IState currentState;
-    private DestroyState destroyState;
+    private DestroyCubeState destroyState;
     private PlaceCubeState placeCubeState;
 
 
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         inventoryHandler = GetComponent<InventoryHandler>();
         mapGenerator = gameController.GetComponent<MapGenerator>();
         placeCubeState = new PlaceCubeState(playerCubePlacement, inventoryHandler, mapGenerator, inputManager);
-        destroyState = new DestroyState(inputManager, mapGenerator, inventoryHandler, cubeBreakDistance);
+        destroyState = new DestroyCubeState(inputManager, mapGenerator, inventoryHandler, cubeBreakDistance);
         currentState = placeCubeState;
 
         Cursor.lockState = CursorLockMode.Locked;

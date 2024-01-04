@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DestroyState : IState
+public class DestroyCubeState : IState
 {
     private InputManager inputManager;
     private MapGenerator mapGenerator;
     private InventoryHandler inventoryHandler;
     private float cubeBreakDistance;
 
-    public DestroyState(InputManager inputManager, MapGenerator mapGenerator, InventoryHandler inventoryHandler, float cubeBreakDistance)
+    public DestroyCubeState(InputManager inputManager, MapGenerator mapGenerator, InventoryHandler inventoryHandler, float cubeBreakDistance)
     {
         this.inputManager = inputManager;
         this.mapGenerator = mapGenerator;

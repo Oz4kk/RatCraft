@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class MapGenerator : MonoBehaviour
 
     [HideInInspector] public GridSize gridSize = new GridSize(100, 16, 100);
     public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
+    public Dictionary<Vector3, GameObject> unloadedMapField = new Dictionary<Vector3, GameObject>();
     public float seed;
 
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
@@ -65,24 +67,23 @@ public class MapGenerator : MonoBehaviour
         ChunkGenerationSequence(middlePointOfLastChunk);
     }
 
-    
-
     private void Update()
     {
         ProcessChunkGenerationDistance();
         SetNewActiveChunkPrediction();
-        RefreshVisibleCubes();
     }
 
-    private void RefreshVisibleCubes()
+    public void RefreshUnvisibleCubes()
     {
+        List<Vector3> listOfPositions = new List<Vector3>();
+
         foreach (KeyValuePair<Vector3, GameObject> actualCube in mapField)
         {
             byte counter = 0;
             if (mapField.ContainsKey(new Vector3(actualCube.Key.x + 1.0f, actualCube.Key.y, actualCube.Key.z)))
             {
                 counter++;
-            }            
+            }
             if (mapField.ContainsKey(new Vector3(actualCube.Key.x - 1.0f, actualCube.Key.y, actualCube.Key.z)))
             {
                 counter++;
@@ -104,11 +105,69 @@ public class MapGenerator : MonoBehaviour
                 counter++;
             }
 
-            if (counter == 6)
+            if (counter == 6 && !unloadedMapField.ContainsKey(actualCube.Key))
             {
+                unloadedMapField.Add(actualCube.Key, actualCube.Value);
                 Destroy(actualCube.Value);
+                listOfPositions.Add(actualCube.Key);
             }
         }
+
+        Console.WriteLine(unloadedMapField.Count);
+        foreach (var item in unloadedMapField)
+        {
+            Console.WriteLine(item.Value.GetComponent<CubeParameters>().cubeType);
+        }
+
+        foreach (Vector3 actualPosition in listOfPositions)
+        {
+            if (mapField.ContainsKey(actualPosition))
+            {
+                mapField.Remove(actualPosition);
+            }
+        }
+    }
+
+    public void RefreshVisibleCubes(Vector3 actualCubePosition)
+    {
+        foreach (KeyValuePair<Vector3, GameObject> actualCube in unloadedMapField)
+        {
+            if (actualCube.Key == new Vector3(actualCubePosition.x + 1.0f, actualCubePosition.y, actualCubePosition.z))
+            {
+                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
+                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+            }
+            if (actualCube.Key == new Vector3(actualCubePosition.x - 1.0f, actualCubePosition.y, actualCubePosition.z))
+            {
+                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
+                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+            }
+            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y + 1.0f, actualCubePosition.z))
+            {
+                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
+                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+            }
+            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y - 1.0f, actualCubePosition.z))
+            {
+                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
+                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+            }
+            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y, actualCubePosition.z + 1.0f))
+            {
+                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
+                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+            }
+            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y, actualCubePosition.z - 1.0f))
+            {
+                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
+                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+            }
+        }
+    }
+
+    private void ProcessRefreshOfUnvisibleCubes(GameObject actualCube)
+    {
+        Instantiate(actualCube, actualCube.transform.position, Quaternion.identity);
     }
 
     private void SetNewPredictionValues(Vector3 middlePointOfActualChunk)
@@ -156,9 +215,11 @@ public class MapGenerator : MonoBehaviour
     }
 
     public void DeleteCube(CubeParameters actualCube)
-    {
-        Destroy(actualCube.gameObject);
+    {        
         mapField.Remove(actualCube.gameObject.transform.position);
+        Destroy(actualCube.gameObject);
+
+        RefreshVisibleCubes(actualCube.gameObject.transform.position);
     }
 
     private void SetNewActiveChunkPrediction()
@@ -178,7 +239,6 @@ public class MapGenerator : MonoBehaviour
         else if (player.transform.position.z > zPositivePrediction)
         {
             centerPointOfActualChunk.z += gridSize.x;
-
         }
         else if (player.transform.position.z < zNegativePrediction)
         {
@@ -202,8 +262,8 @@ public class MapGenerator : MonoBehaviour
     private Vector3 ReturnNewChunkPosition(Vector3 centerOfChunk)
     {
         return new Vector3(centerOfChunk.x - gridSize.x / 2, 0.0f, centerOfChunk.z - gridSize.x / 2);
-    }     
-    
+    }
+
     public GameObject? InstantiateAndReturnCube(Vector3 spawnPosition, GameObject cubePrefab)
     {
         if (!mapField.ContainsKey(spawnPosition))

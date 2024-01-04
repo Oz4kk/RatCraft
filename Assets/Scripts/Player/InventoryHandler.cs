@@ -10,6 +10,7 @@ public struct KeyCodeIndexPair
     public KeyCode keycode;
     public int index;
 }
+
 public enum CubeType
 {
     baseCube,
@@ -18,6 +19,7 @@ public enum CubeType
     greenCube,
     pinkCube,
 }
+
 public class InventoryHandler : MonoBehaviour
 {
     public struct Inventory
@@ -83,8 +85,12 @@ public class InventoryHandler : MonoBehaviour
     public void AddNewItem(CubeParameters actualCubeName)
     {
         byte? index = DoesItemExistInInventory(actualCubeName);
-        // Increment selectedCube in inventory if there is so
+        // Return if index don't exist
         if (index == null)
+        {
+            return;
+        }
+        if (inventory[(byte)index].amount >= 64)
         {
             return;
         }
