@@ -21,6 +21,8 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+    public Action<Vector3> onCubeDestroyed;
+
     public GameObject greenCube;
     public GameObject blueCube;
     public GameObject brownCube;
@@ -73,103 +75,6 @@ public class MapGenerator : MonoBehaviour
         SetNewActiveChunkPrediction();
     }
 
-    public void RefreshUnvisibleCubes()
-    {
-        List<Vector3> listOfPositions = new List<Vector3>();
-
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in mapField)
-        {
-            byte counter = 0;
-            if (mapField.ContainsKey(new Vector3(actualCube.Key.x + 1.0f, actualCube.Key.y, actualCube.Key.z)))
-            {
-                counter++;
-            }
-            if (mapField.ContainsKey(new Vector3(actualCube.Key.x - 1.0f, actualCube.Key.y, actualCube.Key.z)))
-            {
-                counter++;
-            }
-            if (mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y + 1.0f, actualCube.Key.z)))
-            {
-                counter++;
-            }
-            if (mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y - 1.0f, actualCube.Key.z)))
-            {
-                counter++;
-            }
-            if (mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y, actualCube.Key.z + 1.0f)))
-            {
-                counter++;
-            }
-            if (mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y, actualCube.Key.z - 1.0f)))
-            {
-                counter++;
-            }
-
-            if (counter == 6 && !unloadedMapField.ContainsKey(actualCube.Key))
-            {
-                unloadedMapField.Add(actualCube.Key, actualCube.Value);
-                Destroy(actualCube.Value);
-                listOfPositions.Add(actualCube.Key);
-            }
-        }
-
-        Console.WriteLine(unloadedMapField.Count);
-        foreach (var item in unloadedMapField)
-        {
-            Console.WriteLine(item.Value.GetComponent<CubeParameters>().cubeType);
-        }
-
-        foreach (Vector3 actualPosition in listOfPositions)
-        {
-            if (mapField.ContainsKey(actualPosition))
-            {
-                mapField.Remove(actualPosition);
-            }
-        }
-    }
-
-    public void RefreshVisibleCubes(Vector3 actualCubePosition)
-    {
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in unloadedMapField)
-        {
-            if (actualCube.Key == new Vector3(actualCubePosition.x + 1.0f, actualCubePosition.y, actualCubePosition.z))
-            {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
-            }
-            if (actualCube.Key == new Vector3(actualCubePosition.x - 1.0f, actualCubePosition.y, actualCubePosition.z))
-            {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
-            }
-            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y + 1.0f, actualCubePosition.z))
-            {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
-            }
-            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y - 1.0f, actualCubePosition.z))
-            {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
-            }
-            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y, actualCubePosition.z + 1.0f))
-            {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
-            }
-            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y, actualCubePosition.z - 1.0f))
-            {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
-            }
-        }
-    }
-
-    private void ProcessRefreshOfUnvisibleCubes(GameObject actualCube)
-    {
-        Instantiate(actualCube, actualCube.transform.position, Quaternion.identity);
-    }
-
     private void SetNewPredictionValues(Vector3 middlePointOfActualChunk)
     {
         middlePointOfLastChunk = middlePointOfActualChunk;
@@ -219,7 +124,7 @@ public class MapGenerator : MonoBehaviour
         mapField.Remove(actualCube.gameObject.transform.position);
         Destroy(actualCube.gameObject);
 
-        RefreshVisibleCubes(actualCube.gameObject.transform.position);
+        onCubeDestroyed.Invoke(actualCube.gameObject.transform.position);
     }
 
     private void SetNewActiveChunkPrediction()

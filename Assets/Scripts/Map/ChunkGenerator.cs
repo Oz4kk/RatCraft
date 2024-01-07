@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
+    public Action onChunkGenerated;
+
     private MapGenerator mapGenerator;
+    private MapOptimalisation mapOptimalisation;
 
     [SerializeField] private float sidesPerlinScale = 0.0f;
     [SerializeField] private float heightLimit = 0.0f;
@@ -14,6 +17,7 @@ public class ChunkGenerator : MonoBehaviour
     private void Awake()
     {
         mapGenerator = GetComponent<MapGenerator>();
+        mapOptimalisation = GetComponent<MapOptimalisation>();
     }
 
     public IEnumerator GenerateChunkCoroutine(Vector3 centerOfActualChunk)
@@ -94,7 +98,7 @@ public class ChunkGenerator : MonoBehaviour
         DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
         DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
 
-        mapGenerator.RefreshUnvisibleCubes();
+        onChunkGenerated.Invoke();
     }
 
     private void ChunkGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint actualCubeCounter)
