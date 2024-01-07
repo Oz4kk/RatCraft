@@ -40,7 +40,6 @@ public class MapGenerator : MonoBehaviour
 
     [HideInInspector] public GridSize gridSize = new GridSize(100, 16, 100);
     public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
-    public Dictionary<Vector3, GameObject> unloadedMapField = new Dictionary<Vector3, GameObject>();
     public float seed;
 
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;

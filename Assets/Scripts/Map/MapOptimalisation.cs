@@ -11,19 +11,15 @@ public class MapOptimalisation : MonoBehaviour
     void Awake()
     {
         mapGenerator = GetComponent<MapGenerator>();
-    }
+        chunkGenerator = GetComponent<ChunkGenerator>();
 
-    private void Start()
-    {
+        chunkGenerator.onChunkGenerated += RefreshUnvisibleCubes;
         mapGenerator.onCubeDestroyed += RefreshVisibleCubes;
         mapGenerator.onCubePlaced += RefreshUnvisibleCubes;
-        chunkGenerator.onChunkGenerated += RefreshUnvisibleCubes;
     }
 
     private void RefreshUnvisibleCubes()
     {
-        List<Vector3> listOfPositions = new List<Vector3>();
-
         foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.mapField)
         {
             byte counter = 0;
@@ -54,30 +50,14 @@ public class MapOptimalisation : MonoBehaviour
 
             if (counter == 6 && !mapGenerator.unloadedMapField.ContainsKey(actualCube.Key))
             {
-                //mapGenerator.unloadedMapField.Add(actualCube.Key, actualCube.Value);
                 actualCube.Value.SetActive(false);
-                //listOfPositions.Add(actualCube.Key);
             }
         }
-
-        //Debug.Log(mapGenerator.unloadedMapField.Count);
-        //foreach (var item in mapGenerator.unloadedMapField)
-        //{
-        //    Debug.Log(item.Value.GetComponent<CubeParameters>().cubeType);
-        //}
-
-        //foreach (Vector3 actualPosition in listOfPositions)
-        //{
-        //    if (mapGenerator.mapField.ContainsKey(actualPosition))
-        //    {
-        //        mapGenerator.mapField.Remove(actualPosition);
-        //    }
-        //}
     }
 
     private void RefreshVisibleCubes(Vector3 actualCubePosition)
     {
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.unloadedMapField)
+        foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.mapField)
         {
             if (actualCube.Key == new Vector3(actualCubePosition.x + 1.0f, actualCubePosition.y, actualCubePosition.z))
             {

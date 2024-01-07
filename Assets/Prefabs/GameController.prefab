@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1960336968039664910}
   - component: {fileID: 2769546080822182058}
   - component: {fileID: 159310025209883692}
+  - component: {fileID: -8972579471220974814}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -75,7 +76,6 @@ MonoBehaviour:
     y: 16
     z: 100
   seed: 0
-  mapFieldParent: {fileID: 5190876624324944236, guid: 796f9c6a894071a42aa2fdfdfd426060, type: 3}
   chunkGenerationDistanceFromEndOfTheChunk: 0
   gridSizeSides: 0
   gridSizeHeight: 0
@@ -104,5 +104,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5807aa0a6c8931843a005800e79cd5a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-8972579471220974814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1960336968039664909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40809ff38bc3fce43aff4d83e2da1576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
