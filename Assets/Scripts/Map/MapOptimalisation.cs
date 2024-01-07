@@ -13,87 +13,87 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
         chunkGenerator = GetComponent<ChunkGenerator>();
 
-        chunkGenerator.onChunkGenerated += RefreshUnvisibleCubes;
-        mapGenerator.onCubeDestroyed += RefreshVisibleCubes;
-        mapGenerator.onCubePlaced += RefreshUnvisibleCubes;
+        chunkGenerator.onChunkGenerated += ActivateVisibleCubes;
+        mapGenerator.onCubeDestroyed += DectivateUnvisibleCubes;
+        mapGenerator.onCubePlaced += ActivateVisibleCubes;
     }
 
-    private void RefreshUnvisibleCubes()
+    private void ActivateVisibleCubes()
     {
         foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.mapField)
         {
+            if (actualCube.Value.activeInHierarchy == false)
+            {
+                continue;
+            }
+
             byte counter = 0;
-            if (mapGenerator.mapField.ContainsKey(new Vector3(actualCube.Key.x + 1.0f, actualCube.Key.y, actualCube.Key.z)))
+
+            if (mapGenerator.mapField.ContainsKey(actualCube.Key + Vector3.right))
             {
                 counter++;
             }
-            if (mapGenerator.mapField.ContainsKey(new Vector3(actualCube.Key.x - 1.0f, actualCube.Key.y, actualCube.Key.z)))
+            if (mapGenerator.mapField.ContainsKey(actualCube.Key - Vector3.right))
             {
                 counter++;
             }
-            if (mapGenerator.mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y + 1.0f, actualCube.Key.z)))
+            if (mapGenerator.mapField.ContainsKey(actualCube.Key + Vector3.up))
             {
                 counter++;
             }
-            if (mapGenerator.mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y - 1.0f, actualCube.Key.z)))
+            if (mapGenerator.mapField.ContainsKey(actualCube.Key - Vector3.up))
             {
                 counter++;
             }
-            if (mapGenerator.mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y, actualCube.Key.z + 1.0f)))
+            if (mapGenerator.mapField.ContainsKey(actualCube.Key + Vector3.forward))
             {
                 counter++;
             }
-            if (mapGenerator.mapField.ContainsKey(new Vector3(actualCube.Key.x, actualCube.Key.y, actualCube.Key.z - 1.0f)))
+            if (mapGenerator.mapField.ContainsKey(actualCube.Key - Vector3.forward))
             {
                 counter++;
             }
 
-            if (counter == 6 && !mapGenerator.unloadedMapField.ContainsKey(actualCube.Key))
+            if (counter == 6)
             {
                 actualCube.Value.SetActive(false);
             }
         }
     }
 
-    private void RefreshVisibleCubes(Vector3 actualCubePosition)
+    private void DectivateUnvisibleCubes(Vector3 targetCubePosition)
     {
         foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.mapField)
         {
-            if (actualCube.Key == new Vector3(actualCubePosition.x + 1.0f, actualCubePosition.y, actualCubePosition.z))
+            if (actualCube.Value.activeInHierarchy == true)
             {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+                continue;
             }
-            if (actualCube.Key == new Vector3(actualCubePosition.x - 1.0f, actualCubePosition.y, actualCubePosition.z))
+
+            if (actualCube.Key == targetCubePosition + Vector3.right)
             {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+                actualCube.Value.SetActive(true);
             }
-            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y + 1.0f, actualCubePosition.z))
+            if (actualCube.Key == targetCubePosition - Vector3.right)
             {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+                actualCube.Value.SetActive(true);
             }
-            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y - 1.0f, actualCubePosition.z))
+            if (actualCube.Key == targetCubePosition + Vector3.up)
             {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+                actualCube.Value.SetActive(true);
             }
-            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y, actualCubePosition.z + 1.0f))
+            if (actualCube.Key == targetCubePosition - Vector3.up)
             {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+                actualCube.Value.SetActive(true);
             }
-            if (actualCube.Key == new Vector3(actualCubePosition.x, actualCubePosition.y, actualCubePosition.z - 1.0f))
+            if (actualCube.Key == targetCubePosition + Vector3.forward)
             {
-                Debug.Log(actualCube.Value.GetComponent<CubeParameters>().cubeType);
-                ProcessRefreshOfUnvisibleCubes(actualCube.Value);
+                actualCube.Value.SetActive(true);
+            }
+            if (actualCube.Key == targetCubePosition - Vector3.forward)
+            {
+                actualCube.Value.SetActive(true);
             }
         }
-    }
-
-    private void ProcessRefreshOfUnvisibleCubes(GameObject actualCube)
-    {
-        actualCube.SetActive(true);
     }
 }
