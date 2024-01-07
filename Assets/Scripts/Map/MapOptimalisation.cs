@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class MapOptimalisation : MonoBehaviour
 {
-    public Action onCubeInstantiated;
-
     private MapGenerator mapGenerator;
     private ChunkGenerator chunkGenerator;
 
@@ -18,10 +16,11 @@ public class MapOptimalisation : MonoBehaviour
     private void Start()
     {
         mapGenerator.onCubeDestroyed += RefreshVisibleCubes;
+        mapGenerator.onCubePlaced += RefreshUnvisibleCubes;
         chunkGenerator.onChunkGenerated += RefreshUnvisibleCubes;
     }
 
-    public void RefreshUnvisibleCubes()
+    private void RefreshUnvisibleCubes()
     {
         List<Vector3> listOfPositions = new List<Vector3>();
 
@@ -55,28 +54,28 @@ public class MapOptimalisation : MonoBehaviour
 
             if (counter == 6 && !mapGenerator.unloadedMapField.ContainsKey(actualCube.Key))
             {
-                mapGenerator.unloadedMapField.Add(actualCube.Key, actualCube.Value);
-                Destroy(actualCube.Value);
-                listOfPositions.Add(actualCube.Key);
+                //mapGenerator.unloadedMapField.Add(actualCube.Key, actualCube.Value);
+                actualCube.Value.SetActive(false);
+                //listOfPositions.Add(actualCube.Key);
             }
         }
 
-        Debug.Log(mapGenerator.unloadedMapField.Count);
-        foreach (var item in mapGenerator.unloadedMapField)
-        {
-            Debug.Log(item.Value.GetComponent<CubeParameters>().cubeType);
-        }
+        //Debug.Log(mapGenerator.unloadedMapField.Count);
+        //foreach (var item in mapGenerator.unloadedMapField)
+        //{
+        //    Debug.Log(item.Value.GetComponent<CubeParameters>().cubeType);
+        //}
 
-        foreach (Vector3 actualPosition in listOfPositions)
-        {
-            if (mapGenerator.mapField.ContainsKey(actualPosition))
-            {
-                mapGenerator.mapField.Remove(actualPosition);
-            }
-        }
+        //foreach (Vector3 actualPosition in listOfPositions)
+        //{
+        //    if (mapGenerator.mapField.ContainsKey(actualPosition))
+        //    {
+        //        mapGenerator.mapField.Remove(actualPosition);
+        //    }
+        //}
     }
 
-    public void RefreshVisibleCubes(Vector3 actualCubePosition)
+    private void RefreshVisibleCubes(Vector3 actualCubePosition)
     {
         foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.unloadedMapField)
         {
@@ -115,6 +114,6 @@ public class MapOptimalisation : MonoBehaviour
 
     private void ProcessRefreshOfUnvisibleCubes(GameObject actualCube)
     {
-        Instantiate(actualCube, actualCube.transform.position, Quaternion.identity);
+        actualCube.SetActive(true);
     }
 }

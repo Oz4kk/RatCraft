@@ -37,6 +37,6 @@ public class PlaceCubeState : IState
 
         inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
 
-        mapGenerator.RefreshUnvisibleCubes();
+        mapGenerator.onCubePlaced?.Invoke();
     }
 }
