@@ -17,7 +17,7 @@ public class PlaceCubeState : IState
         this.inputManager = inputManager;
     }
 
-    public void ExecuteState()
+    public void EnterState()
     {
         Vector3? raycastHitLocation = playerCubePlacement.CalculateUpcomingCubePosition();
         if (raycastHitLocation == null)

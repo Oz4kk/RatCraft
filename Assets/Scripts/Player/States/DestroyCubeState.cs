@@ -17,7 +17,7 @@ public class DestroyCubeState : IState
         this.cubeBreakDistance = cubeBreakDistance;
     }
 
-    public void ExecuteState()
+    public void EnterState()
     {
         // Return if raycast don't hit anything
         RaycastHit hit;

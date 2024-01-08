@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IState
 {
-    void ExecuteState();
+    void EnterState();
 }
