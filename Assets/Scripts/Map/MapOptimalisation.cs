@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 public class MapOptimalisation : MonoBehaviour
 {
@@ -13,12 +14,12 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
         chunkGenerator = GetComponent<ChunkGenerator>();
 
-        chunkGenerator.onChunkGenerated += ActivateVisibleCubes;
-        mapGenerator.onCubeDestroyed += DectivateUnvisibleCubes;
-        mapGenerator.onCubePlaced += ActivateVisibleCubes;
+        chunkGenerator.onChunkGenerated += DeactivateInvisibleCubes;
+        mapGenerator.onCubeDestroyed += RectivateInvisibleCubes;
+        mapGenerator.onCubePlaced += DeactivateInvisibleCubes;
     }
 
-    private void ActivateVisibleCubes()
+    private void DeactivateInvisibleCubes()
     {
         foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.mapField)
         {
@@ -61,39 +62,33 @@ public class MapOptimalisation : MonoBehaviour
         }
     }
 
-    private void DectivateUnvisibleCubes(Vector3 targetCubePosition)
+    private void RectivateInvisibleCubes(Vector3 targetCubePosition)
     {
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.mapField)
+        Profiler.BeginSample("Reactivate cube");
+        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.right))
         {
-            if (actualCube.Value.activeInHierarchy == true)
-            {
-                continue;
-            }
-
-            if (actualCube.Key == targetCubePosition + Vector3.right)
-            {
-                actualCube.Value.SetActive(true);
-            }
-            if (actualCube.Key == targetCubePosition - Vector3.right)
-            {
-                actualCube.Value.SetActive(true);
-            }
-            if (actualCube.Key == targetCubePosition + Vector3.up)
-            {
-                actualCube.Value.SetActive(true);
-            }
-            if (actualCube.Key == targetCubePosition - Vector3.up)
-            {
-                actualCube.Value.SetActive(true);
-            }
-            if (actualCube.Key == targetCubePosition + Vector3.forward)
-            {
-                actualCube.Value.SetActive(true);
-            }
-            if (actualCube.Key == targetCubePosition - Vector3.forward)
-            {
-                actualCube.Value.SetActive(true);
-            }
+            mapGenerator.mapField[targetCubePosition + Vector3.right].SetActive(true);
         }
+        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.right))
+        {
+            mapGenerator.mapField[targetCubePosition - Vector3.right].SetActive(true);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.up))
+        {
+            mapGenerator.mapField[targetCubePosition + Vector3.up].SetActive(true);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.up))
+        {
+            mapGenerator.mapField[targetCubePosition - Vector3.up].SetActive(true);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.forward))
+        {
+            mapGenerator.mapField[targetCubePosition + Vector3.forward].SetActive(true);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.forward))
+        {
+            mapGenerator.mapField[targetCubePosition - Vector3.forward].SetActive(true);
+        }
+        Profiler.EndSample();
     }
 }
