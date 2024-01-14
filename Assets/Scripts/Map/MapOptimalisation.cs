@@ -19,15 +19,10 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
     }
 
-    private void DeactivateInvisibleCubesInChunk()
+    private void DeactivateInvisibleCubesInChunk(Dictionary<Vector3, GameObject> actualChunkField)
     {
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in mapGenerator.mapField)
+        foreach (KeyValuePair<Vector3, GameObject> actualCube in actualChunkField)
         {
-            if (actualCube.Value.activeInHierarchy == false)
-            {
-                continue;
-            }
-
             byte counter = 0;
 
             if (mapGenerator.mapField.ContainsKey(actualCube.Key + Vector3.right))
