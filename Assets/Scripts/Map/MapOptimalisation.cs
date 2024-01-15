@@ -14,111 +14,110 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
         chunkGenerator = GetComponent<ChunkGenerator>();
 
-        chunkGenerator.onChunkGenerated += DeactivateInvisibleCubesInChunk;
+        chunkGenerator.onChunkGenerated += DeactivateInvisibleCubesInNewChunk;
         mapGenerator.onCubeDestroyed += RectivateInvisibleCubesAroundBrokenCube;
         mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
     }
 
-    private void DeactivateInvisibleCubesInChunk(Dictionary<Vector3, GameObject> actualChunkField)
+    private void DeactivateInvisibleCubesInNewChunk(Dictionary<Vector3, GameObject> actualChunkField)
     {
         foreach (KeyValuePair<Vector3, GameObject> actualCube in actualChunkField)
         {
-            byte counter = 0;
-
-            if (mapGenerator.mapField.ContainsKey(actualCube.Key + Vector3.right))
-            {
-                counter++;
-            }
-            if (mapGenerator.mapField.ContainsKey(actualCube.Key - Vector3.right))
-            {
-                counter++;
-            }
-            if (mapGenerator.mapField.ContainsKey(actualCube.Key + Vector3.up))
-            {
-                counter++;
-            }
-            if (mapGenerator.mapField.ContainsKey(actualCube.Key - Vector3.up))
-            {
-                counter++;
-            }
-            if (mapGenerator.mapField.ContainsKey(actualCube.Key + Vector3.forward))
-            {
-                counter++;
-            }
-            if (mapGenerator.mapField.ContainsKey(actualCube.Key - Vector3.forward))
-            {
-                counter++;
-            }
-
-            if (counter == 6)
-            {
-                actualCube.Value.SetActive(false);
-            }
+            DeactiavateSurroundedCube(actualCube.Value);
         }
-    }    
-    
-    private void DeactivateInvisibleCubesAroundPlacedCube(Vector3 targetCubePosition)
+    }
+
+    private void DeactiavateSurroundedCube(GameObject actualCube)
     {
         byte counter = 0;
 
-        //make for cycle in which i will proceed through all these values and check if new cube hide another cubes around that cube
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.right))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.right))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.right))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.right))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.up))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.up))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.up))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.up))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.forward))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.forward))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.forward))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.forward))
         {
             counter++;
         }
 
         if (counter == 6)
         {
-            mapGenerator.mapField[targetCubePosition - Vector3.forward].SetActive(true);
+            actualCube.SetActive(false);
         }
     }
 
-    private void RectivateInvisibleCubesAroundBrokenCube(Vector3 targetCubePosition)
+    private void DeactivateInvisibleCubesAroundPlacedCube(GameObject targetCube)
+    {
+        //Make for cycle in which i will proceed through all these values and check if new cube hide another cubes around that cube
+        
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.right))
+        {
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.right]);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.right))
+        {
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.right]);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.up))
+        {
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.up]);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.up))
+        {
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.up]);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.forward))
+        {
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.forward]);
+        }
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.forward))
+        {
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.forward]);
+        }
+    }
+
+    private void RectivateInvisibleCubesAroundBrokenCube(GameObject targetCube)
     {
         Profiler.BeginSample("Reactivate cube");
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.right))
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.right))
         {
-            mapGenerator.mapField[targetCubePosition + Vector3.right].SetActive(true);
+            mapGenerator.mapField[targetCube.transform.position + Vector3.right].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.right))
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.right))
         {
-            mapGenerator.mapField[targetCubePosition - Vector3.right].SetActive(true);
+            mapGenerator.mapField[targetCube.transform.position - Vector3.right].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.up))
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.up))
         {
-            mapGenerator.mapField[targetCubePosition + Vector3.up].SetActive(true);
+            mapGenerator.mapField[targetCube.transform.position + Vector3.up].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.up))
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.up))
         {
-            mapGenerator.mapField[targetCubePosition - Vector3.up].SetActive(true);
+            mapGenerator.mapField[targetCube.transform.position - Vector3.up].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.forward))
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.forward))
         {
-            mapGenerator.mapField[targetCubePosition + Vector3.forward].SetActive(true);
+            mapGenerator.mapField[targetCube.transform.position + Vector3.forward].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCubePosition - Vector3.forward))
+        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.forward))
         {
-            mapGenerator.mapField[targetCubePosition - Vector3.forward].SetActive(true);
+            mapGenerator.mapField[targetCube.transform.position - Vector3.forward].SetActive(true);
         }
         Profiler.EndSample();
     }

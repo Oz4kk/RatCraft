@@ -21,8 +21,8 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public Action<Vector3> onCubeDestroyed;
-    public Action<Vector3> onCubePlaced;
+    public Action<GameObject> onCubeDestroyed;
+    public Action<GameObject> onCubePlaced;
 
     public GameObject greenCube;
     public GameObject blueCube;
@@ -124,7 +124,7 @@ public class MapGenerator : MonoBehaviour
         mapField.Remove(actualCube.gameObject.transform.position);
         Destroy(actualCube.gameObject);
 
-        onCubeDestroyed.Invoke(actualCube.gameObject.transform.position);
+        onCubeDestroyed.Invoke(actualCube.gameObject);
     }
 
     private void SetNewActiveChunkPrediction()
