@@ -61,6 +61,7 @@ public class MapOptimalisation : MonoBehaviour
     {
         byte counter = 0;
 
+        //make for cycle in which i will proceed through all these values and check if new cube hide another cubes around that cube
         if (mapGenerator.mapField.ContainsKey(targetCubePosition + Vector3.right))
         {
             counter++;
