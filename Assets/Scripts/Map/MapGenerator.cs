@@ -184,4 +184,16 @@ public class MapGenerator : MonoBehaviour
         DebugManager.Log($"Count of mapField: {mapField.Count}");
         return null;
     }
+
+    public Dictionary<Vector3, GameObject> GetChunkBorderCubes()
+    {
+        Dictionary<Vector3, GameObject> borderField = new Dictionary<Vector3, GameObject>();
+
+        return borderField;
+    }
+
+    public Vector3 ChooseNeighbourSide()
+    {
+        return Vector3.right;
+    }
 }

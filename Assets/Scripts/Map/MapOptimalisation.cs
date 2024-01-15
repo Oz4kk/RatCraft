@@ -23,35 +23,35 @@ public class MapOptimalisation : MonoBehaviour
     {
         foreach (KeyValuePair<Vector3, GameObject> actualCube in actualChunkField)
         {
-            DeactiavateSurroundedCube(actualCube.Value);
+            DeactiavateSurroundedCube(actualCube.Value, mapGenerator.mapField);
         }
     }
 
-    private void DeactiavateSurroundedCube(GameObject actualCube)
+    private void DeactiavateSurroundedCube(GameObject actualCube, Dictionary<Vector3, GameObject> targetFieldOfCubes)
     {
         byte counter = 0;
 
-        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.right))
+        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position + Vector3.right))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.right))
+        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position - Vector3.right))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.up))
+        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position + Vector3.up))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.up))
+        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position - Vector3.up))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.forward))
+        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position + Vector3.forward))
         {
             counter++;
         }
-        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.forward))
+        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position - Vector3.forward))
         {
             counter++;
         }
@@ -63,32 +63,30 @@ public class MapOptimalisation : MonoBehaviour
     }
 
     private void DeactivateInvisibleCubesAroundPlacedCube(GameObject targetCube)
-    {
-        //Make for cycle in which i will proceed through all these values and check if new cube hide another cubes around that cube
-        
+    {        
         if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.right))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.right]);
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.right], mapGenerator.mapField);
         }
         if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.right))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.right]);
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.right], mapGenerator.mapField);
         }
         if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.up))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.up]);
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.up], mapGenerator.mapField);
         }
         if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.up))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.up]);
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.up], mapGenerator.mapField);
         }
         if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.forward))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.forward]);
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.forward], mapGenerator.mapField);
         }
         if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.forward))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.forward]);
+            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.forward], mapGenerator.mapField);
         }
     }
 

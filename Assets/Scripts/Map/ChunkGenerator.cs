@@ -101,6 +101,7 @@ public class ChunkGenerator : MonoBehaviour
         DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
 
         // Check if neighbour chunk exist and take cubes that are neighbours with actual chunk and add it to that dictionary
+
         onChunkGenerated?.Invoke(actualChunkField);
     }
 
