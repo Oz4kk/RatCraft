@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
         inputManager = GetComponent<InputManager>();
         inventoryHandler = GetComponent<InventoryHandler>();
         mapGenerator = gameController.GetComponent<MapGenerator>();
-        placeCubeState = new PlaceCubeState(playerCubePlacement, inventoryHandler, mapGenerator, inputManager);
+        placeCubeState = new PlaceCubeState(playerCubePlacement, inventoryHandler, mapGenerator);
         destroyState = new DestroyCubeState(inputManager, mapGenerator, inventoryHandler, cubeBreakDistance);
         currentState = placeCubeState;
 

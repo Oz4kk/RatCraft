@@ -7,14 +7,12 @@ public class PlaceCubeState : IState
     private PlayerCubePlacement playerCubePlacement;
     private InventoryHandler inventoryHandler;
     private MapGenerator mapGenerator;
-    private InputManager inputManager;
 
-    public PlaceCubeState(PlayerCubePlacement playerCubePlacement, InventoryHandler inventoryHandler, MapGenerator mapGenerator, InputManager inputManager)
+    public PlaceCubeState(PlayerCubePlacement playerCubePlacement, InventoryHandler inventoryHandler, MapGenerator mapGenerator)
     {
         this.playerCubePlacement = playerCubePlacement;
         this.inventoryHandler = inventoryHandler;
         this.mapGenerator = mapGenerator;
-        this.inputManager = inputManager;
     }
 
     public void EnterState()
@@ -36,7 +34,6 @@ public class PlaceCubeState : IState
         CubeParameters actualCubeParametres = actualCube.GetComponent<CubeParameters>();
 
         inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
-
         mapGenerator.onCubePlaced?.Invoke(actualCube);
     }
 }
