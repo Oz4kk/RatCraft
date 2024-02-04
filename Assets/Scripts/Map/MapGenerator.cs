@@ -39,6 +39,7 @@ public class MapGenerator : MonoBehaviour
     private ChunkGenerator chunkGenerator;
 
     [HideInInspector] public GridSize gridSize = new GridSize(100, 16, 100);
+
     public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
     public Dictionary<Vector3, GameObject> mapFieldData = new Dictionary<Vector3, GameObject>();
 
@@ -47,8 +48,10 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
     [SerializeField] private uint gridSizeSides;
     [SerializeField] private uint gridSizeHeight;
-    private List<Vector3> listOfCentersData = new List<Vector3>();
-    private List<Vector3> listOfCenters = new List<Vector3>();
+    private Dictionary<Vector3, Dictionary<Vector3, GameObject>> listOfDataCenters;
+    private Dictionary<Vector3, Dictionary<Vector3, GameObject>> listOfGeneratedCenters;
+    //private List<Vector3> listOfCentersData = new List<Vector3>();
+    //private List<Vector3> listOfGeneratedCenters = new List<Vector3>();
     private Vector3 middlePointOfLastChunk;
     private float xPositivePrediction;
     private float xNegativePrediction;
@@ -70,13 +73,49 @@ public class MapGenerator : MonoBehaviour
         player = playerSpawn.spawnedPlayer;
         SetNewPredictionValues(new Vector3(player.transform.position.x, 0.0f, player.transform.position.z));
         ChunkGenerationSequence(middlePointOfLastChunk);
-
+        DataGenerationOfCubesAroundInitialChunk();
     }
+
 
     private void Update()
     {
         ProcessChunkGenerationDistance();
         SetNewActiveChunkPrediction();
+    }
+    private void DataGenerationOfCubesAroundInitialChunk()
+    {
+        Vector3 middlePointOfPredictedChunk = middlePointOfLastChunk;
+
+        middlePointOfPredictedChunk.x = middlePointOfPredictedChunk.x + (float)gridSizeSides;
+        ChunkDataGenerationSequence(middlePointOfPredictedChunk);
+
+        middlePointOfPredictedChunk.z = middlePointOfPredictedChunk.z + (float)gridSizeSides;
+        ChunkDataGenerationSequence(middlePointOfPredictedChunk);
+
+        middlePointOfPredictedChunk.z = middlePointOfPredictedChunk.z - (float)gridSizeSides * 2.0f;
+        ChunkDataGenerationSequence(middlePointOfPredictedChunk);
+
+        middlePointOfPredictedChunk = middlePointOfLastChunk;
+        middlePointOfPredictedChunk.z = middlePointOfPredictedChunk.z + (float)gridSizeSides;
+        ChunkDataGenerationSequence(middlePointOfPredictedChunk);
+
+        middlePointOfPredictedChunk.z = middlePointOfPredictedChunk.z - (float)gridSizeSides * 2.0f;
+        ChunkDataGenerationSequence(middlePointOfPredictedChunk);
+
+        middlePointOfPredictedChunk = middlePointOfLastChunk;
+        middlePointOfPredictedChunk.x = middlePointOfPredictedChunk.x - (float)gridSizeSides;
+        ChunkDataGenerationSequence(middlePointOfPredictedChunk);
+
+        middlePointOfPredictedChunk.z = middlePointOfPredictedChunk.z + (float)gridSizeSides;
+        ChunkDataGenerationSequence(middlePointOfPredictedChunk);
+
+        middlePointOfPredictedChunk.z = middlePointOfPredictedChunk.z - (float)gridSizeSides * 2.0f;
+        ChunkDataGenerationSequence(middlePointOfPredictedChunk);
+
+        foreach (var item in listOfDataCenters)
+        {
+            //Debug.Log(item.GetStringOfVector3());
+        }
     }
 
     private void SetNewPredictionValues(Vector3 middlePointOfActualChunk)
@@ -91,35 +130,35 @@ public class MapGenerator : MonoBehaviour
 
     private void ProcessChunkGenerationDistance()
     {
-        Vector3 centerOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
+        Vector3 centerPointOfUpcomingChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
         if (player.transform.position.x > xPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerOfActualChunk.x += gridSize.x;
+            centerPointOfUpcomingChunk.x += gridSize.x;
         }
         else if (player.transform.position.x < xNegativePrediction + chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerOfActualChunk.x -= gridSize.x;
+            centerPointOfUpcomingChunk.x -= gridSize.x;
         }
         else if (player.transform.position.z > zPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerOfActualChunk.z += gridSize.x;
+            centerPointOfUpcomingChunk.z += gridSize.x;
         }
         else if (player.transform.position.z < zNegativePrediction + chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerOfActualChunk.z -= gridSize.x;
+            centerPointOfUpcomingChunk.z -= gridSize.x;
         }
         else
         {
             return;
         }
-        IfMiddlePointDontExistGenerateChunk(centerOfActualChunk);
+        IfMiddlePointDontExistGenerateChunk(centerPointOfUpcomingChunk);
     }
 
-    private void IfMiddlePointDontExistGenerateChunk(Vector3 centerOfActualChunk)
+    private void IfMiddlePointDontExistGenerateChunk(Vector3 centerOfUpcomingChunk)
     {
-        if (!listOfCenters.Contains(centerOfActualChunk))
+        if (!listOfGeneratedCenters.ContainsKey(centerOfUpcomingChunk))
         {
-            ChunkGenerationSequence(centerOfActualChunk);
+            ChunkGenerationSequence(centerOfUpcomingChunk);
         }
     }
 
@@ -135,49 +174,61 @@ public class MapGenerator : MonoBehaviour
     {
         DebugManager.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
 
-        Vector3 centerPointOfActualChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
+        Vector3 centerPointOfUpcomingChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
 
         if (player.transform.position.x > xPositivePrediction)
         {
-            centerPointOfActualChunk.x += gridSize.x;
+            centerPointOfUpcomingChunk.x += gridSize.x;
         }
         else if (player.transform.position.x < xNegativePrediction)
         {
-            centerPointOfActualChunk.x -= gridSize.x;
+            centerPointOfUpcomingChunk.x -= gridSize.x;
         }
         else if (player.transform.position.z > zPositivePrediction)
         {
-            centerPointOfActualChunk.z += gridSize.x;
+            centerPointOfUpcomingChunk.z += gridSize.x;
         }
         else if (player.transform.position.z < zNegativePrediction)
         {
-            centerPointOfActualChunk.z -= gridSize.x;
+            centerPointOfUpcomingChunk.z -= gridSize.x;
         }
         else
         {
             return;
         }
 
-        SetNewPredictionValues(centerPointOfActualChunk);
+        SetNewPredictionValues(centerPointOfUpcomingChunk);
     }
 
-    private void ChunkGenerationSequence(Vector3 centerOfActualChunk)
+    private void ChunkGenerationSequence(Vector3 centerOfUpcomingChunk)
     {
-        listOfCenters.Add(centerOfActualChunk);
-        Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(centerOfActualChunk);
-        StartCoroutine(chunkGenerator.GenerateChunkCoroutine(newChunkSpawnPosition));
+        Vector3 startingChunkGenerationPosition = ReturnBeginningPositionOfGeneratedChunk(centerOfUpcomingChunk);
+        Dictionary<Vector3, GameObject> predictedChunkField = GeneratePreloadedChunk(centerOfUpcomingChunk);
+
+        listOfGeneratedCenters.Add(centerOfUpcomingChunk, predictedChunkField);
     }    
     
-    private void ChunkGenerationDataSequence(Vector3 centerOfPredictedChunk)
+    private void ChunkDataGenerationSequence(Vector3 centerOfPredictedChunk)
     {
-        listOfCenters.Add(centerOfPredictedChunk);
-        Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(centerOfPredictedChunk);
-        StartCoroutine(chunkGenerator.GenerateChunkCoroutine(newChunkSpawnPosition));
+        Vector3 startingChunkGenerationPosition = ReturnBeginningPositionOfGeneratedChunk(centerOfPredictedChunk);
+        Dictionary<Vector3, GameObject> predictedChunkFieldData = chunkGenerator.GenerateChunkData(startingChunkGenerationPosition);
+
+        listOfDataCenters.Add(centerOfPredictedChunk, predictedChunkFieldData);
     }
 
-    private Vector3 ReturnNewChunkPosition(Vector3 centerOfChunk)
+    private Vector3 ReturnBeginningPositionOfGeneratedChunk(Vector3 centerOfChunk)
     {
         return new Vector3(centerOfChunk.x - gridSize.x / 2, 0.0f, centerOfChunk.z - gridSize.x / 2);
+    }
+
+    private Dictionary<Vector3, GameObject> GeneratePreloadedChunk(Vector3 centerOfUpcommingChunk)
+    {
+        foreach (var item in listOfDataCenters[centerOfUpcommingChunk])
+        {
+            Instantiate(item.Value);
+        }
+
+        return listOfDataCenters[centerOfUpcommingChunk];
     }
 
     public GameObject? InstantiateAndReturnCube(Vector3 spawnPosition, GameObject cubePrefab)

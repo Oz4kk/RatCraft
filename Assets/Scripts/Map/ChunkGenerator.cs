@@ -22,69 +22,69 @@ public class ChunkGenerator : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
     }
 
-    public IEnumerator GenerateChunkCoroutine(Vector3 centerOfActualChunk)
-    {
-        uint debugBlueCubeCounter = 0;
-        uint dubugGreenCubeCounter = 0;
-        uint debugBrownCubeCounter = 0;
-        uint debugPinkCubeCounter = 0;
+    //public IEnumerator GenerateChunkCoroutine(Vector3 centerOfActualChunk)
+    //{
+    //    uint debugBlueCubeCounter = 0;
+    //    uint dubugGreenCubeCounter = 0;
+    //    uint debugBrownCubeCounter = 0;
+    //    uint debugPinkCubeCounter = 0;
 
-        int xCycleCounter = (int)centerOfActualChunk.x;
+    //    int xCycleCounter = (int)centerOfActualChunk.x;
 
-        Dictionary<Vector3, GameObject> actualChunkField = new Dictionary<Vector3, GameObject>();
+    //    Dictionary<Vector3, GameObject> actualChunkField = new Dictionary<Vector3, GameObject>();
 
-        for (int x = (int)centerOfActualChunk.x; x < mapGenerator.gridSize.x + (int)centerOfActualChunk.x; x++)
-        {
-            for (int y = 0; y < mapGenerator.gridSize.y; y++)
-            {
-                for (int z = (int)centerOfActualChunk.z; z < mapGenerator.gridSize.z + (int)centerOfActualChunk.z; z++)
-                {
-                    float perlinValueCubes = Mathf.PerlinNoise(x * sidesPerlinScale + mapGenerator.seed, z * sidesPerlinScale + mapGenerator.seed);
+    //    for (int x = (int)centerOfActualChunk.x; x < mapGenerator.gridSize.x + (int)centerOfActualChunk.x; x++)
+    //    {
+    //        for (int y = 0; y < mapGenerator.gridSize.y; y++)
+    //        {
+    //            for (int z = (int)centerOfActualChunk.z; z < mapGenerator.gridSize.z + (int)centerOfActualChunk.z; z++)
+    //            {
+    //                float perlinValueCubes = Mathf.PerlinNoise(x * sidesPerlinScale + mapGenerator.seed, z * sidesPerlinScale + mapGenerator.seed);
 
-                    if (perlinValueCubes > heightLimit * y)
-                    {
-                        float sampleXZ = Mathf.PerlinNoise(Mathf.Floor(x / 5) * sidesPerlinScale + mapGenerator.seed, Mathf.Floor(z / 5) * sidesPerlinScale + mapGenerator.seed);
-                        float sampleY = Mathf.PerlinNoise(Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed, Mathf.Floor(x / 2) * heightPerlinScale + mapGenerator.seed);
+    //                if (perlinValueCubes > heightLimit * y)
+    //                {
+    //                    float sampleXZ = Mathf.PerlinNoise(Mathf.Floor(x / 5) * sidesPerlinScale + mapGenerator.seed, Mathf.Floor(z / 5) * sidesPerlinScale + mapGenerator.seed);
+    //                    float sampleY = Mathf.PerlinNoise(Mathf.Floor(y / 2) * heightPerlinScale + mapGenerator.seed, Mathf.Floor(x / 2) * heightPerlinScale + mapGenerator.seed);
 
-                        Vector3 upcomingCubePosition = new Vector3(x, y, z);
+    //                    Vector3 upcomingCubePosition = new Vector3(x, y, z);
 
-                        float resultSample = (sampleXZ + sampleY) / 2;
+    //                    float resultSample = (sampleXZ + sampleY) / 2;
 
-                        if (resultSample > 0.5)
-                        {
-                            ChunkGenerationSequence(upcomingCubePosition, mapGenerator.greenCube, ref dubugGreenCubeCounter, ref actualChunkField);
-                        }
-                        else if (resultSample > 0.375)
-                        {
-                            ChunkGenerationSequence(upcomingCubePosition, mapGenerator.brownCube, ref debugBrownCubeCounter, ref actualChunkField);
-                        }
-                        else if (resultSample > 0.25)
-                        {
-                            ChunkGenerationSequence(upcomingCubePosition, mapGenerator.blueCube, ref debugBlueCubeCounter, ref actualChunkField);
-                        }
-                        else
-                        {
-                            ChunkGenerationSequence(upcomingCubePosition, mapGenerator.pinkCube, ref debugPinkCubeCounter, ref actualChunkField);
-                        }
-                    }
-                }
-                if (x > xCycleCounter + 5)
-                {
-                    yield return new WaitForEndOfFrame();
+    //                    if (resultSample > 0.5)
+    //                    {
+    //                        ChunkGenerationSequence(upcomingCubePosition, mapGenerator.greenCube, ref dubugGreenCubeCounter, ref actualChunkField);
+    //                    }
+    //                    else if (resultSample > 0.375)
+    //                    {
+    //                        ChunkGenerationSequence(upcomingCubePosition, mapGenerator.brownCube, ref debugBrownCubeCounter, ref actualChunkField);
+    //                    }
+    //                    else if (resultSample > 0.25)
+    //                    {
+    //                        ChunkGenerationSequence(upcomingCubePosition, mapGenerator.blueCube, ref debugBlueCubeCounter, ref actualChunkField);
+    //                    }
+    //                    else
+    //                    {
+    //                        ChunkGenerationSequence(upcomingCubePosition, mapGenerator.pinkCube, ref debugPinkCubeCounter, ref actualChunkField);
+    //                    }
+    //                }
+    //            }
+    //            if (x > xCycleCounter + 5)
+    //            {
+    //                yield return new WaitForEndOfFrame();
 
-                    xCycleCounter = x;
-                }
-            }
-        }
-        DebugManager.Log($"Count of green cubes - {dubugGreenCubeCounter}");
-        DebugManager.Log($"Count of blue cubes - {debugBlueCubeCounter}");
-        DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
-        DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
+    //                xCycleCounter = x;
+    //            }
+    //        }
+    //    }
+    //    DebugManager.Log($"Count of green cubes - {dubugGreenCubeCounter}");
+    //    DebugManager.Log($"Count of blue cubes - {debugBlueCubeCounter}");
+    //    DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
+    //    DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
 
-        onChunkGenerated?.Invoke(actualChunkField);
-    }    
+    //    onChunkGenerated?.Invoke(actualChunkField);
+    //}
     
-    public void GenerateChunkData(Vector3 centerOfActualChunk)
+    public Dictionary<Vector3, GameObject> GenerateChunkData(Vector3 startingChunkGenerationPosition)
     {
         uint debugBlueCubeCounter = 0;
         uint dubugGreenCubeCounter = 0;
@@ -93,11 +93,11 @@ public class ChunkGenerator : MonoBehaviour
 
         Dictionary<Vector3, GameObject> actualChunkFieldData = new Dictionary<Vector3, GameObject>();
 
-        for (int x = (int)centerOfActualChunk.x; x < mapGenerator.gridSize.x + (int)centerOfActualChunk.x; x++)
+        for (int x = (int)startingChunkGenerationPosition.x; x < mapGenerator.gridSize.x + (int)startingChunkGenerationPosition.x; x++)
         {
             for (int y = 0; y < mapGenerator.gridSize.y; y++)
             {
-                for (int z = (int)centerOfActualChunk.z; z < mapGenerator.gridSize.z + (int)centerOfActualChunk.z; z++)
+                for (int z = (int)startingChunkGenerationPosition.z; z < mapGenerator.gridSize.z + (int)startingChunkGenerationPosition.z; z++)
                 {
                     float perlinValueCubes = Mathf.PerlinNoise(x * sidesPerlinScale + mapGenerator.seed, z * sidesPerlinScale + mapGenerator.seed);
 
@@ -134,6 +134,8 @@ public class ChunkGenerator : MonoBehaviour
         DebugManager.Log($"Count of blue cubes - {debugBlueCubeCounter}");
         DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
         DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
+
+        return actualChunkFieldData;
     }
 
     private void ChunkGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, GameObject> actualChunkField)
@@ -151,12 +153,13 @@ public class ChunkGenerator : MonoBehaviour
         ChooseTexture(actualCube);
         debugActualCubeCounter++;
 
+        actualChunkFieldData.Add(actualCube.transform.position, actualCube);
         mapGenerator.mapFieldData.Add(actualCube.transform.position, actualCube);
     }
 
     private void ChooseTexture(GameObject actualCube)
     {
-        Material actualMaterial = actualCube.GetComponent<Renderer>().material;
+        Material actualMaterial = actualCube.GetComponent<Renderer>().sharedMaterial;
         if (actualCube.transform.position.y > grassValue)
         {
             actualMaterial.mainTexture = mapGenerator.grass;
