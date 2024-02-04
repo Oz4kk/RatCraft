@@ -40,11 +40,14 @@ public class MapGenerator : MonoBehaviour
 
     [HideInInspector] public GridSize gridSize = new GridSize(100, 16, 100);
     public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
+    public Dictionary<Vector3, GameObject> mapFieldData = new Dictionary<Vector3, GameObject>();
+
     public float seed;
 
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
     [SerializeField] private uint gridSizeSides;
     [SerializeField] private uint gridSizeHeight;
+    private List<Vector3> listOfCentersData = new List<Vector3>();
     private List<Vector3> listOfCenters = new List<Vector3>();
     private Vector3 middlePointOfLastChunk;
     private float xPositivePrediction;
@@ -67,6 +70,7 @@ public class MapGenerator : MonoBehaviour
         player = playerSpawn.spawnedPlayer;
         SetNewPredictionValues(new Vector3(player.transform.position.x, 0.0f, player.transform.position.z));
         ChunkGenerationSequence(middlePointOfLastChunk);
+
     }
 
     private void Update()
@@ -162,6 +166,13 @@ public class MapGenerator : MonoBehaviour
         listOfCenters.Add(centerOfActualChunk);
         Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(centerOfActualChunk);
         StartCoroutine(chunkGenerator.GenerateChunkCoroutine(newChunkSpawnPosition));
+    }    
+    
+    private void ChunkGenerationDataSequence(Vector3 centerOfPredictedChunk)
+    {
+        listOfCenters.Add(centerOfPredictedChunk);
+        Vector3 newChunkSpawnPosition = ReturnNewChunkPosition(centerOfPredictedChunk);
+        StartCoroutine(chunkGenerator.GenerateChunkCoroutine(newChunkSpawnPosition));
     }
 
     private Vector3 ReturnNewChunkPosition(Vector3 centerOfChunk)
@@ -175,7 +186,6 @@ public class MapGenerator : MonoBehaviour
         {
             GameObject actualCube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
             actualCube.transform.parent = transform;
-            actualCube.GetComponent<CubeParameters>();
             mapField.Add(spawnPosition, actualCube);
 
             return actualCube;
