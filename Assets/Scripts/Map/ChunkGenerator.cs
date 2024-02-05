@@ -138,6 +138,18 @@ public class ChunkGenerator : MonoBehaviour
         return actualChunkFieldData;
     }
 
+    public Dictionary<Vector3, GameObject> GeneratePreloadedChunk(Vector3 centerOfUpcommingChunk)
+    {
+        Dictionary<Vector3, GameObject> chunkField = mapGenerator.dictionaryOfDataCentersWithItsChunkField[centerOfUpcommingChunk];
+
+        foreach (KeyValuePair<Vector3, GameObject> actualCube in chunkField)
+        {
+            GameObject cube = mapGenerator.InstantiateAndReturnCube(actualCube.Key, actualCube.Value);
+        }
+
+        return chunkField;
+    }
+
     private void ChunkGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, GameObject> actualChunkField)
     {
         GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, actualCubecColor);
