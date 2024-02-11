@@ -48,8 +48,12 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
     [SerializeField] private uint gridSizeSides;
     [SerializeField] private uint gridSizeHeight;
+
     public Dictionary<Vector3, Dictionary<Vector3, GameObject>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector3, Dictionary<Vector3, GameObject>>();
-    private Vector3 middlePointOfLastChunk;
+
+    private Vector3 centerOfActualChunk;
+    private Dictionary<Vector3, GameObject> chunkFieldOfActualChunk;
+
     private float xPositivePrediction;
     private float xNegativePrediction;
     private float zPositivePrediction;
@@ -69,7 +73,7 @@ public class MapGenerator : MonoBehaviour
     {
         player = playerSpawn.spawnedPlayer;
         SetNewPredictionValues(new Vector3(player.transform.position.x, 0.0f, player.transform.position.z));
-        ChunkGenerationSequence(middlePointOfLastChunk);
+        ChunkGenerationSequence(centerOfActualChunk);
     }
 
 
@@ -81,7 +85,7 @@ public class MapGenerator : MonoBehaviour
 
     private void SetNewPredictionValues(Vector3 middlePointOfActualChunk)
     {
-        middlePointOfLastChunk = middlePointOfActualChunk;
+        centerOfActualChunk = middlePointOfActualChunk;
 
         xPositivePrediction = middlePointOfActualChunk.x + gridSize.x / 2;
         xNegativePrediction = middlePointOfActualChunk.x - gridSize.x / 2;
@@ -91,7 +95,7 @@ public class MapGenerator : MonoBehaviour
 
     private void ProcessChunkGenerationDistance()
     {
-        Vector3 centerPointOfUpcomingChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
+        Vector3 centerPointOfUpcomingChunk = new Vector3(centerOfActualChunk.x, 0.0f, centerOfActualChunk.z);
         if (player.transform.position.x > xPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
             centerPointOfUpcomingChunk.x += gridSize.x;
@@ -133,9 +137,9 @@ public class MapGenerator : MonoBehaviour
 
     private void SetNewActiveChunkPrediction()
     {
-        DebugManager.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
+        DebugManager.Log($"Middle point of last visited chunk: {centerOfActualChunk.ToString()}");
 
-        Vector3 centerPointOfUpcomingChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
+        Vector3 centerPointOfUpcomingChunk = new Vector3(centerOfActualChunk.x, 0.0f, centerOfActualChunk.z);
 
         if (player.transform.position.x > xPositivePrediction)
         {
@@ -170,7 +174,62 @@ public class MapGenerator : MonoBehaviour
 
     private void ChunkOptimalisationSequence(Vector3 centerOfUpcommingChunk)
     {
+        Dictionary<Vector3, GameObject> dictionaryOfMegaChunk = new Dictionary<Vector3, GameObject>();
 
+        Dictionary<Vector3, GameObject> actualDictionary = dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk];
+
+        foreach (KeyValuePair<Vector3, GameObject> actualCube in actualDictionary)
+        {
+            dictionaryOfMegaChunk.Add(actualCube.Key, actualCube.Value);
+        }
+
+        centerOfUpcommingChunk.x += gridSizeSides;
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+
+        }
+
+        centerOfUpcommingChunk.z -= gridSizeSides;
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+
+        }
+
+        centerOfUpcommingChunk.z += gridSizeSides * 2.0f;
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+
+        }
+
+        centerOfUpcommingChunk.x -= gridSizeSides;
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+
+        }
+
+        centerOfUpcommingChunk.z -= gridSizeSides * 2;
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+
+        }
+
+        centerOfUpcommingChunk.x -= gridSizeSides;
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+
+        }
+
+        centerOfUpcommingChunk.z -= gridSizeSides;
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+
+        }
+
+        centerOfUpcommingChunk.z -= gridSizeSides;
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+
+        }
     }
 
     private void DataGenerationSequence(Vector3 centerOfPredictedChunk)
