@@ -140,7 +140,7 @@ public class ChunkGenerator : MonoBehaviour
 
     public Dictionary<Vector3, GameObject> GeneratePreloadedChunk(Vector3 centerOfUpcommingChunk)
     {
-        Dictionary<Vector3, GameObject> chunkField = mapGenerator.dictionaryOfDataCentersWithItsChunkField[centerOfUpcommingChunk];
+        Dictionary<Vector3, GameObject> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk];
 
         foreach (KeyValuePair<Vector3, GameObject> actualCube in chunkField)
         {
