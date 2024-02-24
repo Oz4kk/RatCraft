@@ -6,6 +6,8 @@ using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCou
 
 public class MapGenerator : MonoBehaviour
 {
+    public Action<Dictionary<Vector3, GameObject>> onMegaChunkFullFilled;
+
     [Serializable]
     public struct GridSize
     {
@@ -170,14 +172,91 @@ public class MapGenerator : MonoBehaviour
 
     private void ChunkOptimalisationSequence(Vector3 centerOfUpcommingChunk)
     {
+        Dictionary<Vector3, GameObject> dictionaryOfMegaChunk = new Dictionary<Vector3, GameObject>();
 
+        FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+
+        centerOfUpcommingChunk.x += gridSizeSides;
+        DebugManager.Log(centerOfUpcommingChunk.GetStringOfVector3());
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+            Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+            FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+        }
+
+        centerOfUpcommingChunk.z -= gridSizeSides;
+        DebugManager.Log(centerOfUpcommingChunk.GetStringOfVector3());
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+            Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+            FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+        }
+
+        centerOfUpcommingChunk.z += gridSizeSides * 2.0f;
+        DebugManager.Log(centerOfUpcommingChunk.GetStringOfVector3());
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+            Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+            FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+        }
+
+        centerOfUpcommingChunk.x -= gridSizeSides;
+        DebugManager.Log(centerOfUpcommingChunk.GetStringOfVector3());
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+            Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+            FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+        }
+
+        centerOfUpcommingChunk.z -= gridSizeSides * 2;
+        DebugManager.Log(centerOfUpcommingChunk.GetStringOfVector3());
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+            Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+            FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+        }
+
+        centerOfUpcommingChunk.x -= gridSizeSides;
+        DebugManager.Log(centerOfUpcommingChunk.GetStringOfVector3());
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+            Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+            FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+        }
+
+        centerOfUpcommingChunk.z += gridSizeSides;
+        Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+            Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+            FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+        }
+
+        centerOfUpcommingChunk.z += gridSizeSides;
+        Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+        if (dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcommingChunk))
+        {
+            Debug.Log(centerOfUpcommingChunk.GetStringOfVector3());
+            FillMegaChunk(centerOfUpcommingChunk, ref dictionaryOfMegaChunk);
+        }
+
+        onMegaChunkFullFilled.Invoke(dictionaryOfMegaChunk);
+    }
+
+    private void FillMegaChunk(Vector3 centerOfUpcommingChunk, ref Dictionary<Vector3, GameObject> dictionaryOfMegaChunk)
+    {
+        Dictionary<Vector3, GameObject> actualDictionary = dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk];
+        foreach (KeyValuePair<Vector3, GameObject> actualCube in actualDictionary)
+        {
+            dictionaryOfMegaChunk.Add(actualCube.Key, actualCube.Value);
+        }
     }
 
     private void DataGenerationSequence(Vector3 centerOfPredictedChunk)
     {
         Vector3 startingChunkGenerationPosition = ReturnBeginningPositionOfGeneratedChunk(centerOfPredictedChunk);
         Dictionary<Vector3, GameObject> predictedDataChunkField = chunkGenerator.GenerateChunkData(startingChunkGenerationPosition);
-        
+
         dictionaryOfCentersWithItsChunkField.Add(centerOfPredictedChunk, predictedDataChunkField);
     }
 

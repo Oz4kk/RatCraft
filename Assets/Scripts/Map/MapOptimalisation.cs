@@ -14,7 +14,7 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
         chunkGenerator = GetComponent<ChunkGenerator>();
 
-        chunkGenerator.onChunkGenerated += DeactivateInvisibleCubesInNewChunk;
+        mapGenerator.onMegaChunkFullFilled += DeactivateInvisibleCubesInNewChunk;
         mapGenerator.onCubeDestroyed += RectivateInvisibleCubesAroundBrokenCube;
         mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
     }

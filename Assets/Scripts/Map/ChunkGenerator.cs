@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    public Action<Dictionary<Vector3, GameObject>> onChunkGenerated;
-
     private MapGenerator mapGenerator;
 
     [SerializeField] private float sidesPerlinScale = 0.0f;
