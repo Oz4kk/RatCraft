@@ -14,44 +14,97 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
         chunkGenerator = GetComponent<ChunkGenerator>();
 
-        mapGenerator.onMegaChunkFullFilled += DeactivateInvisibleCubesInNewChunk;
+        mapGenerator.onDataOfNewChunkGenerated += DeactivateInvisibleCubesInNewChunk;
         mapGenerator.onCubeDestroyed += RectivateInvisibleCubesAroundBrokenCube;
         mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
     }
 
-    private void DeactivateInvisibleCubesInNewChunk(Dictionary<Vector3, GameObject> actualChunkField)
+    private void DeactivateInvisibleCubesInNewChunk(Dictionary<Vector3, GameObject> actualChunkField, Vector3 centerOfUpcomingChunk)
     {
         foreach (KeyValuePair<Vector3, GameObject> actualCube in actualChunkField)
         {
-            DeactiavateSurroundedCube(actualCube.Value, mapGenerator.mapField);
+            OptimaliseDataOfNewChunk(actualCube.Value, centerOfUpcomingChunk, actualChunkField);
         }
     }
 
-    private void DeactiavateSurroundedCube(GameObject actualCube, Dictionary<Vector3, GameObject> targetFieldOfCubes)
+    private void OptimaliseDataOfNewChunk(GameObject actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, GameObject> actualChunkField)
+    {
+        DeactiavateSurroundedCubeData(actualCube, actualChunkField);
+
+        Vector3 actualCubePosition = actualCube.transform.position;
+
+        if (actualCubePosition.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        {
+
+        }        
+        if (actualCubePosition.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        {
+
+        }        
+        if (actualCubePosition.x == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        {
+
+        }        
+        if (actualCubePosition.x == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        {
+
+        }
+    }
+    private void DeactiavateSurroundedCubeData(GameObject actualCube, Dictionary<Vector3, GameObject> actualChunkField)
+    {
+        if (!actualChunkField.ContainsKey(actualCube.transform.position + Vector3.right))
+        {
+            return;
+        }
+        if (!actualChunkField.ContainsKey(actualCube.transform.position - Vector3.right))
+        {
+            return;
+        }
+        if (!actualChunkField.ContainsKey(actualCube.transform.position + Vector3.up))
+        {
+            return;
+        }
+        if (!actualChunkField.ContainsKey(actualCube.transform.position - Vector3.up))
+        {
+            return;
+        }
+        if (!actualChunkField.ContainsKey(actualCube.transform.position + Vector3.forward))
+        {
+            return;
+        }
+        if (!actualChunkField.ContainsKey(actualCube.transform.position - Vector3.forward))
+        {
+            return;
+        }
+ 
+        actualCube.GetComponent<CubeParameters>().isCubeDataSurrounded = true;
+    }
+
+    private void DeactiavateSurroundedCube(GameObject actualCube, Dictionary<Vector3, GameObject> actualChunkField)
     {
         byte counter = 0;
 
-        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position + Vector3.right))
+        if (actualChunkField.ContainsKey(actualCube.transform.position + Vector3.right))
         {
             counter++;
         }
-        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position - Vector3.right))
+        if (actualChunkField.ContainsKey(actualCube.transform.position - Vector3.right))
         {
             counter++;
         }
-        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position + Vector3.up))
+        if (actualChunkField.ContainsKey(actualCube.transform.position + Vector3.up))
         {
             counter++;
         }
-        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position - Vector3.up))
+        if (actualChunkField.ContainsKey(actualCube.transform.position - Vector3.up))
         {
             counter++;
         }
-        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position + Vector3.forward))
+        if (actualChunkField.ContainsKey(actualCube.transform.position + Vector3.forward))
         {
             counter++;
         }
-        if (targetFieldOfCubes.ContainsKey(actualCube.transform.position - Vector3.forward))
+        if (actualChunkField.ContainsKey(actualCube.transform.position - Vector3.forward))
         {
             counter++;
         }
@@ -62,60 +115,60 @@ public class MapOptimalisation : MonoBehaviour
         }
     }
 
-    private void DeactivateInvisibleCubesAroundPlacedCube(GameObject targetCube)
+    private void DeactivateInvisibleCubesAroundPlacedCube(GameObject actualCube)
     {        
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.right))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.right))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.right], mapGenerator.mapField);
+            DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position + Vector3.right], mapGenerator.mapField);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.right))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.right))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.right], mapGenerator.mapField);
+            DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position - Vector3.right], mapGenerator.mapField);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.up))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.up))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.up], mapGenerator.mapField);
+            DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position + Vector3.up], mapGenerator.mapField);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.up))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.up))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.up], mapGenerator.mapField);
+            DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position - Vector3.up], mapGenerator.mapField);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.forward))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.forward))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position + Vector3.forward], mapGenerator.mapField);
+            DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position + Vector3.forward], mapGenerator.mapField);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.forward))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.forward))
         {
-            DeactiavateSurroundedCube(mapGenerator.mapField[targetCube.transform.position - Vector3.forward], mapGenerator.mapField);
+            DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position - Vector3.forward], mapGenerator.mapField);
         }
     }
 
-    private void RectivateInvisibleCubesAroundBrokenCube(GameObject targetCube)
+    private void RectivateInvisibleCubesAroundBrokenCube(GameObject actualCube)
     {
         Profiler.BeginSample("Reactivate cube");
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.right))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.right))
         {
-            mapGenerator.mapField[targetCube.transform.position + Vector3.right].SetActive(true);
+            mapGenerator.mapField[actualCube.transform.position + Vector3.right].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.right))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.right))
         {
-            mapGenerator.mapField[targetCube.transform.position - Vector3.right].SetActive(true);
+            mapGenerator.mapField[actualCube.transform.position - Vector3.right].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.up))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.up))
         {
-            mapGenerator.mapField[targetCube.transform.position + Vector3.up].SetActive(true);
+            mapGenerator.mapField[actualCube.transform.position + Vector3.up].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.up))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.up))
         {
-            mapGenerator.mapField[targetCube.transform.position - Vector3.up].SetActive(true);
+            mapGenerator.mapField[actualCube.transform.position - Vector3.up].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position + Vector3.forward))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.forward))
         {
-            mapGenerator.mapField[targetCube.transform.position + Vector3.forward].SetActive(true);
+            mapGenerator.mapField[actualCube.transform.position + Vector3.forward].SetActive(true);
         }
-        if (mapGenerator.mapField.ContainsKey(targetCube.transform.position - Vector3.forward))
+        if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.forward))
         {
-            mapGenerator.mapField[targetCube.transform.position - Vector3.forward].SetActive(true);
+            mapGenerator.mapField[actualCube.transform.position - Vector3.forward].SetActive(true);
         }
         Profiler.EndSample();
     }

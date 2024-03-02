@@ -142,7 +142,10 @@ public class ChunkGenerator : MonoBehaviour
 
         foreach (KeyValuePair<Vector3, GameObject> actualCube in chunkField)
         {
-            GameObject cube = mapGenerator.InstantiateAndReturnCube(actualCube.Key, actualCube.Value);
+            if (actualCube.Value.GetComponent<CubeParameters>().isCubeDataSurrounded == false)
+            {
+                GameObject cube = mapGenerator.InstantiateAndReturnCube(actualCube.Key, actualCube.Value);
+            }
         }
 
         return chunkField;

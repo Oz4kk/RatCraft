@@ -8,4 +8,5 @@ public class CubeParameters : MonoBehaviour
     public float brittleness;
     [HideInInspector] public float damage = 0;
     public CubeType cubeType;
+    public bool isCubeDataSurrounded;
 }
