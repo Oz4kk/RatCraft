@@ -14,12 +14,12 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator = GetComponent<MapGenerator>();
         chunkGenerator = GetComponent<ChunkGenerator>();
 
-        mapGenerator.onDataOfNewChunkGenerated += DeactivateInvisibleCubesInNewChunk;
+        mapGenerator.onDataOfNewChunkGenerated += NewChunkOptimalisationSequence;
         mapGenerator.onCubeDestroyed += RectivateInvisibleCubesAroundBrokenCube;
         mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
     }
 
-    private void DeactivateInvisibleCubesInNewChunk(Dictionary<Vector3, GameObject> actualChunkField, Vector3 centerOfUpcomingChunk)
+    private void NewChunkOptimalisationSequence(Dictionary<Vector3, GameObject> actualChunkField, Vector3 centerOfUpcomingChunk)
     {
         foreach (KeyValuePair<Vector3, GameObject> actualCube in actualChunkField)
         {
