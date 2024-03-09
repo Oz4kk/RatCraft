@@ -58,6 +58,10 @@ public class MapGenerator : MonoBehaviour
     private float zPositivePrediction;
     private float zNegativePrediction;
 
+    private float grassValue = 10.0f;
+    private float dirtValue = 7.0f;
+    private float rockValue = 2.0f;
+
     private void Awake()
     {
         playerSpawn = GetComponent<PlayerSpawn>();
@@ -212,6 +216,27 @@ public class MapGenerator : MonoBehaviour
 
         DebugManager.Log($"Count of mapField: {mapField.Count}");
         return null;
+    }
+
+    public void ChooseTexture(GameObject actualCube)
+    {
+        Material actualMaterial = actualCube.GetComponent<Renderer>().material;
+        if (actualCube.transform.position.y > grassValue)
+        {
+            actualMaterial.mainTexture = grass;
+        }
+        else if (actualCube.transform.position.y > dirtValue)
+        {
+            actualMaterial.mainTexture = dirt;
+        }
+        else if (actualCube.transform.position.y > rockValue)
+        {
+            actualMaterial.mainTexture = rock;
+        }
+        else
+        {
+            actualMaterial.mainTexture = sand;
+        }
     }
 
     public Dictionary<Vector3, GameObject> GetChunkBorderCubes()

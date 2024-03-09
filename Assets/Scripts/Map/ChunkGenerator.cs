@@ -11,10 +11,6 @@ public class ChunkGenerator : MonoBehaviour
     [SerializeField] private float heightLimit = 0.0f;
     [SerializeField] private float heightPerlinScale = 0.0f;
 
-    private float grassValue = 10.0f;
-    private float dirtValue = 7.0f;
-    private float rockValue = 2.0f;
-
     private void Awake()
     {
         mapGenerator = GetComponent<MapGenerator>();
@@ -145,6 +141,8 @@ public class ChunkGenerator : MonoBehaviour
             if (actualCube.Value.GetComponent<CubeParameters>().isCubeDataSurrounded == false)
             {
                 GameObject cube = mapGenerator.InstantiateAndReturnCube(actualCube.Key, actualCube.Value);
+
+                mapGenerator.ChooseTexture(cube);
             }
         }
 
@@ -156,38 +154,15 @@ public class ChunkGenerator : MonoBehaviour
         GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, actualCubecColor);
         actualChunkField.Add(actualCube.transform.position, actualCube);
         debugActualCubeCounter++;
-        ChooseTexture(actualCube);
     }    
     
     private void ChunkDataGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, GameObject> actualChunkFieldData)
     {
         GameObject actualCube = actualCubecColor;
         actualCube.transform.position = upcomingCubePosition;
-        ChooseTexture(actualCube);
         debugActualCubeCounter++;
 
         actualChunkFieldData.Add(actualCube.transform.position, actualCube);
         mapGenerator.mapFieldData.Add(actualCube.transform.position, actualCube);
-    }
-
-    private void ChooseTexture(GameObject actualCube)
-    {
-        Material actualMaterial = actualCube.GetComponent<Renderer>().sharedMaterial;
-        if (actualCube.transform.position.y > grassValue)
-        {
-            actualMaterial.mainTexture = mapGenerator.grass;
-        }
-        else if (actualCube.transform.position.y > dirtValue)
-        {
-            actualMaterial.mainTexture = mapGenerator.dirt;
-        }
-        else if (actualCube.transform.position.y > rockValue)
-        {
-            actualMaterial.mainTexture = mapGenerator.rock;
-        }
-        else
-        {
-            actualMaterial.mainTexture = mapGenerator.sand;
-        }
     }
 }
