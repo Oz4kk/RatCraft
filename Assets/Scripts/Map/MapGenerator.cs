@@ -183,7 +183,7 @@ public class MapGenerator : MonoBehaviour
         {
             if (actualCube.Value.isCubeDataSurrounded == true)
             {
-                return;
+                continue;
             }
             GameObject cube = InstantiateAndReturnCube(actualCube.Key, actualCube.Value.cubePrefab);
             ChooseTexture(cube);
