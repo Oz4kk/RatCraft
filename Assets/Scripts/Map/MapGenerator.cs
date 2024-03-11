@@ -140,7 +140,7 @@ public class MapGenerator : MonoBehaviour
 
     private void SetNewActiveChunkPrediction()
     {
-        DebugManager.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
+        Debug.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
 
         Vector3 centerPointOfUpcomingChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
 
@@ -172,7 +172,7 @@ public class MapGenerator : MonoBehaviour
     {
         DataGenerationSequence(centerOfUpcommingChunk);
         onDataOfNewChunkGenerated(dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk], centerOfUpcommingChunk);
-        CubeGenerationSequence(centerOfUpcommingChunk);
+        chunkGenerator.GeneratePreloadedChunk(centerOfUpcommingChunk);
     }
 
     private void FillMegaChunk(Vector3 centerOfUpcommingChunk, Dictionary<Vector3, GameObject> dictionaryOfMegaChunk)
@@ -190,12 +190,6 @@ public class MapGenerator : MonoBehaviour
         Dictionary<Vector3, GameObject> predictedDataChunkField = chunkGenerator.GenerateChunkData(startingChunkGenerationPosition);
 
         dictionaryOfCentersWithItsChunkField.Add(centerOfPredictedChunk, predictedDataChunkField);
-    }
-
-    private void CubeGenerationSequence(Vector3 centerOfUpcomingChunk)
-    {
-        Vector3 startingChunkGenerationPosition = ReturnBeginningPositionOfGeneratedChunk(centerOfUpcomingChunk);
-        Dictionary<Vector3, GameObject> predictedChunkField = chunkGenerator.GeneratePreloadedChunk(centerOfUpcomingChunk);
     }
 
     private Vector3 ReturnBeginningPositionOfGeneratedChunk(Vector3 centerOfChunk)

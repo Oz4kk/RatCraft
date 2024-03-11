@@ -140,9 +140,9 @@ public class ChunkGenerator : MonoBehaviour
         {
             if (actualCube.Value.GetComponent<CubeParameters>().isCubeDataSurrounded == false)
             {
-                GameObject cube = mapGenerator.InstantiateAndReturnCube(actualCube.Key, actualCube.Value);
+                mapGenerator.ChooseTexture(actualCube.Value);
 
-                mapGenerator.ChooseTexture(cube);
+                mapGenerator.InstantiateAndReturnCube(actualCube.Key, actualCube.Value);
             }
         }
 
@@ -158,7 +158,7 @@ public class ChunkGenerator : MonoBehaviour
     
     private void ChunkDataGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, GameObject> actualChunkFieldData)
     {
-        GameObject actualCube = actualCubecColor;
+        GameObject actualCube = Instantiate(actualCubecColor);
         actualCube.transform.position = upcomingCubePosition;
         debugActualCubeCounter++;
 
