@@ -9,4 +9,8 @@ public class CubeParameters : MonoBehaviour
     [HideInInspector] public float damage = 0;
     public CubeType cubeType;
     public bool isCubeDataSurrounded = false;
+
+    public Texture texture;
+    public GameObject cubePrefab;
+    public Vector3 transformPosition;
 }

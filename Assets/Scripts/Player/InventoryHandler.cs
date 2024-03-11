@@ -38,7 +38,6 @@ public class InventoryHandler : MonoBehaviour
     public Action onActiveSlotChanged;
     public Inventory[] inventory;
     public List<KeyCodeIndexPair> keyCodeIndexPairs = new List<KeyCodeIndexPair>();
-    //public Dictionary<CubeType, Inventory>
 
     [SerializeField] private LayerMask solidBlockLayer;
     [SerializeField] private GameObject blueCube;

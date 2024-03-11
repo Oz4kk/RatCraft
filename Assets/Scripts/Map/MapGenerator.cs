@@ -6,7 +6,7 @@ using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCou
 
 public class MapGenerator : MonoBehaviour
 {
-    public Action<Dictionary<Vector3, GameObject>, Vector3> onDataOfNewChunkGenerated;
+    public Action<Dictionary<Vector3, CubeData>, Vector3> onDataOfNewChunkGenerated;
 
     [Serializable]
     public struct GridSize
@@ -44,14 +44,14 @@ public class MapGenerator : MonoBehaviour
 
     // TO-DO: Delete this after finishing optimalisation
     public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
-    public Dictionary<Vector3, GameObject> mapFieldData = new Dictionary<Vector3, GameObject>();
+    public Dictionary<Vector3, CubeData> mapFieldData = new Dictionary<Vector3, CubeData>();
 
     public float seed;
 
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
     [SerializeField] private uint gridSizeSides;
     [SerializeField] private uint gridSizeHeight;
-    public Dictionary<Vector3, Dictionary<Vector3, GameObject>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector3, Dictionary<Vector3, GameObject>>();
+    public Dictionary<Vector3, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector3, Dictionary<Vector3, CubeData>>();
     private Vector3 middlePointOfLastChunk;
     private float xPositivePrediction;
     private float xNegativePrediction;
@@ -172,22 +172,28 @@ public class MapGenerator : MonoBehaviour
     {
         DataGenerationSequence(centerOfUpcommingChunk);
         onDataOfNewChunkGenerated(dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk], centerOfUpcommingChunk);
-        chunkGenerator.GeneratePreloadedChunk(centerOfUpcommingChunk);
+        GeneratePreloadedChunk(centerOfUpcommingChunk);
     }
 
-    private void FillMegaChunk(Vector3 centerOfUpcommingChunk, Dictionary<Vector3, GameObject> dictionaryOfMegaChunk)
+    public void GeneratePreloadedChunk(Vector3 centerOfUpcommingChunk)
     {
-        Dictionary<Vector3, GameObject> actualDictionary = dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk];
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in actualDictionary)
+        Dictionary<Vector3, CubeData> chunkField = dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk];
+
+        foreach (KeyValuePair<Vector3, CubeData> actualCube in chunkField)
         {
-            dictionaryOfMegaChunk.Add(actualCube.Key, actualCube.Value);
+            if (actualCube.Value.isCubeDataSurrounded == true)
+            {
+                return;
+            }
+            GameObject cube = InstantiateAndReturnCube(actualCube.Key, actualCube.Value.cubePrefab);
+            ChooseTexture(cube);
         }
     }
 
     private void DataGenerationSequence(Vector3 centerOfPredictedChunk)
     {
         Vector3 startingChunkGenerationPosition = ReturnBeginningPositionOfGeneratedChunk(centerOfPredictedChunk);
-        Dictionary<Vector3, GameObject> predictedDataChunkField = chunkGenerator.GenerateChunkData(startingChunkGenerationPosition);
+        Dictionary<Vector3, CubeData> predictedDataChunkField = chunkGenerator.GenerateChunkData(startingChunkGenerationPosition);
 
         dictionaryOfCentersWithItsChunkField.Add(centerOfPredictedChunk, predictedDataChunkField);
     }
@@ -202,7 +208,6 @@ public class MapGenerator : MonoBehaviour
         if (!mapField.ContainsKey(spawnPosition))
         {
             GameObject actualCube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
-            actualCube.transform.parent = transform;
             mapField.Add(spawnPosition, actualCube);
 
             return actualCube;

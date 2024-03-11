@@ -77,15 +77,15 @@ public class ChunkGenerator : MonoBehaviour
 
     //    onChunkGenerated?.Invoke(actualChunkField);
     //}
-    
-    public Dictionary<Vector3, GameObject> GenerateChunkData(Vector3 startingChunkGenerationPosition)
+
+    public Dictionary<Vector3, CubeData> GenerateChunkData(Vector3 startingChunkGenerationPosition)
     {
         uint debugBlueCubeCounter = 0;
         uint dubugGreenCubeCounter = 0;
         uint debugBrownCubeCounter = 0;
         uint debugPinkCubeCounter = 0;
 
-        Dictionary<Vector3, GameObject> actualChunkFieldData = new Dictionary<Vector3, GameObject>();
+        Dictionary<Vector3, CubeData> actualChunkFieldData = new Dictionary<Vector3, CubeData>();
 
         for (int x = (int)startingChunkGenerationPosition.x; x < mapGenerator.gridSize.x + (int)startingChunkGenerationPosition.x; x++)
         {
@@ -132,37 +132,13 @@ public class ChunkGenerator : MonoBehaviour
         return actualChunkFieldData;
     }
 
-    public Dictionary<Vector3, GameObject> GeneratePreloadedChunk(Vector3 centerOfUpcommingChunk)
+    private void ChunkDataGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubeColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, CubeData> actualChunkFieldData)
     {
-        Dictionary<Vector3, GameObject> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk];
+        CubeData cubeData = new CubeData(actualCubeColor, upcomingCubePosition, false);
 
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in chunkField)
-        {
-            if (actualCube.Value.GetComponent<CubeParameters>().isCubeDataSurrounded == false)
-            {
-                mapGenerator.ChooseTexture(actualCube.Value);
-
-                mapGenerator.InstantiateAndReturnCube(actualCube.Key, actualCube.Value);
-            }
-        }
-
-        return chunkField;
-    }
-
-    private void ChunkGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, GameObject> actualChunkField)
-    {
-        GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, actualCubecColor);
-        actualChunkField.Add(actualCube.transform.position, actualCube);
-        debugActualCubeCounter++;
-    }    
-    
-    private void ChunkDataGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, GameObject> actualChunkFieldData)
-    {
-        GameObject actualCube = Instantiate(actualCubecColor);
-        actualCube.transform.position = upcomingCubePosition;
         debugActualCubeCounter++;
 
-        actualChunkFieldData.Add(actualCube.transform.position, actualCube);
-        mapGenerator.mapFieldData.Add(actualCube.transform.position, actualCube);
+        actualChunkFieldData.Add(cubeData.position, cubeData);
+        mapGenerator.mapFieldData.Add(cubeData.position, cubeData);
     }
 }

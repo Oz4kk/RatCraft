@@ -19,65 +19,63 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
     }
 
-    private void NewChunkOptimalisationSequence(Dictionary<Vector3, GameObject> actualChunkField, Vector3 centerOfUpcomingChunk)
+    private void NewChunkOptimalisationSequence(Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfUpcomingChunk)
     {
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in actualChunkField)
+        foreach (KeyValuePair<Vector3, CubeData> actualCube in actualChunkField)
         {
             OptimaliseDataOfNewChunk(actualCube.Value, centerOfUpcomingChunk, actualChunkField);
         }
     }
 
-    private void OptimaliseDataOfNewChunk(GameObject actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, GameObject> actualChunkField)
+    private void OptimaliseDataOfNewChunk(CubeData actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> actualChunkField)
     {
         DeactiavateSurroundedCubeData(actualCube, actualChunkField);
 
-        Vector3 actualCubePosition = actualCube.transform.position;
-
-        if (actualCubePosition.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
         {
 
         }        
-        if (actualCubePosition.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
         {
 
         }        
-        if (actualCubePosition.x == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        if (actualCube.position.x == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
         {
 
         }        
-        if (actualCubePosition.x == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        if (actualCube.position.x == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
         {
 
         }
     }
-    private void DeactiavateSurroundedCubeData(GameObject actualCube, Dictionary<Vector3, GameObject> actualChunkField)
+    private void DeactiavateSurroundedCubeData(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField)
     {
-        if (!actualChunkField.ContainsKey(actualCube.transform.position + Vector3.right))
+        if (!actualChunkField.ContainsKey(actualCube.position + Vector3.right))
         {
             return;
         }
-        if (!actualChunkField.ContainsKey(actualCube.transform.position - Vector3.right))
+        if (!actualChunkField.ContainsKey(actualCube.position - Vector3.right))
         {
             return;
         }
-        if (!actualChunkField.ContainsKey(actualCube.transform.position + Vector3.up))
+        if (!actualChunkField.ContainsKey(actualCube.position + Vector3.up))
         {
             return;
         }
-        if (!actualChunkField.ContainsKey(actualCube.transform.position - Vector3.up))
+        if (!actualChunkField.ContainsKey(actualCube.position - Vector3.up))
         {
             return;
         }
-        if (!actualChunkField.ContainsKey(actualCube.transform.position + Vector3.forward))
+        if (!actualChunkField.ContainsKey(actualCube.position + Vector3.forward))
         {
             return;
         }
-        if (!actualChunkField.ContainsKey(actualCube.transform.position - Vector3.forward))
+        if (!actualChunkField.ContainsKey(actualCube.position - Vector3.forward))
         {
             return;
         }
- 
-        actualCube.GetComponent<CubeParameters>().isCubeDataSurrounded = true;
+
+        actualCube.isCubeDataSurrounded = true;
     }
 
     private void DeactiavateSurroundedCube(GameObject actualCube, Dictionary<Vector3, GameObject> actualChunkField)
