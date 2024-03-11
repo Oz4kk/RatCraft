@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct CubeData
+public class CubeData
 {
     public GameObject cubePrefab;
     public Vector3 position;
