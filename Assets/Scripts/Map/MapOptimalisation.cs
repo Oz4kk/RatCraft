@@ -44,10 +44,10 @@ public class MapOptimalisation : MonoBehaviour
         centerOfNeighbourVector.x += mapGenerator.gridSize.x;
         if (actualCube.position.z == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
         {
-            if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcomingChunk))
+            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
             {
                 centerOfNeighbourVector.x += mapGenerator.gridSize.x;
-                Dictionary<Vector3, CubeData> XPositiveCenterCubeData = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeighbourVector];
+                Dictionary<Vector3, CubeData> XPositiveCenterCubeData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfNeighbourVector];
 
             }
         }
@@ -55,10 +55,10 @@ public class MapOptimalisation : MonoBehaviour
         centerOfNeighbourVector.x -= mapGenerator.gridSize.x * 2.0f;
         if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
         {
-            if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcomingChunk))
+            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
             {
                 centerOfNeighbourVector.x += mapGenerator.gridSize.x;
-                Dictionary<Vector3, CubeData> XNegativeCenterCubeData = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeighbourVector];
+                Dictionary<Vector3, CubeData> XNegativeCenterCubeData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfNeighbourVector];
 
             }
         }
@@ -67,10 +67,10 @@ public class MapOptimalisation : MonoBehaviour
         centerOfNeighbourVector.z += mapGenerator.gridSize.z;
         if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
         {
-            if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcomingChunk))
+            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
             {
                 centerOfNeighbourVector.z += mapGenerator.gridSize.x;
-                Dictionary<Vector3, CubeData> ZPositiveCenterCubeData = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeighbourVector];
+                Dictionary<Vector3, CubeData> ZPositiveCenterCubeData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfNeighbourVector];
 
             }
         }
@@ -78,10 +78,10 @@ public class MapOptimalisation : MonoBehaviour
         centerOfNeighbourVector.z += mapGenerator.gridSize.z * 2.0f;
         if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
         {
-            if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcomingChunk))
+            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
             {
                 centerOfNeighbourVector.z += mapGenerator.gridSize.x;
-                Dictionary<Vector3, CubeData> ZNegativeCenterCubeData = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeighbourVector];
+                Dictionary<Vector3, CubeData> ZNegativeCenterCubeData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfNeighbourVector];
 
             }
         }
