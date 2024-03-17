@@ -18,7 +18,8 @@ public class MapOptimalisation : MonoBehaviour
         mapGenerator.onCubeDestroyed += RectivateInvisibleCubesAroundBrokenCube;
         mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
     }
-
+    
+    //Ugly naming
     private void NewChunkOptimalisationSequence(Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfUpcomingChunk)
     {
         foreach (KeyValuePair<Vector3, CubeData> actualCube in actualChunkField)
@@ -31,19 +32,18 @@ public class MapOptimalisation : MonoBehaviour
     {
         DeactiavateSurroundedCubeData(actualCube, actualChunkField);
 
-        if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+        {
+        }
+        if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
         {
 
-        }        
-        if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        }
+        if (actualCube.position.x == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
         {
 
-        }        
-        if (actualCube.position.x == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
-        {
-
-        }        
-        if (actualCube.position.x == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2))
+        }
+        if (actualCube.position.x == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
         {
 
         }
