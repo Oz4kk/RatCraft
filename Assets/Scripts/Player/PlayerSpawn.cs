@@ -6,7 +6,8 @@ public class PlayerSpawn : MonoBehaviour
 {
     [SerializeField] private GameObject prefabToSpawn;
     [SerializeField] private Vector3 spawnPosition;
-    public GameObject spawnedPlayer;
+
+    [HideInInspector] public GameObject spawnedPlayer;
 
     void Awake()
     {

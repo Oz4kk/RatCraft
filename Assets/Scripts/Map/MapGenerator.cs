@@ -192,7 +192,7 @@ public class MapGenerator : MonoBehaviour
             ChooseTexture(cube);
 
             // TO-DO: Here I ended, fullfill new dictionary with Instantiated cube chunks
-            dictionaryOfCentersWithItsChunkField.Add();
+            //dictionaryOfCentersWithItsChunkField.Add();
         }
     }
 
