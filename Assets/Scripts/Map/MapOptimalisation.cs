@@ -42,9 +42,11 @@ public class MapOptimalisation : MonoBehaviour
 
         // Positive X border of actual chunk
         centerOfNeighbourVector.x += mapGenerator.gridSize.x;
+        Debug.Log(centerOfNeighbourVector.GetStringOfVector3());
+        // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
         if (actualCube.position.z == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
         {
-            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
+            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfNeighbourVector))
             {
                 centerOfNeighbourVector.x += mapGenerator.gridSize.x;
                 Dictionary<Vector3, CubeData> XPositiveCenterCubeData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfNeighbourVector];
@@ -52,10 +54,12 @@ public class MapOptimalisation : MonoBehaviour
             }
         }
         // Negative X border of actual chunk
-        centerOfNeighbourVector.x -= mapGenerator.gridSize.x * 2.0f;
+        centerOfNeighbourVector.x -= mapGenerator.gridSize.x * 4.0f;
+        Debug.Log(centerOfNeighbourVector.GetStringOfVector3());
+        // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
         if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
         {
-            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
+            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfNeighbourVector))
             {
                 centerOfNeighbourVector.x += mapGenerator.gridSize.x;
                 Dictionary<Vector3, CubeData> XNegativeCenterCubeData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfNeighbourVector];
@@ -63,11 +67,13 @@ public class MapOptimalisation : MonoBehaviour
             }
         }
         // Positive Z border of actual chunk
-        centerOfNeighbourVector.x += mapGenerator.gridSize.x;
+        centerOfNeighbourVector = centerOfUpcomingChunk;
         centerOfNeighbourVector.z += mapGenerator.gridSize.z;
+        Debug.Log(centerOfNeighbourVector.GetStringOfVector3());
+        // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
         if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
         {
-            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
+            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfNeighbourVector))
             {
                 centerOfNeighbourVector.z += mapGenerator.gridSize.x;
                 Dictionary<Vector3, CubeData> ZPositiveCenterCubeData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfNeighbourVector];
@@ -75,10 +81,12 @@ public class MapOptimalisation : MonoBehaviour
             }
         }
         // Negative Z border of actual chunk
-        centerOfNeighbourVector.z += mapGenerator.gridSize.z * 2.0f;
+        centerOfNeighbourVector.z += mapGenerator.gridSize.z * 4.0f;
+        Debug.Log(centerOfNeighbourVector.GetStringOfVector3());
+        // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
         if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
         {
-            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
+            if (mapGenerator.dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfNeighbourVector))
             {
                 centerOfNeighbourVector.z += mapGenerator.gridSize.x;
                 Dictionary<Vector3, CubeData> ZNegativeCenterCubeData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfNeighbourVector];

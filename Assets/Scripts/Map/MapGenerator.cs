@@ -143,7 +143,7 @@ public class MapGenerator : MonoBehaviour
 
     private void SetNewActiveChunkPrediction()
     {
-        Debug.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
+        //Debug.Log($"Middle point of last visited chunk: {middlePointOfLastChunk.ToString()}");
 
         Vector3 centerOfUpcomingChunk = new Vector3(middlePointOfLastChunk.x, 0.0f, middlePointOfLastChunk.z);
 
