@@ -52,6 +52,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private uint gridSizeSides;
     [SerializeField] private uint gridSizeHeight;
 
+    // Zmenit druhe dictionary tykajici se samotneho chunku na klasu
     public Dictionary<Vector3, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsDataChunkField = new Dictionary<Vector3, Dictionary<Vector3, CubeData>>();
     public Dictionary<Vector3, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector3, Dictionary<Vector3, CubeData>>();
 
@@ -171,9 +172,11 @@ public class MapGenerator : MonoBehaviour
         SetNewPredictionValues(centerOfUpcomingChunk);
     }
 
+    //Ugly naming
     private void ChunkGenerationSequence(Vector3 centerOfUpcommingChunk)
     {
         GenerateDataOfUpcommingChunk(centerOfUpcommingChunk);
+        // Vzdy se ptat sa subscription // Pokud mam referenci tak delegat je zbytecny / nedelat oboustranny reference
         onDataOfNewChunkGenerated(dictionaryOfCentersWithItsDataChunkField[centerOfUpcommingChunk], centerOfUpcommingChunk);
         GeneratePreloadedChunk(centerOfUpcommingChunk);
     }
