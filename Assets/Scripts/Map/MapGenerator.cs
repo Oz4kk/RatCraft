@@ -54,7 +54,7 @@ public class MapGenerator : MonoBehaviour
 
     // Zmenit druhe dictionary tykajici se samotneho chunku na klasu
     public Dictionary<Vector3, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsDataChunkField = new Dictionary<Vector3, Dictionary<Vector3, CubeData>>();
-    public Dictionary<Vector3, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector3, Dictionary<Vector3, CubeData>>();
+    public Dictionary<Vector3, Dictionary<Vector3, GameObject>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector3, Dictionary<Vector3, GameObject>>();
 
     private Vector3 middlePointOfLastChunk;
     private float xPositivePrediction;
@@ -176,7 +176,7 @@ public class MapGenerator : MonoBehaviour
     private void ChunkGenerationSequence(Vector3 centerOfUpcommingChunk)
     {
         GenerateDataOfUpcommingChunk(centerOfUpcommingChunk);
-        // Vzdy se ptat sa subscription // Pokud mam referenci tak delegat je zbytecny / nedelat oboustranny reference
+        // Vzdy se ptat sa subscription // Pokud mam referenci tak delegat je zbytecny // nedelat oboustranny reference
         onDataOfNewChunkGenerated(dictionaryOfCentersWithItsDataChunkField[centerOfUpcommingChunk], centerOfUpcommingChunk);
         GeneratePreloadedChunk(centerOfUpcommingChunk);
     }
