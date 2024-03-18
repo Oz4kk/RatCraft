@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
 {
     public Action onRaycastHitDifferentCube;
 
+    public Vector3? raycastHitLocationOfPointer { get; private set; }
+
     // Serialize fields
     [SerializeField] private Rigidbody rigidBody;
     [SerializeField] private Camera playerCamera;
@@ -196,8 +198,9 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        Vector3? raycastHitLocation = playerCubePlacement.CalculateUpcomingCubePosition();
-        if (raycastHitLocation != previousPlacementLocation)
+        raycastHitLocationOfPointer = playerCubePlacement.CalculateUpcomingCubePosition();
+
+        if (raycastHitLocationOfPointer != previousPlacementLocation)
         {
             onRaycastHitDifferentCube?.Invoke();
         }
