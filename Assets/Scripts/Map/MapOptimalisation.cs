@@ -62,12 +62,14 @@ public class MapOptimalisation : MonoBehaviour
         // Positive X border of actual chunk
         centerOfNeighbourVector.x += mapGenerator.gridSize.x;
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        if (actualCube.position.z == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+        if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
         {
-            counter++;
-            border1 = Border.XPositive;
+            if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+            {
 
-            if (counter == 2)
+            }
+
+            if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
             {
 
             }
@@ -78,10 +80,12 @@ public class MapOptimalisation : MonoBehaviour
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
         if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
         {
-            counter++;
-            border1 = Border.XNegative;
+            if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+            {
 
-            if (counter == 2)
+            }
+
+            if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
             {
 
             }
@@ -93,10 +97,12 @@ public class MapOptimalisation : MonoBehaviour
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
         if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
         {
-            counter++;
-            border1 = Border.ZPositive;
+            if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+            {
 
-            if (counter == 2)
+            }
+
+            if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
             {
 
             }
@@ -107,10 +113,12 @@ public class MapOptimalisation : MonoBehaviour
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
         if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
         {
-            counter++;
-            border1 = Border.ZNegative;
+            if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+            {
 
-            if (counter == 2)
+            }
+
+            if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
             {
 
             }
