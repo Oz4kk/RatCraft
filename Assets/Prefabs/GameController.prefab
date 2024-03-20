@@ -76,7 +76,7 @@ MonoBehaviour:
     y: 16
     z: 100
   seed: 0
-  chunkGenerationDistanceFromEndOfTheChunk: 0
+  chunkGenerationDistanceFromEndOfTheChunk: 5
   gridSizeSides: 0
   gridSizeHeight: 0
 --- !u!114 &2769546080822182058
