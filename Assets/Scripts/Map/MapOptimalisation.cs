@@ -52,11 +52,6 @@ public class MapOptimalisation : MonoBehaviour
     /// <param name="actualChunkField"></param>
     private void OptimaliseDataOfNewChunk(CubeData actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> actualChunkField)
     {
-        byte counter = 0;
-        Border border1 = Border.Null;
-        Border border2 = Border.Null;
-        Corner corner = Corner.Null;
-
         Vector3 centerOfNeighbourVector = new Vector3(centerOfUpcomingChunk.x + mapGenerator.gridSize.x, centerOfUpcomingChunk.y, centerOfUpcomingChunk.z);
 
         // Positive X border of actual chunk
@@ -124,14 +119,6 @@ public class MapOptimalisation : MonoBehaviour
             }
         }
 
-        if (counter == 1)
-        {
-            BorderCubesOptimalization(actualCube, centerOfUpcomingChunk, actualChunkField);
-        }   
-        else if (counter == 2)
-        {
-            CornerCubeOptimalization(actualCube, centerOfUpcomingChunk, actualChunkField);
-        }
         else
         {
             DeactiavateSurroundedCubeData(actualCube, actualChunkField);
@@ -140,74 +127,7 @@ public class MapOptimalisation : MonoBehaviour
 
     private void ChooseCorner(Border border1, Border border2, ref Corner corner)
     {
-        if (border1 == Border.XPositive)
-        {
-            if (border2 == Border.ZPositive)
-            {
-                corner = Corner.XPositive_ZPositive;
-            }
-            if (border2 == Border.ZNegative)
-            {
-                corner = Corner.XPositive_ZNegative;
-            }
-        }
-        else if (border1 == Border.XNegative)
-        {
-            if (border2 == Border.XPositive)
-            {
 
-            }
-            if (border2 == Border.XNegative)
-            {
-
-            }
-            if (border2 == Border.ZPositive)
-            {
-
-            }
-            if (border2 == Border.ZNegative)
-            {
-
-            }
-        }
-        else if (border1 == Border.ZPositive)
-        {
-            if (border2 == Border.XPositive)
-            {
-
-            }
-            if (border2 == Border.XNegative)
-            {
-
-            }
-            if (border2 == Border.ZPositive)
-            {
-
-            }
-            if (border2 == Border.ZNegative)
-            {
-
-            }
-        }
-        if (border1 == Border.ZNegative)
-        {
-            if (border2 == Border.XPositive)
-            {
-
-            }
-            if (border2 == Border.XNegative)
-            {
-
-            }
-            if (border2 == Border.ZPositive)
-            {
-
-            }
-            if (border2 == Border.ZNegative)
-            {
-
-            }
-        }
     }
 
     private void CornerCubeOptimalization(CubeData actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> actualChunkField)
