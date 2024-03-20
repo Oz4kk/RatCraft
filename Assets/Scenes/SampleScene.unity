@@ -224,77 +224,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1960336968039664908, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: spawnPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664909, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: m_Name
       value: GameController
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: dirt
-      value: 
-      objectReference: {fileID: 2800000, guid: c2e975e8a074dff45aee75e580a54344, type: 3}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: rock
-      value: 
-      objectReference: {fileID: 2800000, guid: 851df1e5bd5100d4cb745a2dfcb4e46e, type: 3}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: sand
-      value: 
-      objectReference: {fileID: 2800000, guid: 5c38e2edb8ae412468d3186b2e38caf1, type: 3}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: seed
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: grass
-      value: 
-      objectReference: {fileID: 2800000, guid: e65e8c6f286469944a22f2777d8e870c, type: 3}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSize.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSize.y
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSize.z
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: heightLimit
-      value: 0.0625
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: sizeOfChunk
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: xPerlinScale
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: zPerlinScale
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSizeSides
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSizeHeight
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: sidesPerlinScale
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1960336968039664910, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: chunkGenerationDistanceFromEndOfTheChunk
-      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 1960336968039664911, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: m_RootOrder
@@ -339,30 +271,6 @@ PrefabInstance:
     - target: {fileID: 1960336968039664911, guid: d75b503534647944a84bd6fc036b617f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2769546080822182058, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSize.x
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2769546080822182058, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSize.y
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 2769546080822182058, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: gridSize.z
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2769546080822182058, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: heightLimit
-      value: 0.0625
-      objectReference: {fileID: 0}
-    - target: {fileID: 2769546080822182058, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: sidesPerlinScale
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2769546080822182058, guid: d75b503534647944a84bd6fc036b617f, type: 3}
-      propertyPath: heightPerlinScale
-      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d75b503534647944a84bd6fc036b617f, type: 3}

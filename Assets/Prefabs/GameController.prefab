@@ -67,18 +67,18 @@ MonoBehaviour:
   blueCube: {fileID: 2684513650567376893, guid: de2ae0a978038254eb38a05ddaf91fb1, type: 3}
   brownCube: {fileID: 6359409211213089741, guid: 0343563596531974a83c4b475bc84a50, type: 3}
   pinkCube: {fileID: 7430137143123442753, guid: b4d188245cae81f45b055bfd98389aa8, type: 3}
-  grass: {fileID: 0}
-  dirt: {fileID: 0}
-  rock: {fileID: 0}
-  sand: {fileID: 0}
+  grass: {fileID: 2800000, guid: e65e8c6f286469944a22f2777d8e870c, type: 3}
+  dirt: {fileID: 2800000, guid: c2e975e8a074dff45aee75e580a54344, type: 3}
+  rock: {fileID: 2800000, guid: 851df1e5bd5100d4cb745a2dfcb4e46e, type: 3}
+  sand: {fileID: 2800000, guid: 5c38e2edb8ae412468d3186b2e38caf1, type: 3}
   gridSize:
     x: 100
     y: 16
     z: 100
   seed: 0
   chunkGenerationDistanceFromEndOfTheChunk: 5
-  gridSizeSides: 0
-  gridSizeHeight: 0
+  gridSizeSides: 25
+  gridSizeHeight: 16
 --- !u!114 &2769546080822182058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sidesPerlinScale: 0.1
   heightLimit: 0.0625
-  heightPerlinScale: 0
+  heightPerlinScale: 0.1
 --- !u!114 &159310025209883692
 MonoBehaviour:
   m_ObjectHideFlags: 0
