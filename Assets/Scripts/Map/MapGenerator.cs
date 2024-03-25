@@ -54,7 +54,7 @@ public class MapGenerator : MonoBehaviour
 
     // Zmenit druhe dictionary tykajici se samotneho chunku na klasu
     public Dictionary<Vector3, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsDataChunkField = new Dictionary<Vector3, Dictionary<Vector3, CubeData>>();
-    public Dictionary<Vector3, Dictionary<Vector3, GameObject>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector3, Dictionary<Vector3, GameObject>>();
+    public Dictionary<Vector3, Dictionary<Vector3, CubeParameters>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector3, Dictionary<Vector3, CubeParameters>>();
 
     private Vector3 middlePointOfLastChunk;
     private float xPositivePrediction;
@@ -183,20 +183,27 @@ public class MapGenerator : MonoBehaviour
 
     public void GeneratePreloadedChunk(Vector3 centerOfUpcommingChunk)
     {
-        Dictionary<Vector3, CubeData> chunkField = dictionaryOfCentersWithItsDataChunkField[centerOfUpcommingChunk];
+        Dictionary<Vector3, CubeData> dataChunkField = dictionaryOfCentersWithItsDataChunkField[centerOfUpcommingChunk];
+        Dictionary<Vector3, CubeParameters> chunkField = new Dictionary<Vector3, CubeParameters>(); 
 
-        foreach (KeyValuePair<Vector3, CubeData> actualCube in chunkField)
+        foreach (KeyValuePair<Vector3, CubeData> actualCube in dataChunkField)
         {
             if (actualCube.Value.isCubeDataSurrounded == true)
             {
                 continue;
             }
-            GameObject cube = InstantiateAndReturnCube(actualCube.Key, actualCube.Value.cubePrefab);
-            ChooseTexture(cube);
+            GameObject cubeInstance = InstantiateAndReturnCube(actualCube.Key, actualCube.Value.cubePrefab);
+            ChooseTexture(cubeInstance);
 
-            // TO-DO: Here I ended, fullfill new dictionary with Instantiated cube chunks
-            //dictionaryOfCentersWithItsChunkField.Add();
+
+            // Set CubeParametres
+            CubeParameters cubeParameters = cubeInstance.GetComponent<CubeParameters>();
+            cubeParameters.cubeInstance = cubeInstance;
+            cubeParameters.position = actualCube.Key;
+
+            chunkField.Add(actualCube.Key, cubeParameters);
         }
+        dictionaryOfCentersWithItsChunkField.Add(centerOfUpcommingChunk, chunkField);
     }
 
     /// <summary>

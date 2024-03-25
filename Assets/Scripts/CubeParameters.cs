@@ -10,7 +10,6 @@ public class CubeParameters : MonoBehaviour
     public CubeType cubeType;
     public bool isCubeDataSurrounded = false;
 
-    public Texture texture;
-    public GameObject cubePrefab;
-    public Vector3 transformPosition;
+    public GameObject cubeInstance;
+    public Vector3 position;
 }

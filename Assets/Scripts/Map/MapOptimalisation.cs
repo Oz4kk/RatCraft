@@ -43,13 +43,19 @@ public class MapOptimalisation : MonoBehaviour
 
     private void PrecessAllCubeDataOfUpcommingChunk(Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfUpcomingChunk)
     {
-        centerOfXPositiveNeighbourChunk = new Vector3(centerOfUpcomingChunk.x + (mapGenerator.gridSize.x * 2.0f), centerOfUpcomingChunk.y, centerOfUpcomingChunk.z);
-        centerOfXNegativeNeighbourChunk = new Vector3(centerOfUpcomingChunk.x - (mapGenerator.gridSize.x * 2.0f), centerOfUpcomingChunk.y, centerOfUpcomingChunk.z);
-        centerOfZPositiveNeighbourChunk = new Vector3(centerOfUpcomingChunk.x, centerOfUpcomingChunk.y, centerOfUpcomingChunk.z + (mapGenerator.gridSize.z * 2.0f));
-        centerOfZNegativeNeighbourChunk = new Vector3(centerOfUpcomingChunk.x, centerOfUpcomingChunk.y, centerOfUpcomingChunk.z - (mapGenerator.gridSize.z * 2.0f));
+        centerOfXPositiveNeighbourChunk = new Vector3(centerOfUpcomingChunk.x + mapGenerator.gridSize.x, centerOfUpcomingChunk.y, centerOfUpcomingChunk.z);
+        centerOfXNegativeNeighbourChunk = new Vector3(centerOfUpcomingChunk.x - mapGenerator.gridSize.x, centerOfUpcomingChunk.y, centerOfUpcomingChunk.z);
+        centerOfZPositiveNeighbourChunk = new Vector3(centerOfUpcomingChunk.x, centerOfUpcomingChunk.y, centerOfUpcomingChunk.z + mapGenerator.gridSize.z);
+        centerOfZNegativeNeighbourChunk = new Vector3(centerOfUpcomingChunk.x, centerOfUpcomingChunk.y, centerOfUpcomingChunk.z - mapGenerator.gridSize.z);
 
         foreach (KeyValuePair<Vector3, CubeData> actualCube in actualChunkField)
         {
+            if (actualCube.Value.position.z == -13.0f)
+            {
+                string debug = "ahoj";
+                debug = "aed";
+            }
+
             OptimaliseDataOfNewChunk(actualCube.Value, centerOfUpcomingChunk, actualChunkField);
         }
     }
@@ -68,14 +74,14 @@ public class MapOptimalisation : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXPositiveNeighbourChunk))
             {
-                // X positive Z positive corner
+                // X positive - Z positive corner
                 if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
 
                 }
 
-                // X positive Z negative corner
-                if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+                // X positive - Z negative corner
+                else if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
                 {
 
                 }
@@ -89,14 +95,14 @@ public class MapOptimalisation : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXNegativeNeighbourChunk))
             {
-                // X negative Z positive corner
+                // X negative - Z positive corner
                 if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
 
                 }
 
-                // X negative Z negative corner
-                if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+                // X negative - Z negative corner
+                else if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
                 {
 
                 }
@@ -110,14 +116,14 @@ public class MapOptimalisation : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZPositiveNeighbourChunk))
             {
-                // Z positive X positive corner
+                // Z positive - X positive corner
                 if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
 
                 }
 
-                // Z negative X negative corner
-                if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+                // Z negative - X negative corner
+                else if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
                 {
 
                 }
@@ -132,14 +138,14 @@ public class MapOptimalisation : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZNegativeNeighbourChunk))
             {
-                // Z negative X positive corner
+                // Z negative - X positive corner
                 if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
 
                 }
 
-                // Z negative X negative corner
-                if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+                // Z negative - X negative corner
+                else if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
                 {
 
                 }
@@ -158,12 +164,14 @@ public class MapOptimalisation : MonoBehaviour
 
     private void BorderCubesOptimizations(CubeData actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition)
     {
-        Dictionary<Vector3, GameObject> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
+        Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
 
-        if (neighbourChunk.ContainsKey(neighbourCubePosition))
+        if (!neighbourChunk.ContainsKey(neighbourCubePosition))
         {
-
+            return;
         }
+
+        neighbourChunk[neighbourCubePosition].gameObject.SetActive(false);
     }
 
     private void DeactiavateSurroundedCubeData(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField)
