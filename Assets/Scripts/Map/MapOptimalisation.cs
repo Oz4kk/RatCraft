@@ -188,9 +188,27 @@ public class MapOptimalisation : MonoBehaviour
             return;
         }
 
-        if (neighbourCubePosition.z == centerOfNeigbourChunk.z /*... */)
+        if (border == Border.XPositive || border == Border.XNegative)
         {
+            if (true)
+            {
 
+            }
+            else if (true)
+            {
+
+            }
+        }
+        else if (border == Border.ZPositive || border == Border.ZNegative)
+        {
+            if (true)
+            {
+
+            }
+            else if (true)
+            {
+
+            }
         }
 
         neighbourChunk[neighbourCubePosition].gameObject.SetActive(false);
