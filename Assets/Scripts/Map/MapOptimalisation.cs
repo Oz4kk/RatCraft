@@ -173,41 +173,46 @@ public class MapOptimalisation : MonoBehaviour
     {
         Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
 
-        if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-        {
-            return;
-        }
-
+        // Return if cube height is at 0.0f
         if (neighbourCubePosition.y == 0.0f)
         {
             return;
         }
 
+        // Return if neighbour chunk don't contains cube at the same position
+        if (!neighbourChunk.ContainsKey(neighbourCubePosition))
+        {
+            return;
+        }
+
+        // Return if it's highest cube in current chunk
         if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.up))
         {
             return;
         }
 
+        // Return if it's corner cube at X border
         if (border == Border.XPositive || border == Border.XNegative)
         {
-            if (true)
+            if (neighbourCubePosition.z + (mapGenerator.gridSize.z / 2) % mapGenerator.gridSize.z == 0)
             {
-
+                return;
             }
-            else if (true)
+            else if (neighbourCubePosition.z - (mapGenerator.gridSize.z / 2) % mapGenerator.gridSize.z == 0)
             {
-
+                return;
             }
         }
+        // Return if it's corner cube at Z border
         else if (border == Border.ZPositive || border == Border.ZNegative)
         {
-            if (true)
+            if (neighbourCubePosition.x + (mapGenerator.gridSize.x / 2) % mapGenerator.gridSize.x == 0)
             {
-
+                return;
             }
-            else if (true)
+            else if (neighbourCubePosition.x - (mapGenerator.gridSize.x / 2) % mapGenerator.gridSize.x == 0)
             {
-
+                return;
             }
         }
 
