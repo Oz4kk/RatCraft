@@ -57,111 +57,116 @@ public class MapOptimalisation : MonoBehaviour
                 debug = "aed";
             }
 
-            OptimaliseDataOfNewChunk(actualCube.Value, centerOfUpcomingChunk, actualChunkField);
+            OptimizeDataOfNewChunk(actualCube.Value, centerOfUpcomingChunk, actualChunkField);
         }
     }
 
     /// <summary>
     /// Optimization of cubes that are not on the edge of the chunk and.. 
     /// </summary>
-    /// <param name="actualCube"></param>
+    /// <param name="actualCubeData"></param>
     /// <param name="centerOfUpcomingChunk"></param>
     /// <param name="actualChunkField"></param>
-    private void OptimaliseDataOfNewChunk(CubeData actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> actualChunkField)
+    private void OptimizeDataOfNewChunk(CubeData actualCubeData, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> actualChunkField)
     {
         Border border = Border.Null;
         Corner corner = Corner.Null;
 
-        // Positive X border of actual chunk
+        if (actualCubeData.position == new Vector3(-13, 7, 3))
+        {
+            string ahoj;
+            ahoj = "2";
+        }
+        // Negative X border of actual chunk
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+        if ((actualCubeData.position.x - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXPositiveNeighbourChunk))
             {
                 border = Border.XPositive;
                 // X positive - Z positive corner
-                if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+                if (actualCubeData.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
 
                 }
 
                 // X positive - Z negative corner
-                else if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+                else if (actualCubeData.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
                 {
 
                 }
 
-                BorderCubesOptimizations(actualCube, centerOfUpcomingChunk, actualChunkField, centerOfXPositiveNeighbourChunk, actualCube.position + Vector3.right, border);
+                BorderCubesOptimizations(actualCubeData, centerOfUpcomingChunk, actualChunkField, centerOfXPositiveNeighbourChunk, actualCubeData.position + Vector3.right, border);
             }
         }
-        // Negative X border of actual chunk
+        // Postive X border of actual chunk
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        else if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+        else if ((actualCubeData.position.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXNegativeNeighbourChunk))
             {
                 border = Border.XNegative;
                 // X negative - Z positive corner
-                if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.z / 2.0f) - 1.0f)
+                if (actualCubeData.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.z / 2.0f) - 1.0f)
                 {
 
                 }
 
                 // X negative - Z negative corner
-                else if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.z / 2.0f) + 1.0f)
+                else if (actualCubeData.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.z / 2.0f) + 1.0f)
                 {
 
                 }
 
-                BorderCubesOptimizations(actualCube, centerOfUpcomingChunk, actualChunkField, centerOfXNegativeNeighbourChunk, actualCube.position + Vector3.left, border);
+                BorderCubesOptimizations(actualCubeData, centerOfUpcomingChunk, actualChunkField, centerOfXNegativeNeighbourChunk, actualCubeData.position + Vector3.left, border);
             }
         }
-        // Positive Z border of actual chunk
+        // Negative Z border of actual chunk
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        else if (actualCube.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+        else if ((actualCubeData.position.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZPositiveNeighbourChunk))
             {
                 border = Border.ZPositive;
                 // Z positive - X positive corner
-                if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+                if (actualCubeData.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
 
                 }
 
                 // Z negative - X negative corner
-                else if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+                else if (actualCubeData.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
                 {
 
                 }
 
-                BorderCubesOptimizations(actualCube, centerOfUpcomingChunk, actualChunkField, centerOfZPositiveNeighbourChunk, actualCube.position + Vector3.forward, border);
+                BorderCubesOptimizations(actualCubeData, centerOfUpcomingChunk, actualChunkField, centerOfZPositiveNeighbourChunk, actualCubeData.position + Vector3.forward, border);
             }
         }
-        // Negative Z border of actual chunk
+        // Postive Z border of actual chunk
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        else if (actualCube.position.z == centerOfUpcomingChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+        else if ((actualCubeData.position.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZNegativeNeighbourChunk))
             {
                 border = Border.ZNegative;
                 // Z negative - X positive corner
-                if (actualCube.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
+                if (actualCubeData.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
 
                 }
 
                 // Z negative - X negative corner
-                else if (actualCube.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
+                else if (actualCubeData.position.x == centerOfUpcomingChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f)
                 {
 
                 }
 
-                BorderCubesOptimizations(actualCube, centerOfUpcomingChunk, actualChunkField, centerOfZNegativeNeighbourChunk, actualCube.position + Vector3.back, border);
+                BorderCubesOptimizations(actualCubeData, centerOfUpcomingChunk, actualChunkField, centerOfZNegativeNeighbourChunk, actualCubeData.position + Vector3.back, border);
             }
         }
 
-        DeactiavateSurroundedCubeData(actualCube, actualChunkField);
+        DeactiavateSurroundedCubeData(actualCubeData, actualChunkField);
     }
 
     private void ChooseCorner(Border border1, Border border2, ref Corner corner)
