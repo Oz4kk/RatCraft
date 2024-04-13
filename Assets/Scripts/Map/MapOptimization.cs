@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Profiling;
 
-public class MapOptimalisation : MonoBehaviour
+public class MapOptimization : MonoBehaviour
 {
     enum Border
     {
@@ -167,11 +167,6 @@ public class MapOptimalisation : MonoBehaviour
         }
 
         DeactiavateSurroundedCubeData(actualCubeData, actualChunkField);
-    }
-
-    private void ChooseCorner(Border border1, Border border2, ref Corner corner)
-    {
-
     }
 
     private void BorderCubesOptimizations(CubeData actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border)
