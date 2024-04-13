@@ -96,7 +96,8 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                BorderCubesOptimizations(actualCubeData, centerOfUpcomingChunk, actualChunkField, centerOfXPositiveNeighbourChunk, actualCubeData.position + Vector3.right, border);
+                BorderCubesOptimizationsOfNeighbourChunk(centerOfXPositiveNeighbourChunk, actualCubeData.position + Vector3.right, border);
+                BorderCubesOptimizationsOfNewChunk(actualCubeData, actualChunkField, centerOfXPositiveNeighbourChunk, actualCubeData.position + Vector3.back, border);
             }
         }
         // Postive X border of actual chunk
@@ -118,7 +119,8 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                BorderCubesOptimizations(actualCubeData, centerOfUpcomingChunk, actualChunkField, centerOfXNegativeNeighbourChunk, actualCubeData.position + Vector3.left, border);
+                BorderCubesOptimizationsOfNeighbourChunk(centerOfXNegativeNeighbourChunk, actualCubeData.position + Vector3.left, border);
+                BorderCubesOptimizationsOfNewChunk(actualCubeData, actualChunkField, centerOfXNegativeNeighbourChunk, actualCubeData.position + Vector3.back, border);
             }
         }
         // Negative Z border of actual chunk
@@ -140,7 +142,8 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                BorderCubesOptimizations(actualCubeData, centerOfUpcomingChunk, actualChunkField, centerOfZPositiveNeighbourChunk, actualCubeData.position + Vector3.forward, border);
+                BorderCubesOptimizationsOfNeighbourChunk(centerOfZPositiveNeighbourChunk, actualCubeData.position + Vector3.forward, border);
+                BorderCubesOptimizationsOfNewChunk(actualCubeData, actualChunkField, centerOfZPositiveNeighbourChunk, actualCubeData.position + Vector3.back, border);
             }
         }
         // Postive Z border of actual chunk
@@ -162,14 +165,15 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                BorderCubesOptimizations(actualCubeData, centerOfUpcomingChunk, actualChunkField, centerOfZNegativeNeighbourChunk, actualCubeData.position + Vector3.back, border);
+                BorderCubesOptimizationsOfNeighbourChunk(centerOfZNegativeNeighbourChunk, actualCubeData.position + Vector3.back, border);
+                BorderCubesOptimizationsOfNewChunk(actualCubeData, actualChunkField, centerOfZNegativeNeighbourChunk, actualCubeData.position + Vector3.back, border);
             }
         }
 
         DeactiavateSurroundedCubeData(actualCubeData, actualChunkField);
     }
 
-    private void BorderCubesOptimizations(CubeData actualCube, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border)
+    private void BorderCubesOptimizationsOfNeighbourChunk(Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border)
     {
         Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
 
@@ -217,6 +221,50 @@ public class MapOptimization : MonoBehaviour
         }
 
         neighbourChunk[neighbourCubePosition].gameObject.SetActive(false);
+    }    
+    
+    private void BorderCubesOptimizationsOfNewChunk(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border)
+    {
+        Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
+
+        // Return if cube height is at 0.0f
+        if (actualCube.position.y == 0.0f)
+        {
+            return;
+        }
+
+        // Return if it's highest cube in current chunk
+        if (!actualChunkField.ContainsKey(actualCube.position + Vector3.up))
+        {
+            return;
+        }
+
+        // Return if it's corner cube at X border
+        if (border == Border.XPositive || border == Border.XNegative)
+        {
+            if (actualCube.position.z + (mapGenerator.gridSize.z / 2) % mapGenerator.gridSize.z == 0)
+            {
+                return;
+            }
+            else if (actualCube.position.z - (mapGenerator.gridSize.z / 2) % mapGenerator.gridSize.z == 0)
+            {
+                return;
+            }
+        }
+        // Return if it's corner cube at Z border
+        else if (border == Border.ZPositive || border == Border.ZNegative)
+        {
+            if (actualCube.position.x + (mapGenerator.gridSize.x / 2) % mapGenerator.gridSize.x == 0)
+            {
+                return;
+            }
+            else if (actualCube.position.x - (mapGenerator.gridSize.x / 2) % mapGenerator.gridSize.x == 0)
+            {
+                return;
+            }
+        }
+
+        actualCube.isCubeDataSurrounded = true;
     }
 
     private void DeactiavateSurroundedCubeData(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField)
