@@ -72,7 +72,7 @@ public class MapOptimization : MonoBehaviour
         Border border = Border.Null;
         Corner corner = Corner.Null;
 
-        if (actualCubeData.position == new Vector3(-13, 7, 3))
+        if (actualCubeData.position == new Vector3(-13, 1, -11))
         {
             string ahoj;
             ahoj = "2";
@@ -220,9 +220,14 @@ public class MapOptimization : MonoBehaviour
             }
         }
 
-        neighbourChunk[neighbourCubePosition].gameObject.SetActive(false);
-    }    
-    
+        if (neighbourChunk[neighbourCubePosition].isCubeInstantiated == false)
+        {
+            return;
+        }
+
+        neighbourChunk[neighbourCubePosition].cubeInstance.SetActive(false);
+    }
+
     private void BorderCubesOptimizationsOfNewChunk(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border)
     {
         Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];

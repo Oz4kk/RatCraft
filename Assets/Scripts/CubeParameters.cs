@@ -4,12 +4,23 @@ using UnityEngine;
 
 public class CubeParameters : MonoBehaviour
 {
-    public string name;
-    public float brittleness;
-    [HideInInspector] public float damage = 0;
-    public CubeType cubeType;
-    public bool isCubeDataSurrounded = false;
-
+    [HideInInspector]
     public GameObject cubeInstance;
+    [HideInInspector] 
+    public float damage = 0;
+
+    [SerializeField]
+    private GameObject _cubePrefab;
+    // Can I set cubePrefab value like this (in setter) or should it be otherwise
+    public GameObject cubePrefab
+    {
+        get { return cubeInstance; }
+        private set { cubePrefab = _cubePrefab; }
+    }
+
+    public CubeType cubeType;
+    public float brittleness;
+
+    public bool isCubeInstantiated = false;
     public Vector3 position;
 }

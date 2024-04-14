@@ -110,6 +110,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d5dd434388301f4aa9b35a220a72b45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  name: baseCube
-  brittleness: 0
+  cubeInstance: {fileID: 0}
   damage: 0
+  _cubePrefab: {fileID: 3571542748594326555}
+  cubeType: 0
+  brittleness: 0
+  isCubeInstantiated: 0
+  position: {x: 0, y: 0, z: 0}

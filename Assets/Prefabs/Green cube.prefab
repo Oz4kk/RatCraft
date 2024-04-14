@@ -16,6 +16,10 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -1612974539638800488, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+      propertyPath: cubePrefab
+      value: 
+      objectReference: {fileID: 8858395604543915494}
+    - target: {fileID: -1612974539638800488, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
       propertyPath: brittleness
       value: 3
       objectReference: {fileID: 0}
@@ -73,3 +77,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+--- !u!1 &8858395604543915494 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3571542748594326555, guid: 58015efafb31a5748ab6fed2c1568da3, type: 3}
+  m_PrefabInstance: {fileID: 5440344959635851773}
+  m_PrefabAsset: {fileID: 0}
