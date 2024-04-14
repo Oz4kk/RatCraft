@@ -14,7 +14,7 @@ public class CubeParameters : MonoBehaviour
     // Can I set cubePrefab value like this (in setter) or should it be otherwise
     public GameObject cubePrefab
     {
-        get { return cubeInstance; }
+        get { return _cubePrefab; }
         private set { cubePrefab = _cubePrefab; }
     }
 
