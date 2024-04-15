@@ -203,7 +203,7 @@ public class MapGenerator : MonoBehaviour
             cubeParameters.isCubeInstantiated = true;
             cubeParameters.cubeInstance = cubeInstance; 
 
-            chunkField.Add(actualCube.Key, cubeParameters);
+            chunkField.Add(cubeParameters.position, cubeParameters);
         }
         dictionaryOfCentersWithItsChunkField.Add(centerOfUpcommingChunk, chunkField);
     }

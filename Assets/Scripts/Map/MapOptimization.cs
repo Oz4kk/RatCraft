@@ -72,11 +72,6 @@ public class MapOptimization : MonoBehaviour
         Border border = Border.Null;
         Corner corner = Corner.Null;
 
-        if (newCubeData.position == new Vector3(-13, 4, 0))
-        {
-            string ahoj;
-            ahoj = "2";
-        }
         // Negative X border of actual chunk
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
         if ((newCubeData.position.x - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
@@ -221,7 +216,7 @@ public class MapOptimization : MonoBehaviour
 
         neighbourChunk[neighbourCubePosition].cubeInstance.SetActive(false);
     }
-
+    
     private void BorderCubesOptimizationsOfNewChunk(CubeData newCubeData, Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border)
     {
         Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
@@ -238,7 +233,7 @@ public class MapOptimization : MonoBehaviour
             return;
         }
 
-        // Return if neighbour chunk contains cube in the same position but incremented according to direction
+        // Return if neighbour chunk don't contains cube in the same position but incremented according to direction
         if (!neighbourChunk.ContainsKey(neighbourCubePosition))
         {
             return;
