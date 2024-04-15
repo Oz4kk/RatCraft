@@ -188,8 +188,7 @@ public class MapGenerator : MonoBehaviour
 
         foreach (KeyValuePair<Vector3, CubeData> actualCube in dataChunkField)
         {
-            CubeParameters cubeParameters = actualCube.Value.cubePrefab.GetComponent<CubeParameters>();
-            cubeParameters.position = actualCube.Key;
+            CubeParameters cubeParameters = null;
 
             if (actualCube.Value.isCubeDataSurrounded == true)
             {
@@ -198,10 +197,13 @@ public class MapGenerator : MonoBehaviour
                 continue;
             }
             GameObject cubeInstance = InstantiateAndReturnCube(actualCube.Key, actualCube.Value.cubePrefab);
+            cubeParameters = cubeInstance.GetComponent<CubeParameters>();
+
             ChooseTexture(cubeInstance);
 
             cubeParameters.isCubeInstantiated = true;
-            cubeParameters.cubeInstance = cubeInstance; 
+            cubeParameters.position = actualCube.Key;
+            cubeParameters.cubeInstance = cubeInstance;
 
             chunkField.Add(cubeParameters.position, cubeParameters);
         }

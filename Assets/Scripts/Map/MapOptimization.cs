@@ -86,7 +86,7 @@ public class MapOptimization : MonoBehaviour
                 }
 
                 BorderCubesOptimizationsOfNewChunk(newCubeData, newChunkFieldData, centerOfXPositiveNeighbourChunk, newCubeData.position + Vector3.right, border);
-                BorderCubesOptimizationsOfNeighbourChunk(newCubeData, centerOfXPositiveNeighbourChunk, newCubeData.position + Vector3.right, border);
+                BorderCubesOptimizationsOfNeighbourChunk(newChunkFieldData, newCubeData, centerOfXPositiveNeighbourChunk, newCubeData.position + Vector3.right, newCubeData.position + (Vector3.right * 2.0f), border);
             }
         }
         // Postive X border of actual chunk
@@ -109,7 +109,7 @@ public class MapOptimization : MonoBehaviour
                 }
 
                 BorderCubesOptimizationsOfNewChunk(newCubeData, newChunkFieldData, centerOfXNegativeNeighbourChunk, newCubeData.position + Vector3.left, border);
-                BorderCubesOptimizationsOfNeighbourChunk(newCubeData, centerOfXNegativeNeighbourChunk, newCubeData.position + Vector3.left, border);
+                BorderCubesOptimizationsOfNeighbourChunk(newChunkFieldData, newCubeData, centerOfXNegativeNeighbourChunk, newCubeData.position + Vector3.left, newCubeData.position + (Vector3.left * 2.0f), border);
             }
         }
         // Negative Z border of actual chunk
@@ -132,7 +132,7 @@ public class MapOptimization : MonoBehaviour
                 }
 
                 BorderCubesOptimizationsOfNewChunk(newCubeData, newChunkFieldData, centerOfZPositiveNeighbourChunk, newCubeData.position + Vector3.forward, border);
-                BorderCubesOptimizationsOfNeighbourChunk(newCubeData, centerOfZPositiveNeighbourChunk, newCubeData.position + Vector3.forward, border);
+                BorderCubesOptimizationsOfNeighbourChunk(newChunkFieldData, newCubeData, centerOfZPositiveNeighbourChunk, newCubeData.position + Vector3.forward, newCubeData.position + (Vector3.forward * 2.0f), border);
             }
         }
         // Postive Z border of actual chunk
@@ -155,14 +155,14 @@ public class MapOptimization : MonoBehaviour
                 }
 
                 BorderCubesOptimizationsOfNewChunk(newCubeData, newChunkFieldData, centerOfZNegativeNeighbourChunk, newCubeData.position + Vector3.back, border);
-                BorderCubesOptimizationsOfNeighbourChunk(newCubeData, centerOfZNegativeNeighbourChunk, newCubeData.position + Vector3.back, border);
+                BorderCubesOptimizationsOfNeighbourChunk(newChunkFieldData, newCubeData, centerOfZNegativeNeighbourChunk, newCubeData.position + Vector3.back, newCubeData.position + (Vector3.back * 2.0f), border);
             }
         }
 
         DeactiavateSurroundedCubeData(newCubeData, newChunkFieldData);
     }
 
-    private void BorderCubesOptimizationsOfNeighbourChunk(CubeData newCubeData, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border)
+    private void BorderCubesOptimizationsOfNeighbourChunk(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Vector3 neighbourCubePositionX2, Border border)
     {
         Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
 
@@ -174,6 +174,11 @@ public class MapOptimization : MonoBehaviour
 
         // Return if it's highest cube in current chunk
         if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.up))
+        {
+            return;
+        }
+
+        if (!neighbourChunk.ContainsKey(neighbourCubePositionX2))
         {
             return;
         }
@@ -208,7 +213,7 @@ public class MapOptimization : MonoBehaviour
             return;
         }
 
-        neighbourChunk[neighbourCubePosition].cubeInstance.SetActive(false);
+        neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
     }
     
     private void BorderCubesOptimizationsOfNewChunk(CubeData newCubeData, Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border)
