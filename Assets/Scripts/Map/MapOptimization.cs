@@ -51,12 +51,6 @@ public class MapOptimization : MonoBehaviour
 
         foreach (KeyValuePair<Vector3, CubeData> actualCube in actualChunkField)
         {
-            if (actualCube.Value.position == new Vector3(-13.0f, 4.0f, -2.0f))
-            {
-                string debug = "ahoj";
-                debug = "aed";
-            }
-
             OptimizeDataOfNewChunk(actualCube.Value, centerOfUpcomingChunk, actualChunkField);
         }
     }
