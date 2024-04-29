@@ -24,10 +24,15 @@ public class SerializableVector
         return new Vector3(x, y, z);
     }
 
-    //public static implicit operator SerealizableVector(Vector3 inVector)
-    //{
-    //    return new SerealizableVector(inVector);
-    //}
+    // Explicit convertion : 
+    public static explicit operator SerializableVector(Vector3 inVector)
+    {
+        return new SerializableVector(inVector);
+    }
+    public static explicit operator Vector3(SerializableVector serializableVector)
+    {
+        return serializableVector.GetVector3();
+    }
 }
 
 [Serializable]
@@ -62,12 +67,13 @@ public class SaveManager : MonoBehaviour
         // Create a platform independent file path
         string saveDirectory = Application.persistentDataPath;
         string fileName = "playerData.sav";
+        // Path.Combine combines the directory according to system which you use
         string filePath = Path.Combine(saveDirectory,fileName);
 
         // Create amd fill with data object to save
         PlayerData playerData = new();
         Vector3 playerPosition = playerSpawn.spawnedPlayer.transform.position;
-        playerData.playerPosition = new SerializableVector(playerPosition);
+        playerData.playerPosition = (SerializableVector)playerPosition;
 
         // Serialize object into the byte buffer
         BinaryFormatter binaryFormat = new();
@@ -76,7 +82,8 @@ public class SaveManager : MonoBehaviour
         memoryStream.Seek(0, SeekOrigin.Begin);
         byte[] saveBuffer = memoryStream.ToArray();
 
-        // Write bytes into the file
+        // Write bytes into the file                  
+        // TO-DO : Find out what method bellow makes 
         File.WriteAllBytes(filePath, saveBuffer);
     }
 
@@ -103,7 +110,7 @@ public class SaveManager : MonoBehaviour
         // Prevedu si playerData na objekt
         PlayerData playerData = (PlayerData)saveObject;
 
-        playerSpawn.spawnedPlayer.transform.position = playerData.playerPosition.GetVector3();
+        playerSpawn.spawnedPlayer.transform.position = (Vector3)playerData.playerPosition;
     }
 
     //private void Save()
