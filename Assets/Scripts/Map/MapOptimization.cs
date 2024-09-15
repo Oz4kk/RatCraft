@@ -181,27 +181,39 @@ public class MapOptimization : MonoBehaviour
 
         if (corner != Corner.Null)
         {
-            if (true)
+            if (corner == Corner.XNegative_ZNegative)
             {
 
             }
-            else if (true)
+            else if (corner == Corner.XNegative_ZPositive)
             {
 
             }
-            else if (true)
+            else if (corner == Corner.XPositive_ZNegative)
             {
 
             }
-            else if (true)
+            else if (corner == Corner.XPositive_ZPositive)
             {
 
             }
             return;
         }
 
+        // If there is a Cube in New Chunk bellow New Cube, then return
+        if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.up))
+        {
+            return;
+        }
+        // If there is a Cube in New Chunk above New Cube, then return
+        if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.up))
+        {
+            return;
+        }
+
         if (border != Border.XNegative)
         {
+            // If there is a Cube in New Chunk at decremented X position, then return
             if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.right))
             {
                 return;
@@ -209,6 +221,7 @@ public class MapOptimization : MonoBehaviour
         }
         else
         {
+            // If there is a Cube in Neighbour Chunk at decremented X position, then return
             if (!neighbourChunk.ContainsKey(neighbourCubePosition))
             {
                 return;
@@ -216,6 +229,7 @@ public class MapOptimization : MonoBehaviour
         }
         if (border != Border.XPositive)
         {
+            // If there is a Cube in New Chunk at incremented X position, then return
             if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.right))
             {
                 return;
@@ -223,6 +237,7 @@ public class MapOptimization : MonoBehaviour
         }
         else
         {
+            // If there is a Cube in Neighbour Chunk at incremented X position, then return
             if (!neighbourChunk.ContainsKey(neighbourCubePosition))
             {
                 return;
@@ -230,6 +245,7 @@ public class MapOptimization : MonoBehaviour
         }
         if (border != Border.ZNegative)
         {
+            // If there is a Cube in New Chunk at decremented Z position, then return
             if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.forward))
             {
                 return;
@@ -237,6 +253,7 @@ public class MapOptimization : MonoBehaviour
         }
         else
         {
+            // If there is a Cube in Neighbour Chunk at decremented Z position, then return
             if (!neighbourChunk.ContainsKey(neighbourCubePosition))
             {
                 return;
@@ -244,21 +261,20 @@ public class MapOptimization : MonoBehaviour
         }
         if (border != Border.ZPositive)
         {
+            // If there is a Cube in New Chunk at incremented Z position, then return
             if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.forward))
             {
                 return;
             }
         }
-
-        if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.up))
+        else
         {
-            return;
+            // If there is a Cube in Neighbout Chunk at incremented Z position, then return
+            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
+            {
+                return;
+            }
         }
-        if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.up))
-        {
-            return;
-        }
-
 
         newCubeData.isCubeDataSurrounded = true;
     }
@@ -288,71 +304,80 @@ public class MapOptimization : MonoBehaviour
             return;
         }
 
-        if (border != Border.XNegative)
-        {
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.right))
-            {
-                return;
-            }
-            else
-            {
-                if (!newChunkFieldData.ContainsKey(newCubeData.position))
-                {
-                    return;
-                }
-            }
-
-        }
-        if (border != Border.XPositive)
-        {
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition - Vector3.right))
-            {
-                return;
-            }
-            else
-            {
-                if (!newChunkFieldData.ContainsKey(newCubeData.position))
-                {
-                    return;
-                }
-            }
-        }
-        if (border != Border.ZNegative)
-        {
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.forward))
-            {
-                return;
-            }
-            else
-            {
-                if (!newChunkFieldData.ContainsKey(newCubeData.position))
-                {
-                    return;
-                }
-            }
-        }
-        if (border != Border.ZPositive)
-        {
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition - Vector3.forward))
-            {
-                return;
-            }
-            else
-            {
-                if (!newChunkFieldData.ContainsKey(newCubeData.position))
-                {
-                    return;
-                }
-            }
-        }
-
+        // If there is a Cube in Neighbour Chunk bellow Neighbour Cube, then return
         if (!neighbourChunk.ContainsKey(neighbourCubePosition - Vector3.up))
         {
             return;
         }
+        // If there is a Cube in Neighbour Chunk bellow Neighbour Cube, then return
         if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.up))
         {
             return;
+        }
+
+        if (border != Border.XNegative)
+        {
+            // If there is Cube in Neighbour Chunk at incremented X position, then return
+            if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.right))
+            {
+                return;
+            }
+        }
+        else
+        {
+            // If there is Cube in New Chunk at incremented X position, then return
+            if (!newChunkFieldData.ContainsKey(newCubeData.position))
+            {
+                return;
+            }
+        }
+        if (border != Border.XPositive)
+        {
+            // If there is Cube in Neighbour Chunk at decremented X position, then return
+            if (!neighbourChunk.ContainsKey(neighbourCubePosition - Vector3.right))
+            {
+                return;
+            }
+        }
+        else
+        {
+            // If there is Cube in New Chunk at decremented X position, then return
+            if (!newChunkFieldData.ContainsKey(newCubeData.position))
+            {
+                return;
+            }
+        }
+        if (border != Border.ZNegative)
+        {
+            // If there is Cube in Neighbour Chunk at incremented Z position, then return
+            if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.forward))
+            {
+                return;
+            }
+        }
+        else
+        {
+            // If there is Cube in New Chunk at incremented Z position, then return
+            if (!newChunkFieldData.ContainsKey(newCubeData.position))
+            {
+                return;
+            }
+        }
+        if (border != Border.ZPositive)
+        {
+            // If there is cube in Neighbour Chunk at decremented Z position, then return
+            if (!neighbourChunk.ContainsKey(neighbourCubePosition - Vector3.forward))
+            {
+                return;
+            }
+        }
+        else
+        {
+            // If there is cube in New Chunk at decremented Z position, then return
+            if (!newChunkFieldData.ContainsKey(newCubeData.position))
+            {
+                return;
+            }
         }
 
         neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
