@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
+using System.Threading;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -26,6 +27,24 @@ public class MapOptimization : MonoBehaviour
         XNegative_ZPositive,
         XNegative_ZNegative
     }
+
+    private static readonly Border[] borders = new[]
+    {
+        Border.XNegative,
+        Border.XPositive,
+        Border.ZNegative,
+        Border.ZPositive
+    };
+
+    private static readonly Vector3[] directions = new[]
+    {
+        // Vertical directions
+        Vector3.up, Vector3.down,
+        // Horizontal X directions
+        Vector3.right, Vector3.left,
+        // Horizontal Z directions
+        Vector3.forward, Vector3.back
+    };
 
     private Vector3 centerOfXPositiveNeighbourChunk = new Vector3();
     private Vector3 centerOfXNegativeNeighbourChunk = new Vector3();
@@ -65,15 +84,9 @@ public class MapOptimization : MonoBehaviour
     /// <param name="newChunkFieldData"></param>
     private void OptimizeDataOfNewChunk(CubeData newCubeData, Vector3 centerOfUpcomingChunk, Dictionary<Vector3, CubeData> newChunkFieldData)
     {
-        Border border = Border.Null;
+        Border neighborChunkBorder = Border.Null;
+        Border newChunkBorder = Border.Null;
         Corner corner = Corner.Null;
-
-        // Debug
-        if (newCubeData.position == new Vector3(-13, 3, 1))
-        {
-            string ahoj;
-            ahoj = "ahoj";
-        }
 
         // Negative X border of actual chunk
         // If actual cube postion is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
@@ -81,7 +94,10 @@ public class MapOptimization : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXPositiveNeighbourChunk))
             {
-                border = Border.XPositive;
+                Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXPositiveNeighbourChunk];
+                Vector3 neighbourCubePosition = newCubeData.position + Vector3.right;
+                newChunkBorder = Border.XPositive;
+                neighborChunkBorder = Border.XNegative;
                 // X positive - Z positive corner
                 if (newCubeData.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
@@ -94,8 +110,17 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                BorderCubesOptimizationsOfNewChunk(newCubeData, newChunkFieldData, centerOfXPositiveNeighbourChunk, newCubeData.position + Vector3.right, border, Corner.Null);
-                BorderCubesOptimizationsOfNeighbourChunk(newChunkFieldData, newCubeData, centerOfXPositiveNeighbourChunk, newCubeData.position + Vector3.right, border, Corner.Null);
+                if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunk, neighbourCubePosition, newChunkBorder))
+                {
+                    return;
+                }
+                newCubeData.isCubeDataSurrounded = true;
+                if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunk, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighborChunkBorder))
+                {
+                    return;
+                }
+                neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+
                 return;
             }
         }
@@ -105,7 +130,10 @@ public class MapOptimization : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXNegativeNeighbourChunk))
             {
-                border = Border.XNegative;
+                Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXNegativeNeighbourChunk];
+                Vector3 neighbourCubePosition = newCubeData.position + Vector3.left;
+                newChunkBorder = Border.XNegative;
+                neighborChunkBorder = Border.XPositive;
                 // X negative - Z positive corner
                 if (newCubeData.position.z == centerOfUpcomingChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.z / 2.0f) - 1.0f)
                 {
@@ -118,8 +146,17 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                BorderCubesOptimizationsOfNewChunk(newCubeData, newChunkFieldData, centerOfXNegativeNeighbourChunk, newCubeData.position + Vector3.left, border, Corner.Null);
-                BorderCubesOptimizationsOfNeighbourChunk(newChunkFieldData, newCubeData, centerOfXNegativeNeighbourChunk, newCubeData.position + Vector3.left, border, Corner.Null);
+                if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunk, neighbourCubePosition, newChunkBorder))
+                {
+                    return;
+                }
+                newCubeData.isCubeDataSurrounded = true;
+                if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunk, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighborChunkBorder))
+                {
+                    return;
+                }
+                neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+
                 return;
             }
         }
@@ -129,7 +166,10 @@ public class MapOptimization : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZPositiveNeighbourChunk))
             {
-                border = Border.ZPositive;
+                Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZPositiveNeighbourChunk];
+                Vector3 neighbourCubePosition = newCubeData.position + Vector3.forward;
+                newChunkBorder = Border.ZPositive;
+                neighborChunkBorder = Border.ZNegative;
                 // Z positive - X positive corner
                 if (newCubeData.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
@@ -142,8 +182,17 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                BorderCubesOptimizationsOfNewChunk(newCubeData, newChunkFieldData, centerOfZPositiveNeighbourChunk, newCubeData.position + Vector3.forward, border, Corner.Null);
-                BorderCubesOptimizationsOfNeighbourChunk(newChunkFieldData, newCubeData, centerOfZPositiveNeighbourChunk, newCubeData.position + Vector3.forward, border, Corner.Null);
+                if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunk, neighbourCubePosition, newChunkBorder))
+                {
+                    return;
+                }
+                newCubeData.isCubeDataSurrounded = true;
+                if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunk, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighborChunkBorder))
+                {
+                    return;
+                }
+                neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+
                 return;
             }
         }
@@ -153,7 +202,11 @@ public class MapOptimization : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZNegativeNeighbourChunk))
             {
-                border = Border.ZNegative;
+                Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZNegativeNeighbourChunk];
+                Vector3 neighbourCubePosition = newCubeData.position + Vector3.back;
+                newChunkBorder = Border.ZNegative;
+                neighborChunkBorder = Border.ZPositive;
+
                 // Z negative - X positive corner
                 if (newCubeData.position.x == centerOfUpcomingChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f)
                 {
@@ -166,8 +219,18 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                BorderCubesOptimizationsOfNewChunk(newCubeData, newChunkFieldData, centerOfZNegativeNeighbourChunk, newCubeData.position + Vector3.back, border, Corner.Null);
-                BorderCubesOptimizationsOfNeighbourChunk(newChunkFieldData, newCubeData, centerOfZNegativeNeighbourChunk, newCubeData.position + Vector3.back, border, Corner.Null);
+                // Put it into the methoed everywhere!
+                if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunk, neighbourCubePosition, newChunkBorder))
+                {
+                    return;
+                }
+                newCubeData.isCubeDataSurrounded = true;
+                if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunk, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighborChunkBorder))
+                {
+                    return;
+                }
+                neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+
                 return;
             }
         }
@@ -175,291 +238,58 @@ public class MapOptimization : MonoBehaviour
         DeactiavateSurroundedCubeData(newCubeData, newChunkFieldData);
     }
 
-
-    private void BorderCubesOptimizationsOfNewChunk(CubeData newCubeData, Dictionary<Vector3, CubeData> newChunkFieldData, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border, Corner corner)
+    private bool IsBorderCubeSurrounded<T, A>(Dictionary<Vector3, T> firstChunkFieldData, Vector3 firstCubePosition, Dictionary<Vector3, A> secondChunkFieldData, Vector3 secondCubePosition, Border border)
     {
-        Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
+        foreach (Border actaualBorder in borders)
+        {
+            foreach (Vector3 actualDirection in directions)
+            {
+                // Continue to the next foreach interation if Actual Direction is the same as Current Border
+                if (isDirectionSameAsBorder(actualDirection, border))
+                {
+                    continue;
+                }
 
-        if (corner != Corner.Null)
-        {
-            if (corner == Corner.XNegative_ZNegative)
-            {
-
-            }
-            else if (corner == Corner.XNegative_ZPositive)
-            {
-
-            }
-            else if (corner == Corner.XPositive_ZNegative)
-            {
-
-            }
-            else if (corner == Corner.XPositive_ZPositive)
-            {
-
-            }
-            return;
-        }
-
-        // If there is a Cube in New Chunk bellow New Cube, then return
-        if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.up))
-        {
-            return;
-        }
-        // If there is a Cube in New Chunk above New Cube, then return
-        if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.up))
-        {
-            return;
-        }
-
-        if (border != Border.XNegative)
-        {
-            // If there is a Cube in New Chunk at decremented X position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.right))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is a Cube in Neighbour Chunk at decremented X position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-            {
-                return;
-            }
-        }
-        if (border != Border.XPositive)
-        {
-            // If there is a Cube in New Chunk at incremented X position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.right))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is a Cube in Neighbour Chunk at incremented X position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-            {
-                return;
-            }
-        }
-        if (border != Border.ZNegative)
-        {
-            // If there is a Cube in New Chunk at decremented Z position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.forward))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is a Cube in Neighbour Chunk at decremented Z position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-            {
-                return;
-            }
-        }
-        if (border != Border.ZPositive)
-        {
-            // If there is a Cube in New Chunk at incremented Z position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.forward))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is a Cube in Neighbout Chunk at incremented Z position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-            {
-                return;
+                if (actaualBorder != border)
+                {
+                    if (!firstChunkFieldData.ContainsKey(firstCubePosition + actualDirection))
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (!secondChunkFieldData.ContainsKey(secondCubePosition))
+                    {
+                        return false;
+                    }
+                }
             }
         }
 
-        newCubeData.isCubeDataSurrounded = true;
+        return true;
     }
 
-    private void BorderCubesOptimizationsOfNeighbourChunk(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Vector3 centerOfNeigbourChunk, Vector3 neighbourCubePosition, Border border, Corner corner)
+    private bool isDirectionSameAsBorder(Vector3 actualDirection, Border border)
     {
-        Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeigbourChunk];
-
-        if (corner != Corner.Null)
+        if (actualDirection == Vector3.right && border == Border.XPositive)
         {
-            if (true)
-            {
-
-            }
-            else if (true)
-            {
-
-            }
-            else if (true)
-            {
-
-            }
-            else if (true)
-            {
-
-            }
-            return;
+            return true;
+        }
+        if (actualDirection == -(Vector3.right) && border == Border.XNegative)
+        {
+            return true;
+        }
+        if (actualDirection == Vector3.forward && border == Border.ZPositive)
+        {
+            return true;
+        }
+        if (actualDirection == -(Vector3.forward) && border == Border.ZNegative)
+        {
+            return true;
         }
 
-        // If there is a Cube in Neighbour Chunk bellow Neighbour Cube, then return
-        if (!neighbourChunk.ContainsKey(neighbourCubePosition - Vector3.up))
-        {
-            return;
-        }
-        // If there is a Cube in Neighbour Chunk bellow Neighbour Cube, then return
-        if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.up))
-        {
-            return;
-        }
-
-        if (border != Border.XNegative)
-        {
-            // If there is Cube in Neighbour Chunk at incremented X position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.right))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is Cube in New Chunk at incremented X position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position))
-            {
-                return;
-            }
-        }
-        if (border != Border.XPositive)
-        {
-            // If there is Cube in Neighbour Chunk at decremented X position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition - Vector3.right))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is Cube in New Chunk at decremented X position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position))
-            {
-                return;
-            }
-        }
-        if (border != Border.ZNegative)
-        {
-            // If there is Cube in Neighbour Chunk at incremented Z position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition + Vector3.forward))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is Cube in New Chunk at incremented Z position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position))
-            {
-                return;
-            }
-        }
-        if (border != Border.ZPositive)
-        {
-            // If there is cube in Neighbour Chunk at decremented Z position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition - Vector3.forward))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is cube in New Chunk at decremented Z position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position))
-            {
-                return;
-            }
-        }
-
-        neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
-    }
-    private void FindSurroundingCubesAroundBorderCube(CubeData newCubeData, Dictionary<Vector3, CubeData> newChunkFieldData, Dictionary<Vector3, CubeParameters> neighbourChunk, Vector3 neighbourCubePosition, Vector3 centerOfNeigbourChunk, Border border)
-    {
-        // If there is a Cube in New Chunk bellow New Cube, then return
-        if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.up))
-        {
-            return;
-        }
-        // If there is a Cube in New Chunk above New Cube, then return
-        if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.up))
-        {
-            return;
-        }
-
-        if (border != Border.XNegative)
-        {
-            // If there is a Cube in New Chunk at decremented X position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.right))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is a Cube in Neighbour Chunk at decremented X position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-            {
-                return;
-            }
-        }
-        if (border != Border.XPositive)
-        {
-            // If there is a Cube in New Chunk at incremented X position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.right))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is a Cube in Neighbour Chunk at incremented X position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-            {
-                return;
-            }
-        }
-        if (border != Border.ZNegative)
-        {
-            // If there is a Cube in New Chunk at decremented Z position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position - Vector3.forward))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is a Cube in Neighbour Chunk at decremented Z position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-            {
-                return;
-            }
-        }
-        if (border != Border.ZPositive)
-        {
-            // If there is a Cube in New Chunk at incremented Z position, then return
-            if (!newChunkFieldData.ContainsKey(newCubeData.position + Vector3.forward))
-            {
-                return;
-            }
-        }
-        else
-        {
-            // If there is a Cube in Neighbout Chunk at incremented Z position, then return
-            if (!neighbourChunk.ContainsKey(neighbourCubePosition))
-            {
-                return;
-            }
-        }
+        return false;
     }
 
     private void DeactiavateSurroundedCubeData(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField)
