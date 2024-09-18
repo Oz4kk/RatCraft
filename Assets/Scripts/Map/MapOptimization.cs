@@ -94,8 +94,8 @@ public class MapOptimization : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXPositiveNeighbourChunk))
             {
-                Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXPositiveNeighbourChunk];
-                Vector3 neighbourCubePosition = newCubeData.position + Vector3.right;
+                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXPositiveNeighbourChunk];
+                Vector3 neighborCubePosition = newCubeData.position + Vector3.right;
                 newChunkBorder = Border.XPositive;
                 neighborChunkBorder = Border.XNegative;
                 // X positive - Z positive corner
@@ -110,16 +110,7 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunk, neighbourCubePosition, newChunkBorder))
-                {
-                    return;
-                }
-                newCubeData.isCubeDataSurrounded = true;
-                if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunk, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighborChunkBorder))
-                {
-                    return;
-                }
-                neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
 
                 return;
             }
@@ -130,8 +121,8 @@ public class MapOptimization : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXNegativeNeighbourChunk))
             {
-                Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXNegativeNeighbourChunk];
-                Vector3 neighbourCubePosition = newCubeData.position + Vector3.left;
+                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXNegativeNeighbourChunk];
+                Vector3 neighborCubePosition = newCubeData.position + Vector3.left;
                 newChunkBorder = Border.XNegative;
                 neighborChunkBorder = Border.XPositive;
                 // X negative - Z positive corner
@@ -146,16 +137,7 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunk, neighbourCubePosition, newChunkBorder))
-                {
-                    return;
-                }
-                newCubeData.isCubeDataSurrounded = true;
-                if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunk, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighborChunkBorder))
-                {
-                    return;
-                }
-                neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
 
                 return;
             }
@@ -166,8 +148,8 @@ public class MapOptimization : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZPositiveNeighbourChunk))
             {
-                Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZPositiveNeighbourChunk];
-                Vector3 neighbourCubePosition = newCubeData.position + Vector3.forward;
+                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZPositiveNeighbourChunk];
+                Vector3 neighborCubePosition = newCubeData.position + Vector3.forward;
                 newChunkBorder = Border.ZPositive;
                 neighborChunkBorder = Border.ZNegative;
                 // Z positive - X positive corner
@@ -182,16 +164,7 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunk, neighbourCubePosition, newChunkBorder))
-                {
-                    return;
-                }
-                newCubeData.isCubeDataSurrounded = true;
-                if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunk, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighborChunkBorder))
-                {
-                    return;
-                }
-                neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
 
                 return;
             }
@@ -202,8 +175,8 @@ public class MapOptimization : MonoBehaviour
         {
             if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZNegativeNeighbourChunk))
             {
-                Dictionary<Vector3, CubeParameters> neighbourChunk = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZNegativeNeighbourChunk];
-                Vector3 neighbourCubePosition = newCubeData.position + Vector3.back;
+                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZNegativeNeighbourChunk];
+                Vector3 neighborCubePosition = newCubeData.position + Vector3.back;
                 newChunkBorder = Border.ZNegative;
                 neighborChunkBorder = Border.ZPositive;
 
@@ -219,23 +192,30 @@ public class MapOptimization : MonoBehaviour
 
                 }
 
-                // Put it into the methoed everywhere!
-                if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunk, neighbourCubePosition, newChunkBorder))
-                {
-                    return;
-                }
-                newCubeData.isCubeDataSurrounded = true;
-                if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunk, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighborChunkBorder))
-                {
-                    return;
-                }
-                neighbourChunk[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
 
                 return;
             }
         }
 
         DeactiavateSurroundedCubeData(newCubeData, newChunkFieldData);
+    }
+
+    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder, Dictionary<Vector3, CubeParameters> neighbourChunkField, Vector3 neighbourCubePosition, Border neighbourChynkBorder)
+    {
+        // Return if New Cube in New Chunk isn't surrounded with cubes from each sides
+        if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunkField, neighbourCubePosition, newChunkBorder))
+        {
+            return;
+        }
+        newCubeData.isCubeDataSurrounded = true;
+
+        // Return if Neighbor Cube in Neighbor Chunk isn't surrounded with cubes from each sides
+        if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunkField, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighbourChynkBorder))
+        {
+            return;
+        }
+        neighbourChunkField[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
     }
 
     private bool IsBorderCubeSurrounded<T, A>(Dictionary<Vector3, T> firstChunkFieldData, Vector3 firstCubePosition, Dictionary<Vector3, A> secondChunkFieldData, Vector3 secondCubePosition, Border border)
