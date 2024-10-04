@@ -363,7 +363,7 @@ public class MapOptimization : MonoBehaviour
                 Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.back;
                 Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
                 Dictionary<Vector3, CubeParameters> mapField1 = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfNeighborChunk1];
-                cornerCubes.Add(Corner.XNegative_ZPositive, neighborCubePosition1, centerOfNeighborChunk1);
+                cornerCubes.Add(Corner.XPositive_ZPositive, neighborCubePosition1, centerOfNeighborChunk1);
                 neighborCubesPositions.Add(neighborCubePosition1, Corner.XPositive_ZPositive);
 
                 Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.right + Vector3.back);
@@ -560,9 +560,9 @@ public class MapOptimization : MonoBehaviour
         }
         else if (currentCorner == Corner.XNegative_ZPositive)
         {
-            if (direction == Vector3.left)
+            if (direction == Vector3.right)
             {
-                predictedCubePosition = currentCubePosition + Vector3.left;
+                predictedCubePosition = currentCubePosition + Vector3.right;
 
                 if (currentChunkFieldData.ContainsKey(predictedCubePosition))
                 {
@@ -578,11 +578,10 @@ public class MapOptimization : MonoBehaviour
                     return true;
                 }
             }
-            else if (direction == Vector3.right)
+            else if (direction == Vector3.left)
             {
-                predictedCubePosition = currentCubePosition + Vector3.right;
+                predictedCubePosition = currentCubePosition + Vector3.left;
 
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
 
                 predictedChunkCenter.x -= mapGenerator.gridSize.x;
                 
@@ -594,6 +593,8 @@ public class MapOptimization : MonoBehaviour
                     }
                     return false;
                 }
+
+                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
 
                 if (neighborChunkField.ContainsKey(predictedCubePosition))
                 {
