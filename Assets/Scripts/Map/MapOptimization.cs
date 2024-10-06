@@ -45,7 +45,7 @@ public class MapOptimization : MonoBehaviour
                 yield return cornerCubesData[i];
             }
         }
-        
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
@@ -73,7 +73,7 @@ public class MapOptimization : MonoBehaviour
         XNegative_ZPositive,
         XNegative_ZNegative
     }
-    
+
     private enum Border
     {
         Null,
@@ -256,7 +256,7 @@ public class MapOptimization : MonoBehaviour
         }
 
         CornerCubes neighborCubesDataAroundCorner = GetNeighborCubesDataAroundCorner(newCubeData.position, centerOfNewChunk, newChunkBorder, newCubeCorner);
-        
+
         // If there are not instantiated each correspondent chunks around New Cube Corner, then return
         if (!AreChunksAroundCornerInstantiated(neighborCubesDataAroundCorner))
         {
@@ -334,7 +334,7 @@ public class MapOptimization : MonoBehaviour
                 cornerCubes.Add(Corner.XPositive_ZNegative, neighborCubePosition2, centerOfNeighborChunk2);
                 neighborCubesPositions.Add(neighborCubePosition2, Corner.XPositive_ZNegative);
             }
-            else if(newCubeCorner == Corner.XPositive_ZNegative)
+            else if (newCubeCorner == Corner.XPositive_ZNegative)
             {
                 Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.right;
                 Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
@@ -459,265 +459,268 @@ public class MapOptimization : MonoBehaviour
 
         KeyValuePair<Vector3, Corner> neighborCubePositionWithItsCorner;
 
-        if (currentCorner == Corner.XNegative_ZNegative)
+        switch (currentCorner)
         {
-            if (direction == Vector3.right)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.right;
-
-                if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+            case Corner.XNegative_ZNegative:
+                if (direction == Vector3.right)
                 {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.forward)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.forward;
+                    predictedCubePosition = currentCubePosition + Vector3.right;
 
-                if (currentChunkFieldData.ContainsKey(predictedCubePosition))
-                {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.left)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.left;
-
-                predictedChunkCenter.x -= mapGenerator.gridSize.x;
-
-                if (predictedChunkCenter == centerOfNewChunk)
-                {
-                    if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
                     {
                         return true;
                     }
-                    return false;
                 }
-
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-                if (neighborChunkField.ContainsKey(predictedCubePosition))
+                else if (direction == Vector3.forward)
                 {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.back)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.back;
+                    predictedCubePosition = currentCubePosition + Vector3.forward;
 
-                predictedChunkCenter.z -= mapGenerator.gridSize.x;
-
-                if (predictedChunkCenter == centerOfNewChunk)
-                {
-                    if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
                     {
                         return true;
                     }
-                    return false;
                 }
-
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                if (neighborChunkField.ContainsKey(predictedCubePosition))
+                else if (direction == Vector3.left)
                 {
-                    return true;
-                }
-            }
-        }
-        else if (currentCorner == Corner.XNegative_ZPositive)
-        {
-            if (direction == Vector3.right)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.right;
+                    predictedCubePosition = currentCubePosition + Vector3.left;
 
-                if (currentChunkFieldData.ContainsKey(predictedCubePosition))
-                {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.back)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.back;
+                    predictedChunkCenter.x -= mapGenerator.gridSize.x;
 
-                if (currentChunkFieldData.ContainsKey(predictedCubePosition))
-                {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.left)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.left;
+                    if (predictedChunkCenter == centerOfNewChunk)
+                    {
+                        if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
 
-
-                predictedChunkCenter.x -= mapGenerator.gridSize.x;
-                
-                if (predictedChunkCenter == centerOfNewChunk)
-                {
-                    if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                    if (neighborChunkField.ContainsKey(predictedCubePosition))
                     {
                         return true;
                     }
-                    return false;
                 }
-
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                if (neighborChunkField.ContainsKey(predictedCubePosition))
+                else if (direction == Vector3.back)
                 {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.forward)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.forward;
+                    predictedCubePosition = currentCubePosition + Vector3.back;
 
-                predictedChunkCenter.z += mapGenerator.gridSize.x;
+                    predictedChunkCenter.z -= mapGenerator.gridSize.x;
 
-                if (predictedChunkCenter == centerOfNewChunk)
-                {
-                    if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                    if (predictedChunkCenter == centerOfNewChunk)
+                    {
+                        if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+
+                    if (neighborChunkField.ContainsKey(predictedCubePosition))
                     {
                         return true;
                     }
-                    return false;
                 }
+                break;
 
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                if (neighborChunkField.ContainsKey(predictedCubePosition))
+            case Corner.XNegative_ZPositive:
+                if (direction == Vector3.right)
                 {
-                    return true;
-                }
-            }
-        }
-        else if (currentCorner == Corner.XPositive_ZNegative)
-        {
-            if (direction == Vector3.left)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.left;
+                    predictedCubePosition = currentCubePosition + Vector3.right;
 
-                if (currentChunkFieldData.ContainsKey(predictedCubePosition))
-                {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.forward)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.forward;
-
-                if (currentChunkFieldData.ContainsKey(predictedCubePosition))
-                {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.right)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.right;
-
-                predictedChunkCenter.x += mapGenerator.gridSize.x;
-
-                if (predictedChunkCenter == centerOfNewChunk)
-                {
-                    if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
                     {
                         return true;
                     }
-                    return false;
                 }
-
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                if (neighborChunkField.ContainsKey(predictedCubePosition))
+                else if (direction == Vector3.back)
                 {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.back)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.back;
+                    predictedCubePosition = currentCubePosition + Vector3.back;
 
-                predictedChunkCenter.z -= mapGenerator.gridSize.x;
-
-                if (predictedChunkCenter == centerOfNewChunk)
-                {
-                    if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
                     {
                         return true;
                     }
-                    return false;
                 }
-
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                if (neighborChunkField.ContainsKey(predictedCubePosition))
+                else if (direction == Vector3.left)
                 {
-                    return true;
-                }
-            }
-        }
-        else if (currentCorner == Corner.XPositive_ZPositive)
-        {
-            if (direction == Vector3.left)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.left;
+                    predictedCubePosition = currentCubePosition + Vector3.left;
 
-                if (currentChunkFieldData.ContainsKey(predictedCubePosition))
-                {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.back)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.back;
 
-                if (currentChunkFieldData.ContainsKey(predictedCubePosition))
-                {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.right)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.right;
+                    predictedChunkCenter.x -= mapGenerator.gridSize.x;
 
-                predictedChunkCenter.x += mapGenerator.gridSize.x;
+                    if (predictedChunkCenter == centerOfNewChunk)
+                    {
+                        if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
 
-                if (predictedChunkCenter == centerOfNewChunk)
-                {
-                    if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+
+                    if (neighborChunkField.ContainsKey(predictedCubePosition))
                     {
                         return true;
                     }
-                    return false;
                 }
-
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                if (neighborChunkField.ContainsKey(predictedCubePosition))
+                else if (direction == Vector3.forward)
                 {
-                    return true;
-                }
-            }
-            else if (direction == Vector3.forward)
-            {
-                predictedCubePosition = currentCubePosition + Vector3.forward;
+                    predictedCubePosition = currentCubePosition + Vector3.forward;
 
-                predictedChunkCenter.z += mapGenerator.gridSize.x;
+                    predictedChunkCenter.z += mapGenerator.gridSize.x;
 
-                if (predictedChunkCenter == centerOfNewChunk)
-                {
-                    if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                    if (predictedChunkCenter == centerOfNewChunk)
+                    {
+                        if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+
+                    if (neighborChunkField.ContainsKey(predictedCubePosition))
                     {
                         return true;
                     }
-                    return false;
                 }
+                break;
 
-                neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                if (neighborChunkField.ContainsKey(predictedCubePosition))
+            case Corner.XPositive_ZNegative:
+                if (direction == Vector3.left)
                 {
-                    return true;
+                    predictedCubePosition = currentCubePosition + Vector3.left;
+
+                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    {
+                        return true;
+                    }
                 }
-            }
+                else if (direction == Vector3.forward)
+                {
+                    predictedCubePosition = currentCubePosition + Vector3.forward;
+
+                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    {
+                        return true;
+                    }
+                }
+                else if (direction == Vector3.right)
+                {
+                    predictedCubePosition = currentCubePosition + Vector3.right;
+
+                    predictedChunkCenter.x += mapGenerator.gridSize.x;
+
+                    if (predictedChunkCenter == centerOfNewChunk)
+                    {
+                        if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+
+                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    {
+                        return true;
+                    }
+                }
+                else if (direction == Vector3.back)
+                {
+                    predictedCubePosition = currentCubePosition + Vector3.back;
+
+                    predictedChunkCenter.z -= mapGenerator.gridSize.x;
+
+                    if (predictedChunkCenter == centerOfNewChunk)
+                    {
+                        if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+
+                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    {
+                        return true;
+                    }
+                }
+                break;
+
+            case Corner.XPositive_ZPositive:
+                if (direction == Vector3.left)
+                {
+                    predictedCubePosition = currentCubePosition + Vector3.left;
+
+                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    {
+                        return true;
+                    }
+                }
+                else if (direction == Vector3.back)
+                {
+                    predictedCubePosition = currentCubePosition + Vector3.back;
+
+                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    {
+                        return true;
+                    }
+                }
+                else if (direction == Vector3.right)
+                {
+                    predictedCubePosition = currentCubePosition + Vector3.right;
+
+                    predictedChunkCenter.x += mapGenerator.gridSize.x;
+
+                    if (predictedChunkCenter == centerOfNewChunk)
+                    {
+                        if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+
+                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    {
+                        return true;
+                    }
+                }
+                else if (direction == Vector3.forward)
+                {
+                    predictedCubePosition = currentCubePosition + Vector3.forward;
+
+                    predictedChunkCenter.z += mapGenerator.gridSize.x;
+
+                    if (predictedChunkCenter == centerOfNewChunk)
+                    {
+                        if (currentChunkFieldData.ContainsKey(currentCubePosition))
+                        {
+                            return true;
+                        }
+                        return false;
+                    }
+
+                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+
+                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    {
+                        return true;
+                    }
+                }
+                break;
+
         }
         return false;
     }
