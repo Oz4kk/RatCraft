@@ -420,7 +420,7 @@ public class MapOptimization : MonoBehaviour
         return cornerCubes;
     }
 
-    private bool DoesCubeExistInNewChunk(Dictionary<Vector3, CubeData> chunkField, Vector3 cubePosition)
+    private bool DoesCubeExistInChunk<T>(Dictionary<Vector3, T> chunkField, Vector3 cubePosition)
     {
         if (chunkField.ContainsKey(cubePosition))
         {
@@ -444,7 +444,7 @@ public class MapOptimization : MonoBehaviour
                 {
                     predictedCubePosition = currentCubePosition + Vector3.right;
 
-                    if (DoesCubeExistInNewChunk(currentChunkFieldData, predictedCubePosition))
+                    if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
                     {
                         return true;
                     }
@@ -453,7 +453,7 @@ public class MapOptimization : MonoBehaviour
                 {
                     predictedCubePosition = currentCubePosition + Vector3.forward;
 
-                    if (DoesCubeExistInNewChunk(currentChunkFieldData, predictedCubePosition))
+                    if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
                     {
                         return true;
                     }
@@ -465,17 +465,18 @@ public class MapOptimization : MonoBehaviour
 
                     if (predictedChunkCenter == centerOfNewChunk)
                     {
-                        if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition))
+                        if (DoesCubeExistInChunk(currentChunkFieldData, currentCubePosition))
                         {
                             return true;
                         }
-                        return false;
                     }
-
-                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    else
                     {
-                        return true;
+                        neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                        if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
+                        {
+                            return true;
+                        }
                     }
                 }
                 else if (direction == Vector3.back)
@@ -485,18 +486,18 @@ public class MapOptimization : MonoBehaviour
 
                     if (predictedChunkCenter == centerOfNewChunk)
                     {
-                        if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition))
+                        if (DoesCubeExistInChunk(currentChunkFieldData, currentCubePosition))
                         {
                             return true;
                         }
-                        return false;
                     }
-
-                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    else
                     {
-                        return true;
+                        neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                        if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
+                        {
+                            return true;
+                        }
                     }
                 }
                 break;
@@ -506,7 +507,7 @@ public class MapOptimization : MonoBehaviour
                 {
                     predictedCubePosition = currentCubePosition + Vector3.right;
 
-                    if (DoesCubeExistInNewChunk(currentChunkFieldData, predictedCubePosition))
+                    if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
                     {
                         return true;
                     }
@@ -515,7 +516,7 @@ public class MapOptimization : MonoBehaviour
                 {
                     predictedCubePosition = currentCubePosition + Vector3.back;
 
-                    if (DoesCubeExistInNewChunk(currentChunkFieldData, predictedCubePosition))
+                    if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
                     {
                         return true;
                     }
@@ -527,18 +528,18 @@ public class MapOptimization : MonoBehaviour
 
                     if (predictedChunkCenter == centerOfNewChunk)
                     {
-                        if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition))
+                        if (DoesCubeExistInChunk(currentChunkFieldData, currentCubePosition))
                         {
                             return true;
                         }
-                        return false;
                     }
-
-                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    else
                     {
-                        return true;
+                        neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                        if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
+                        {
+                            return true;
+                        }
                     }
                 }
                 else if (direction == Vector3.forward)
@@ -548,18 +549,18 @@ public class MapOptimization : MonoBehaviour
 
                     if (predictedChunkCenter == centerOfNewChunk)
                     {
-                        if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition))
+                        if (DoesCubeExistInChunk(currentChunkFieldData, currentCubePosition))
                         {
                             return true;
                         }
-                        return false;
                     }
-
-                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    else
                     {
-                        return true;
+                        neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                        if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
+                        {
+                            return true;
+                        }
                     }
                 }
                 break;
@@ -569,7 +570,7 @@ public class MapOptimization : MonoBehaviour
                 {
                     predictedCubePosition = currentCubePosition + Vector3.left;
 
-                    if (DoesCubeExistInNewChunk(currentChunkFieldData, predictedCubePosition))
+                    if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
                     {
                         return true;
                     }
@@ -578,7 +579,7 @@ public class MapOptimization : MonoBehaviour
                 {
                     predictedCubePosition = currentCubePosition + Vector3.forward;
 
-                    if (DoesCubeExistInNewChunk(currentChunkFieldData, predictedCubePosition))
+                    if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
                     {
                         return true;
                     }
@@ -590,18 +591,18 @@ public class MapOptimization : MonoBehaviour
 
                     if (predictedChunkCenter == centerOfNewChunk)
                     {
-                        if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition))
+                        if (DoesCubeExistInChunk(currentChunkFieldData, currentCubePosition))
                         {
                             return true;
                         }
-                        return false;
                     }
-
-                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    else
                     {
-                        return true;
+                        neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                        if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
+                        {
+                            return true;
+                        }
                     }
                 }
                 else if (direction == Vector3.back)
@@ -611,18 +612,18 @@ public class MapOptimization : MonoBehaviour
 
                     if (predictedChunkCenter == centerOfNewChunk)
                     {
-                        if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition))
+                        if (DoesCubeExistInChunk(currentChunkFieldData, currentCubePosition))
                         {
                             return true;
                         }
-                        return false;
                     }
-
-                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    else
                     {
-                        return true;
+                        neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                        if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
+                        {
+                            return true;
+                        }
                     }
                 }
                 break;
@@ -632,7 +633,7 @@ public class MapOptimization : MonoBehaviour
                 {
                     predictedCubePosition = currentCubePosition + Vector3.left;
 
-                    if (DoesCubeExistInNewChunk(currentChunkFieldData, predictedCubePosition))
+                    if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
                     {
                         return true;
                     }
@@ -641,7 +642,7 @@ public class MapOptimization : MonoBehaviour
                 {
                     predictedCubePosition = currentCubePosition + Vector3.back;
 
-                    if (DoesCubeExistInNewChunk(currentChunkFieldData, predictedCubePosition))
+                    if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
                     {
                         return true;
                     }
@@ -654,18 +655,18 @@ public class MapOptimization : MonoBehaviour
 
                     if (predictedChunkCenter == centerOfNewChunk)
                     {
-                        if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition))
+                        if (DoesCubeExistInChunk(currentChunkFieldData, currentCubePosition))
                         {
                             return true;
                         }
-                        return false;
                     }
-
-                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    else
                     {
-                        return true;
+                        neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                        if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
+                        {
+                            return true;
+                        }
                     }
                 }
                 else if (direction == Vector3.forward)
@@ -676,18 +677,18 @@ public class MapOptimization : MonoBehaviour
 
                     if (predictedChunkCenter == centerOfNewChunk)
                     {
-                        if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition))
+                        if (DoesCubeExistInChunk(currentChunkFieldData, currentCubePosition))
                         {
                             return true;
                         }
-                        return false;
                     }
-
-                    neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
-
-                    if (neighborChunkField.ContainsKey(predictedCubePosition))
+                    else
                     {
-                        return true;
+                        neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+                        if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
+                        {
+                            return true;
+                        }
                     }
                 }
                 break;
