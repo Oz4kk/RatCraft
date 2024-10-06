@@ -284,7 +284,7 @@ public class MapOptimization : MonoBehaviour
     {
         foreach (Vector3 direction in XZDirections)
         {
-            if (!DoesCubeExistInCurrentDirection(currentCorner, direction, currentCubePosition, centerOfCurrentChunk, centerOfNewChunk))
+            if (!DoesCubeExistAtCurrentDirection(currentCorner, direction, currentCubePosition, centerOfCurrentChunk, centerOfNewChunk))
             {
                 return false;
             }
@@ -420,35 +420,38 @@ public class MapOptimization : MonoBehaviour
         return cornerCubes;
     }
 
-    private bool DoesCubeExistInCurrentDirection(Corner currentCorner, Vector3 direction, Vector3 currentCubePosition, Vector3 centerOfCurrentChunk, Vector3 centerOfNewChunk)
+    private bool DoesCubeExistInNewChunk(Dictionary<Vector3, CubeData> currentChunkFieldData, Vector3 currentCubePosition, Vector3 direction)
+    {
+        Vector3 predictedCubePosition = currentCubePosition + direction;
+
+        if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private bool DoesCubeExistAtCurrentDirection(Corner currentCorner, Vector3 direction, Vector3 currentCubePosition, Vector3 centerOfCurrentChunk, Vector3 centerOfNewChunk)
     {
         Dictionary<Vector3, CubeParameters> neighborChunkField;
         Dictionary<Vector3, CubeData> currentChunkFieldData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfCurrentChunk];
 
-        // Problem je ze hledam ve spatnym chunku, musit vedet zda zrovna hledam v sousedicim nebo v novem chunkho a pogle hole menit currentChunkFieldData
-
         Vector3 predictedCubePosition;
         Vector3 predictedChunkCenter = centerOfCurrentChunk;
-
-        KeyValuePair<Vector3, Corner> neighborCubePositionWithItsCorner;
 
         switch (currentCorner)
         {
             case Corner.XNegative_ZNegative:
                 if (direction == Vector3.right)
                 {
-                    predictedCubePosition = currentCubePosition + Vector3.right;
-
-                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition, direction))
                     {
                         return true;
                     }
                 }
                 else if (direction == Vector3.forward)
                 {
-                    predictedCubePosition = currentCubePosition + Vector3.forward;
-
-                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition, direction))
                     {
                         return true;
                     }
@@ -456,7 +459,6 @@ public class MapOptimization : MonoBehaviour
                 else if (direction == Vector3.left)
                 {
                     predictedCubePosition = currentCubePosition + Vector3.left;
-
                     predictedChunkCenter.x -= mapGenerator.gridSize.x;
 
                     if (predictedChunkCenter == centerOfNewChunk)
@@ -477,7 +479,6 @@ public class MapOptimization : MonoBehaviour
                 else if (direction == Vector3.back)
                 {
                     predictedCubePosition = currentCubePosition + Vector3.back;
-
                     predictedChunkCenter.z -= mapGenerator.gridSize.x;
 
                     if (predictedChunkCenter == centerOfNewChunk)
@@ -501,18 +502,14 @@ public class MapOptimization : MonoBehaviour
             case Corner.XNegative_ZPositive:
                 if (direction == Vector3.right)
                 {
-                    predictedCubePosition = currentCubePosition + Vector3.right;
-
-                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition, direction))
                     {
                         return true;
                     }
                 }
                 else if (direction == Vector3.back)
                 {
-                    predictedCubePosition = currentCubePosition + Vector3.back;
-
-                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition, direction))
                     {
                         return true;
                     }
@@ -520,8 +517,6 @@ public class MapOptimization : MonoBehaviour
                 else if (direction == Vector3.left)
                 {
                     predictedCubePosition = currentCubePosition + Vector3.left;
-
-
                     predictedChunkCenter.x -= mapGenerator.gridSize.x;
 
                     if (predictedChunkCenter == centerOfNewChunk)
@@ -543,7 +538,6 @@ public class MapOptimization : MonoBehaviour
                 else if (direction == Vector3.forward)
                 {
                     predictedCubePosition = currentCubePosition + Vector3.forward;
-
                     predictedChunkCenter.z += mapGenerator.gridSize.x;
 
                     if (predictedChunkCenter == centerOfNewChunk)
@@ -567,18 +561,14 @@ public class MapOptimization : MonoBehaviour
             case Corner.XPositive_ZNegative:
                 if (direction == Vector3.left)
                 {
-                    predictedCubePosition = currentCubePosition + Vector3.left;
-
-                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition, direction))
                     {
                         return true;
                     }
                 }
                 else if (direction == Vector3.forward)
                 {
-                    predictedCubePosition = currentCubePosition + Vector3.forward;
-
-                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition, direction))
                     {
                         return true;
                     }
@@ -586,7 +576,6 @@ public class MapOptimization : MonoBehaviour
                 else if (direction == Vector3.right)
                 {
                     predictedCubePosition = currentCubePosition + Vector3.right;
-
                     predictedChunkCenter.x += mapGenerator.gridSize.x;
 
                     if (predictedChunkCenter == centerOfNewChunk)
@@ -608,7 +597,6 @@ public class MapOptimization : MonoBehaviour
                 else if (direction == Vector3.back)
                 {
                     predictedCubePosition = currentCubePosition + Vector3.back;
-
                     predictedChunkCenter.z -= mapGenerator.gridSize.x;
 
                     if (predictedChunkCenter == centerOfNewChunk)
@@ -632,18 +620,14 @@ public class MapOptimization : MonoBehaviour
             case Corner.XPositive_ZPositive:
                 if (direction == Vector3.left)
                 {
-                    predictedCubePosition = currentCubePosition + Vector3.left;
-
-                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition, direction))
                     {
                         return true;
                     }
                 }
                 else if (direction == Vector3.back)
                 {
-                    predictedCubePosition = currentCubePosition + Vector3.back;
-
-                    if (currentChunkFieldData.ContainsKey(predictedCubePosition))
+                    if (DoesCubeExistInNewChunk(currentChunkFieldData, currentCubePosition, direction))
                     {
                         return true;
                     }
