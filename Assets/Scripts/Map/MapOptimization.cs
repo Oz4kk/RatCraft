@@ -83,14 +83,6 @@ public class MapOptimization : MonoBehaviour
         ZNegative
     }
 
-    private static readonly Corner[] corners = new[]
-    {
-        Corner.XNegative_ZNegative,
-        Corner.XNegative_ZPositive,
-        Corner.XNegative_ZNegative,
-        Corner.XNegative_ZPositive
-    };
-
     private static readonly Border[] borders = new[]
     {
         Border.XNegative,
