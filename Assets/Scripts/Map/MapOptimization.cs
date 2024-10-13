@@ -15,7 +15,7 @@ using static UnityEngine.UI.GridLayoutGroup;
 
 public class MapOptimization : MonoBehaviour
 {
-    public class CornerCubes : IEnumerable<CornerCubeData<Corner, Vector3, Vector3>>
+    public class CornerCubes : MapOptimization, IEnumerable<CornerCubeData<Corner, Vector3, Vector3>>
     {
         public CornerCubeData<Corner, Vector3, Vector3>[] cornerCubesData;
         int arraySize;
@@ -526,6 +526,151 @@ public class MapOptimization : MonoBehaviour
             }
         }
 
+        //////////////////////
+
+        //switch (currentCorner)
+        //{
+        //    case Corner.XNegative_ZNegative:
+        //        if (direction == Vector3.right)
+        //        {
+        //            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.forward)
+        //        {
+        //            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.left)
+        //        {
+        //            predictedChunkCenter.x -= mapGenerator.gridSize.x;
+
+        //            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.back)
+        //        {
+        //            predictedChunkCenter.z -= mapGenerator.gridSize.x;
+
+        //            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        break;
+
+        //    case Corner.XNegative_ZPositive:
+        //        if (direction == Vector3.right)
+        //        {
+        //            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.back)
+        //        {
+        //            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.left)
+        //        {
+        //            predictedChunkCenter.x -= mapGenerator.gridSize.x;
+
+        //            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.forward)
+        //        {
+        //            predictedChunkCenter.z += mapGenerator.gridSize.x;
+
+        //            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        break;
+
+        //    case Corner.XPositive_ZNegative:
+        //        if (direction == Vector3.left)
+        //        {
+        //            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.forward)
+        //        {
+        //            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.right)
+        //        {
+        //            predictedChunkCenter.x += mapGenerator.gridSize.x;
+
+        //            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.back)
+        //        {
+        //            predictedChunkCenter.z -= mapGenerator.gridSize.x;
+
+        //            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        break;
+
+        //    case Corner.XPositive_ZPositive:
+        //        if (direction == Vector3.left)
+        //        {
+        //            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.back)
+        //        {
+        //            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.right)
+        //        {
+        //            predictedChunkCenter.x += mapGenerator.gridSize.x;
+
+        //            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        else if (direction == Vector3.forward)
+        //        {
+        //            predictedChunkCenter.z += mapGenerator.gridSize.x;
+
+        //            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+        //            {
+        //                return true;
+        //            }
+        //        }
+        //        break;
+
+        //}
         return false;
     }
 
