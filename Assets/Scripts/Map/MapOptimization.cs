@@ -119,6 +119,8 @@ public class MapOptimization : MonoBehaviour
     private float ZNegativeCorner = 0;
     private float ZPositiveCorner = 0;
 
+    private bool firstChunk = true;
+
     private MapGenerator mapGenerator;
 
     void Awake()
@@ -146,6 +148,8 @@ public class MapOptimization : MonoBehaviour
         {
             OptimizeDataOfNewChunk(actualCube.Value, centerOfNewChunk, actualChunkField);
         }
+
+        firstChunk = false;
     }
 
     /// <summary>
@@ -156,97 +160,168 @@ public class MapOptimization : MonoBehaviour
     /// <param name="newChunkFieldData"></param>
     private void OptimizeDataOfNewChunk(CubeData newCubeData, Vector3 centerOfNewChunk, Dictionary<Vector3, CubeData> newChunkFieldData)
     {
-        Border neighborChunkBorder = Border.Null;
         Border newChunkBorder = Border.Null;
 
-        // Negative X border of Actual Chunk
-        // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        if ((newCubeData.position.x - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+        if (isCubeAtBorder(newCubeData.position, ref newChunkBorder))
         {
-            if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXPositiveNeighbourChunk))
+            Corner newCubeCorner = Corner.Null;
+            if (isNewCubeAtCorner(newCubeData, ref newCubeCorner))
             {
-                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXPositiveNeighbourChunk];
-                Vector3 neighborCubePosition = newCubeData.position + Vector3.right;
-
-                newChunkBorder = Border.XPositive;
-                neighborChunkBorder = Border.XNegative;
-
-                CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder);
-
-                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
-
-                return;
+                CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder, newCubeCorner);
+            }
+            else
+            {
+                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder);
             }
         }
-        // Positive X border of Actual Chunk
-        // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        else if ((newCubeData.position.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
-        {
-            if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXNegativeNeighbourChunk))
-            {
-                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXNegativeNeighbourChunk];
-                Vector3 neighborCubePosition = newCubeData.position + Vector3.left;
 
-                newChunkBorder = Border.XNegative;
-                neighborChunkBorder = Border.XPositive;
+        //// Negative X border of Actual Chunk
+        //// If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
+        //if ((newCubeData.position.x - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+        //{
+        //    if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXPositiveNeighbourChunk))
+        //    {
+        //        Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXPositiveNeighbourChunk];
+        //        Vector3 neighborCubePosition = newCubeData.position + Vector3.right;
 
-                CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder);
+        //        newChunkBorder = Border.XPositive;
+        //        //neighborChunkBorder = Border.XNegative;
 
-                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
+        //        CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder);
 
-                return;
-            }
-        }
-        // Negative Z border of Actual Chunk
-        // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        else if ((newCubeData.position.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
-        {
-            if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZPositiveNeighbourChunk))
-            {
-                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZPositiveNeighbourChunk];
-                Vector3 neighborCubePosition = newCubeData.position + Vector3.forward;
+        //        //BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
 
-                newChunkBorder = Border.ZPositive;
-                neighborChunkBorder = Border.ZNegative;
+        //        return;
+        //    }
+        //}
+        //// Positive X border of Actual Chunk
+        //// If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
+        //else if ((newCubeData.position.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+        //{
+        //    if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfXNegativeNeighbourChunk))
+        //    {
+        //        Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfXNegativeNeighbourChunk];
+        //        Vector3 neighborCubePosition = newCubeData.position + Vector3.left;
 
-                CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder);
+        //        newChunkBorder = Border.XNegative;
+        //        //neighborChunkBorder = Border.XPositive;
 
-                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
+        //        CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder);
 
-                return;
-            }
-        }
-        // Postive Z border of Actual Chunk
-        // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-        else if ((newCubeData.position.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
-        {
-            if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZNegativeNeighbourChunk))
-            {
-                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZNegativeNeighbourChunk];
-                Vector3 neighborCubePosition = newCubeData.position + Vector3.back;
-                newChunkBorder = Border.ZNegative;
-                neighborChunkBorder = Border.ZPositive;
+        //        //BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
 
-                CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder);
+        //        return;
+        //    }
+        //}
+        //// Negative Z border of Actual Chunk
+        //// If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
+        //else if ((newCubeData.position.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+        //{
+        //    if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZPositiveNeighbourChunk))
+        //    {
+        //        Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZPositiveNeighbourChunk];
+        //        Vector3 neighborCubePosition = newCubeData.position + Vector3.forward;
 
-                BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
+        //        newChunkBorder = Border.ZPositive;
+        //        //neighborChunkBorder = Border.ZNegative;
 
-                return;
-            }
-        }
+        //        CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder);
+
+        //        //BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
+
+        //        return;
+        //    }
+        //}
+        //// Postive Z border of Actual Chunk
+        //// If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
+        //else if ((newCubeData.position.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+        //{
+        //    if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfZNegativeNeighbourChunk))
+        //    {
+        //        Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfZNegativeNeighbourChunk];
+        //        Vector3 neighborCubePosition = newCubeData.position + Vector3.back;
+
+        //        newChunkBorder = Border.ZNegative;
+        //        //neighborChunkBorder = Border.ZPositive;
+
+        //        CornerCubeOptimizationSequence(newCubeData, centerOfNewChunk, newChunkBorder);
+
+        //        //BorderCubeOptimizationSequence(newChunkFieldData, newCubeData, newChunkBorder, neighbourChunkField, neighborCubePosition, neighborChunkBorder);
+
+        //        return;
+        //    }
+        //}
 
         DeactiavateSurroundedCubeData(newCubeData, newChunkFieldData);
     }
 
-    private void CornerCubeOptimizationSequence(CubeData newCubeData, Vector3 centerOfNewChunk, Border newChunkBorder)
+    private bool isCubeAtBorder(Vector3 newCubeDataPosition, ref Border newChunkBorder)
     {
-        Corner newCubeCorner = GetCornerOfNewCube(newCubeData);
-        // If New Cube isn't at corner then return
-        if (newCubeCorner == Corner.Null)
+        // Negative X border of Actual Chunk
+        // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
+        if ((newCubeDataPosition.x - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
         {
-            return;
+            newChunkBorder = Border.XPositive;
+
+            return true;
+        }
+        // Positive X border of Actual Chunk
+        // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
+        else if ((newCubeDataPosition.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+        {
+            newChunkBorder = Border.XNegative;
+
+            return true;
+        }
+        // Negative Z border of Actual Chunk
+        // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
+        else if ((newCubeDataPosition.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+        {
+            newChunkBorder = Border.ZPositive;
+
+            return true;
+        }
+        // Postive Z border of Actual Chunk
+        // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
+        else if ((newCubeDataPosition.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+        {
+            newChunkBorder = Border.ZNegative;
+
+            return true;
         }
 
+        return false;
+    }
+
+    private void SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, ref Border neighborChunkBorder, ref Vector3 neighborCubePosition, ref Vector3 neighbourChunkCenter)
+    {
+        switch (newChunkBorder)
+        {
+            case Border.XNegative:
+                neighborChunkBorder = Border.XPositive;
+                neighbourChunkCenter = centerOfXNegativeNeighbourChunk;
+                neighborCubePosition = newCubeDataPosition + Vector3.left;
+                break;
+            case Border.XPositive:
+                neighborChunkBorder = Border.XNegative;
+                neighbourChunkCenter = centerOfXPositiveNeighbourChunk;
+                neighborCubePosition = newCubeDataPosition + Vector3.right;
+                break;
+            case Border.ZNegative:
+                neighborChunkBorder = Border.ZPositive;
+                neighbourChunkCenter = centerOfZNegativeNeighbourChunk;
+                neighborCubePosition = newCubeDataPosition + Vector3.back;
+                break;
+            case Border.ZPositive:
+                neighborChunkBorder = Border.ZNegative;
+                neighbourChunkCenter = centerOfZPositiveNeighbourChunk;
+                neighborCubePosition = newCubeDataPosition + Vector3.forward;
+                break;
+        }
+    }
+
+    private void CornerCubeOptimizationSequence(CubeData newCubeData, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
+    {
         CornerCubes neighborCubesDataAroundCorner = GetNeighborCubesDataAroundCorner(newCubeData.position, centerOfNewChunk, newChunkBorder, newCubeCorner);
 
         // If there are not instantiated each correspondent chunks around New Cube Corner, then return
@@ -674,30 +749,30 @@ public class MapOptimization : MonoBehaviour
         return false;
     }
 
-    private Corner GetCornerOfNewCube(CubeData newCubeData)
+    private bool isNewCubeAtCorner(CubeData newCubeData, ref Corner corner)
     {
         if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZNegativeCorner)
         {
-            Corner corner = Corner.XNegative_ZNegative;
-            return corner;
+            corner = Corner.XNegative_ZNegative;
+            return true;
         }
         else if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZPositiveCorner)
         {
-            Corner corner = Corner.XNegative_ZPositive;
-            return corner;
+            corner = Corner.XNegative_ZPositive;
+            return true;
         }
         else if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZNegativeCorner)
         {
-            Corner corner = Corner.XPositive_ZNegative;
-            return corner;
+            corner = Corner.XPositive_ZNegative;
+            return true;
         }
         else if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZPositiveCorner)
         {
-            Corner corner = Corner.XPositive_ZPositive;
-            return corner;
+            corner = Corner.XPositive_ZPositive;
+            return true;
         }
 
-        return Corner.Null;
+        return false;
     }
 
     private bool AreChunksAroundCornerInstantiated(CornerCubes neighborCubesAroundCorner)
@@ -713,8 +788,30 @@ public class MapOptimization : MonoBehaviour
         return true;
     }
 
-    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder, Dictionary<Vector3, CubeParameters> neighbourChunkField, Vector3 neighbourCubePosition, Border neighbourChynkBorder)
+    private bool DoesNeighborChunkExist(Vector3 neighborChunkCenter)
     {
+        if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(neighborChunkCenter))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder)
+    {
+        Border neighbourChunkBorder = Border.Null;
+        Vector3 neighbourCubePosition = Vector3.zero;
+        Vector3 neighbourChunkCenter = Vector3.zero;
+
+        SetNeighborChunkValues(newChunkBorder, newCubeData.position, ref neighbourChunkBorder, ref neighbourCubePosition, ref neighbourChunkCenter);
+
+        if (!DoesNeighborChunkExist(neighbourChunkCenter))
+        {
+            return;
+        }
+
+        Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighbourChunkCenter];
         // Return if New Cube in New Chunk isn't surrounded with cubes from each sides
         if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunkField, neighbourCubePosition, newChunkBorder))
         {
@@ -723,7 +820,7 @@ public class MapOptimization : MonoBehaviour
         newCubeData.isCubeDataSurrounded = true;
 
         // Return if Neighbor Cube in Neighbor Chunk isn't surrounded with cubes from each sides
-        if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunkField, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighbourChynkBorder))
+        if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunkField, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighbourChunkBorder))
         {
             return;
         }
