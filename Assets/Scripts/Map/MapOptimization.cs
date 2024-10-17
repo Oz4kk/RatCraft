@@ -15,34 +15,34 @@ using static UnityEngine.UI.GridLayoutGroup;
 
 public class MapOptimization : MonoBehaviour
 {
-    public class CornerCubes : MapOptimization, IEnumerable<CornerCubeData<Corner, Vector3, Vector3>>
+    public class NeigbourCubes<T> : IEnumerable<NeighbourCubesData<T>>
     {
-        public CornerCubeData<Corner, Vector3, Vector3>[] cornerCubesData;
+        public NeighbourCubesData<T>[] neighbourCubesData;
         int arraySize;
         int newArrayIndex;
 
-        public CornerCubes()
+        public NeigbourCubes()
         {
-            cornerCubesData = new CornerCubeData<Corner, Vector3, Vector3>[0];
+            neighbourCubesData = new NeighbourCubesData<T>[0];
 
             arraySize = 0;
         }
 
-        public void Add(Corner corner, Vector3 cubePosition, Vector3 centerOfChunk)
+        public void Add(T edgeType, Vector3 cubePosition, Vector3 centerOfChunk)
         {
-            arraySize = cornerCubesData.Length + 1;
-            newArrayIndex = cornerCubesData.Length;
+            arraySize = neighbourCubesData.Length + 1;
+            newArrayIndex = neighbourCubesData.Length;
 
-            CornerCubeData<Corner, Vector3, Vector3> newCornerCubesData = new CornerCubeData<Corner, Vector3, Vector3>(corner, cubePosition, centerOfChunk);
-            Array.Resize(ref cornerCubesData, arraySize);
-            cornerCubesData[newArrayIndex] = newCornerCubesData;
+            NeighbourCubesData<T> newCornerCubesData = new NeighbourCubesData<T>(edgeType, cubePosition, centerOfChunk);
+            Array.Resize(ref neighbourCubesData, arraySize);
+            neighbourCubesData[newArrayIndex] = newCornerCubesData;
         }
 
-        public IEnumerator<CornerCubeData<Corner, Vector3, Vector3>> GetEnumerator()
+        public IEnumerator<NeighbourCubesData<T>> GetEnumerator()
         {
             for (int i = 0; i < arraySize; i++)
             {
-                yield return cornerCubesData[i];
+                yield return neighbourCubesData[i];
             }
         }
 
@@ -51,15 +51,15 @@ public class MapOptimization : MonoBehaviour
             return GetEnumerator();
         }
     }
-    public struct CornerCubeData<T1, T2, T3>
+    public struct NeighbourCubesData<T>
     {
-        public Corner corner;
+        public T edgeType;
         public Vector3 cubePosition;
         public Vector3 centerOfChunk;
 
-        public CornerCubeData(Corner corner, Vector3 cubePosition, Vector3 centerOfChunk) : this()
+        public NeighbourCubesData(T edgeType, Vector3 cubePosition, Vector3 centerOfChunk) : this()
         {
-            this.corner = corner;
+            this.edgeType = edgeType;
             this.cubePosition = cubePosition;
             this.centerOfChunk = centerOfChunk;
         }
@@ -322,7 +322,7 @@ public class MapOptimization : MonoBehaviour
 
     private void CornerCubeOptimizationSequence(CubeData newCubeData, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
     {
-        CornerCubes neighborCubesDataAroundCorner = GetNeighborCubesDataAroundCorner(newCubeData.position, centerOfNewChunk, newChunkBorder, newCubeCorner);
+        NeigbourCubes<Corner> neighborCubesDataAroundCorner = GetNeighborCubesDataAroundCorner(newCubeData.position, centerOfNewChunk, newChunkBorder, newCubeCorner);
 
         // If there are not instantiated each correspondent chunks around New Cube Corner, then return
         if (!AreChunksAroundCornerInstantiated(neighborCubesDataAroundCorner))
@@ -339,7 +339,7 @@ public class MapOptimization : MonoBehaviour
         // Check if Neighbor Cubes at corresponding corners around New Chunk are surrounded. If yes then deactive Neighbor Cube.
         foreach (var neighborCube in neighborCubesDataAroundCorner)
         {
-            if (IsCornerCubeSurrounded(neighborCube.cubePosition, neighborCube.centerOfChunk, centerOfNewChunk, neighborCube.corner))
+            if (IsCornerCubeSurrounded(neighborCube.cubePosition, neighborCube.centerOfChunk, centerOfNewChunk, neighborCube.edgeType))
             {
                 Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.centerOfChunk];
                 neighbourChunkField[neighborCube.cubePosition].cubeInstance.gameObject.SetActive(false);
@@ -360,9 +360,9 @@ public class MapOptimization : MonoBehaviour
         return true;
     }
 
-    private CornerCubes GetNeighborCubesDataAroundCorner(Vector3 newCubeDataPosition, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
+    private NeigbourCubes<Corner> GetNeighborCubesDataAroundCorner(Vector3 newCubeDataPosition, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
     {
-        CornerCubes cornerCubes = new CornerCubes();
+        NeigbourCubes<Corner> cornerCubes = new NeigbourCubes<Corner>();
 
         if (newChunkBorder == Border.XNegative || newChunkBorder == Border.XPositive)
         {
@@ -629,9 +629,9 @@ public class MapOptimization : MonoBehaviour
         return false;
     }
 
-    private bool AreChunksAroundCornerInstantiated(CornerCubes neighborCubesAroundCorner)
+    private bool AreChunksAroundCornerInstantiated(NeigbourCubes<Corner> neighborCubesAroundCorner)
     {
-        foreach (CornerCubeData<Corner, Vector3, Vector3> actualPredictedCenterOfChunk in neighborCubesAroundCorner)
+        foreach (NeighbourCubesData<Corner> actualPredictedCenterOfChunk in neighborCubesAroundCorner)
         {
             if (!mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(actualPredictedCenterOfChunk.centerOfChunk))
             {
