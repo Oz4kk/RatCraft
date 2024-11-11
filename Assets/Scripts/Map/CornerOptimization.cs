@@ -1,12 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InternalTypesForMapOptimization;
 
-public class CornerOptimization : MapOptimization
+
+public class CornerOptimization : MonoBehaviour
 {
+    private MapGenerator mapGenerator;
+    private MapOptimization mapOptimization;
+
+    private static readonly Vector3[] XZDirections = new[]
+    {
+        // Horizontal X directions
+        Vector3.right, Vector3.left,
+        // Horizontal Z directions
+        Vector3.forward, Vector3.back
+    };
+
     void Awake()
     {
-        onIsCornerCube += CornerCubeOptimizationSequence;
+        mapGenerator = GetComponent<MapGenerator>();
+        mapOptimization = GetComponent<MapOptimization>();
+
+        mapOptimization.onIsCornerCube += CornerCubeOptimizationSequence;
     }
 
     private void CornerCubeOptimizationSequence(CubeData newCubeData, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)

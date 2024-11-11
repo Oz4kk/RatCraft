@@ -1,21 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using InternalTypesForMapOptimization;
 
-public class BorderOptimization : MapOptimization
+public class BorderOptimization : MonoBehaviour
 {
+    private MapGenerator mapGenerator;
+    private MapOptimization mapOptimization;
+
+    private static readonly Border[] borders = new[]
+    {
+        Border.XNegative,
+        Border.XPositive,
+        Border.ZNegative,
+        Border.ZPositive
+    };
+
+    private static readonly Vector3[] directions = new[]
+    {
+        // Vertical directions
+        Vector3.up, Vector3.down,
+        // Horizontal X directions
+        Vector3.right, Vector3.left,
+        // Horizontal Z directions
+        Vector3.forward, Vector3.back
+    };
+
     private void Awake()
     {
-        onIsBorderCube += BorderCubeOptimizationSequence;
+        mapGenerator = GetComponent<MapGenerator>();
+        mapOptimization = GetComponent<MapOptimization>(); 
+
+        mapOptimization.onIsBorderCube += BorderCubeOptimizationSequence;
     }
 
-    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder)
+    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
     {
         Border neighbourChunkBorder = Border.Null;
         Vector3 neighbourCubePosition = Vector3.zero;
         Vector3 neighbourChunkCenter = Vector3.zero;
 
-        SetNeighborChunkValues(newChunkBorder, newCubeData.position, ref neighbourChunkBorder, ref neighbourCubePosition, ref neighbourChunkCenter);
+        SetNeighborChunkValues(newChunkBorder, newCubeData.position, ref neighbourChunkBorder, ref neighbourCubePosition, ref neighbourChunkCenter, centerOfXNegativeNeighbourChunk, centerOfXPositiveNeighbourChunk, centerOfZNegativeNeighbourChunk, centerOfZPositiveNeighbourChunk);
 
         if (!DoesNeighborChunkExist(neighbourChunkCenter))
         {
@@ -38,7 +63,7 @@ public class BorderOptimization : MapOptimization
         neighbourChunkField[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
     }
 
-    private void SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, ref Border neighborChunkBorder, ref Vector3 neighborCubePosition, ref Vector3 neighbourChunkCenter)
+    private void SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, ref Border neighborChunkBorder, ref Vector3 neighborCubePosition, ref Vector3 neighbourChunkCenter, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
     {
         switch (newChunkBorder)
         {
