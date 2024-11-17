@@ -87,14 +87,6 @@ namespace InternalTypesForMapOptimization
         internal Action<Dictionary<Vector3, CubeData>, CubeData, Border, Vector3, Vector3, Vector3, Vector3> onIsBorderCube;
         internal Action<CubeData, Vector3, Border, Corner> onIsCornerCube;
 
-        private static readonly Vector3[] XZDirections = new[]
-        {
-            // Horizontal X directions
-            Vector3.right, Vector3.left,
-            // Horizontal Z directions
-            Vector3.forward, Vector3.back
-        };
-
         private float XNegativeCorner = 0;
         private float XPositiveCorner = 0;
         private float ZNegativeCorner = 0;
@@ -137,12 +129,17 @@ namespace InternalTypesForMapOptimization
         /// <param name="newChunkFieldData"></param>
         private void OptimizeDataOfNewChunk(CubeData newCubeData, Vector3 centerOfNewChunk, Dictionary<Vector3, CubeData> newChunkFieldData, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
         {
+            if (newCubeData.position == new Vector3(-13,0,-13))
+            {
+                Debug.Log("hit");
+            }
+
             Border newChunkBorder = Border.Null;
 
-            if (isCubeAtBorder(newCubeData.position, ref newChunkBorder))
+            if (IsNewCubeAtBorder(newCubeData.position, ref newChunkBorder))
             {
                 Corner newCubeCorner = Corner.Null;
-                if (isNewCubeAtCorner(newCubeData, ref newCubeCorner))
+                if (IsNewCubeAtCorner(newCubeData, ref newCubeCorner))
                 {
                     onIsCornerCube(newCubeData, centerOfNewChunk, newChunkBorder, newCubeCorner);
                 }
@@ -151,11 +148,27 @@ namespace InternalTypesForMapOptimization
                     onIsBorderCube(newChunkFieldData, newCubeData, newChunkBorder, centerOfXNegativeNeighbourChunk, centerOfXPositiveNeighbourChunk, centerOfZNegativeNeighbourChunk, centerOfZPositiveNeighbourChunk);
                 }
             }
-
-            DeactiavateSurroundedCubeData(newCubeData, newChunkFieldData);
+            else
+            {
+                DeactiavateSurroundedCubeData(newCubeData, newChunkFieldData);
+            }
         }
 
-        private bool isCubeAtBorder(Vector3 newCubeDataPosition, ref Border newChunkBorder)
+        private bool DoesCubesExiestOnYAxis(Vector3 newCubeDataPosition, Dictionary<Vector3, CubeData> newChunkFieldData)
+        {
+            if (newChunkFieldData.ContainsKey(newCubeDataPosition + Vector3.down))
+            {
+                return true;
+            }
+            else if (newChunkFieldData.ContainsKey(newCubeDataPosition + Vector3.up))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool IsNewCubeAtBorder(Vector3 newCubeDataPosition, ref Border newChunkBorder)
         {
             // Negative X border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
@@ -194,7 +207,7 @@ namespace InternalTypesForMapOptimization
         }
 
 
-        private bool isNewCubeAtCorner(CubeData newCubeData, ref Corner corner)
+        private bool IsNewCubeAtCorner(CubeData newCubeData, ref Corner corner)
         {
             if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZNegativeCorner)
             {

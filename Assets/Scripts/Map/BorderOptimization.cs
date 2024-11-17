@@ -16,9 +16,9 @@ public class BorderOptimization : MonoBehaviour
         Border.ZPositive
     };
 
-    private static readonly Vector3[] directions = new[]
+    private static readonly Vector3[] xzDirections = new[]
     {
-        // Vertical directions
+        // Vertical Y direction
         Vector3.up, Vector3.down,
         // Horizontal X directions
         Vector3.right, Vector3.left,
@@ -104,7 +104,7 @@ public class BorderOptimization : MonoBehaviour
     {
         foreach (Border actaualBorder in borders)
         {
-            foreach (Vector3 actualDirection in directions)
+            foreach (Vector3 actualDirection in xzDirections)
             {
                 // Continue to the next foreach interation if Actual Direction is the same as Current Border
                 if (IsDirectionMatchingBorder(actualDirection, border))

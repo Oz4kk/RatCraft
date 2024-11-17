@@ -9,8 +9,12 @@ public class CornerOptimization : MonoBehaviour
     private MapGenerator mapGenerator;
     private MapOptimization mapOptimization;
 
-    private static readonly Vector3[] XZDirections = new[]
+    //-13,0,-13
+
+    private static readonly Vector3[] directions = new[]
     {
+        // Vertical Y directions
+        Vector3.up, Vector3.down,
         // Horizontal X directions
         Vector3.right, Vector3.left,
         // Horizontal Z directions
@@ -194,7 +198,7 @@ public class CornerOptimization : MonoBehaviour
 
     private bool IsCornerCubeSurrounded(Vector3 currentCubePosition, Vector3 centerOfCurrentChunk, Vector3 centerOfNewChunk, Corner currentCorner)
     {
-        foreach (Vector3 currentDirection in XZDirections)
+        foreach (Vector3 currentDirection in directions)
         {
             if (!ProcessCubeAtCurrentDirection(currentCorner, currentDirection, currentCubePosition, centerOfCurrentChunk, centerOfNewChunk))
             {
@@ -210,8 +214,7 @@ public class CornerOptimization : MonoBehaviour
         Dictionary<Vector3, CubeData> currentChunkFieldData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfCurrentChunk];
 
         Vector3 predictedCubePosition = currentCubePosition + direction;
-
-        if (IsDirectionMatchingCornerForCurrentChunkField(currentChunkFieldData, currentCorner, direction, predictedCubePosition))
+        if (direction == Vector3.up || direction == Vector3.down)
         {
             if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
             {
@@ -220,11 +223,21 @@ public class CornerOptimization : MonoBehaviour
         }
         else
         {
-            Vector3 predictedChunkCenter = SetPredictedChunkCenterAccordingToDirection(direction, centerOfCurrentChunk);
-
-            if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+            if (IsDirectionMatchingCornerForCurrentChunkField(currentChunkFieldData, currentCorner, direction, predictedCubePosition))
             {
-                return true;
+                if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                Vector3 predictedChunkCenter = SetPredictedChunkCenterAccordingToDirection(direction, centerOfCurrentChunk);
+
+                if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+                {
+                    return true;
+                }
             }
         }
         return false;
