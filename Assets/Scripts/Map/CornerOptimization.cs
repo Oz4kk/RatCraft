@@ -9,8 +9,6 @@ public class CornerOptimization : MonoBehaviour
     private MapGenerator mapGenerator;
     private MapOptimization mapOptimization;
 
-    //-13,0,-13
-
     private static readonly Vector3[] directions = new[]
     {
         // Vertical Y directions
@@ -31,8 +29,6 @@ public class CornerOptimization : MonoBehaviour
 
     private void CornerCubeOptimizationSequence(CubeData newCubeData, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
     {
-        Profiler.BeginSample("CorSeq");
-
         NeighbourCubesData<Corner>[] neighbourCubesDataAroundCorner = GetNeighborCubesDataAroundCorner(newCubeData.position, centerOfNewChunk, newChunkBorder, newCubeCorner);
 
         // If there are not instantiated each correspondent chunks around New Cube Corner, then return
@@ -56,8 +52,6 @@ public class CornerOptimization : MonoBehaviour
                 neighbourChunkField[neighborCube.cubePosition].cubeInstance.gameObject.SetActive(false);
             }
         }
-
-        Profiler.EndSample();
     }
 
     private NeighbourCubesData<Corner>[] GetNeighborCubesDataAroundCorner(Vector3 newCubeDataPosition, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
