@@ -14,43 +14,6 @@ using static UnityEngine.UI.GridLayoutGroup;
 
 namespace InternalTypesForMapOptimization
 {
-    internal class NeigbourCubes<T> : IEnumerable<NeighbourCubesData<T>>
-    {
-        public NeighbourCubesData<T>[] neighbourCubesData;
-        int arraySize;
-        int newArrayIndex;
-
-        public NeigbourCubes()
-        {
-            neighbourCubesData = new NeighbourCubesData<T>[0];
-
-            arraySize = 0;
-        }
-
-        public void Add(T edgeType, Vector3 cubePosition, Vector3 centerOfChunk)
-        {
-            arraySize = neighbourCubesData.Length + 1;
-            newArrayIndex = neighbourCubesData.Length;
-
-            NeighbourCubesData<T> newCornerCubesData = new NeighbourCubesData<T>(edgeType, cubePosition, centerOfChunk);
-            Array.Resize(ref neighbourCubesData, arraySize);
-            neighbourCubesData[newArrayIndex] = newCornerCubesData;
-        }
-
-        public IEnumerator<NeighbourCubesData<T>> GetEnumerator()
-        {
-            for (int i = 0; i < arraySize; i++)
-            {
-                yield return neighbourCubesData[i];
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
-
     internal struct NeighbourCubesData<T>
     {
         public T edgeType;

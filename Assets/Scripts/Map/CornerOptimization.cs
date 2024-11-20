@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using InternalTypesForMapOptimization;
-
+using UnityEngine.Profiling;
 
 public class CornerOptimization : MonoBehaviour
 {
@@ -31,10 +31,12 @@ public class CornerOptimization : MonoBehaviour
 
     private void CornerCubeOptimizationSequence(CubeData newCubeData, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
     {
-        NeigbourCubes<Corner> neighborCubesDataAroundCorner = GetNeighborCubesDataAroundCorner(newCubeData.position, centerOfNewChunk, newChunkBorder, newCubeCorner);
+        Profiler.BeginSample("CorSeq");
+
+        NeighbourCubesData<Corner>[] neighbourCubesDataAroundCorner = GetNeighborCubesDataAroundCorner(newCubeData.position, centerOfNewChunk, newChunkBorder, newCubeCorner);
 
         // If there are not instantiated each correspondent chunks around New Cube Corner, then return
-        if (!AreChunksAroundCornerInstantiated(neighborCubesDataAroundCorner))
+        if (!AreChunksAroundCornerInstantiated(neighbourCubesDataAroundCorner))
         {
             return;
         }
@@ -46,7 +48,7 @@ public class CornerOptimization : MonoBehaviour
         }
 
         // Check if Neighbor Cubes at corresponding corners around New Chunk are surrounded. If yes then deactive Neighbor Cube.
-        foreach (var neighborCube in neighborCubesDataAroundCorner)
+        foreach (NeighbourCubesData<Corner> neighborCube in neighbourCubesDataAroundCorner)
         {
             if (IsCornerCubeSurrounded(neighborCube.cubePosition, neighborCube.centerOfChunk, centerOfNewChunk, neighborCube.edgeType))
             {
@@ -54,138 +56,144 @@ public class CornerOptimization : MonoBehaviour
                 neighbourChunkField[neighborCube.cubePosition].cubeInstance.gameObject.SetActive(false);
             }
         }
+
+        Profiler.EndSample();
     }
 
-    private NeigbourCubes<Corner> GetNeighborCubesDataAroundCorner(Vector3 newCubeDataPosition, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
+    private NeighbourCubesData<Corner>[] GetNeighborCubesDataAroundCorner(Vector3 newCubeDataPosition, Vector3 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
     {
-        NeigbourCubes<Corner> cornerCubes = new NeigbourCubes<Corner>();
+        NeighbourCubesData<Corner> neighbourCubesData0 = new NeighbourCubesData<Corner>();
+        NeighbourCubesData<Corner> neighbourCubesData1 = new NeighbourCubesData<Corner>();
+        NeighbourCubesData<Corner> neighbourCubesData2 = new NeighbourCubesData<Corner>();
 
         if (newChunkBorder == Border.XNegative || newChunkBorder == Border.XPositive)
         {
             if (newCubeCorner == Corner.XNegative_ZNegative)
             {
-                Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.left;
-                Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, 0.0f);
-                cornerCubes.Add(Corner.XPositive_ZNegative, neighborCubePosition0, centerOfNeighborChunk0);
+                neighbourCubesData0.edgeType = Corner.XNegative_ZPositive;
+                neighbourCubesData0.centerOfChunk = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, 0.0f);
+                neighbourCubesData0.cubePosition = newCubeDataPosition + Vector3.left;
 
-                Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.back;
-                Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XNegative_ZPositive, neighborCubePosition1, centerOfNeighborChunk1);
+                neighbourCubesData1.edgeType = Corner.XNegative_ZPositive;
+                neighbourCubesData1.centerOfChunk = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
+                neighbourCubesData1.cubePosition = newCubeDataPosition + Vector3.back;
 
-                Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.left + Vector3.back);
-                Vector3 centerOfNeighborChunk2 = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, -mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XPositive_ZPositive, neighborCubePosition2, centerOfNeighborChunk2);
+                neighbourCubesData2.edgeType = Corner.XNegative_ZPositive;
+                neighbourCubesData2.centerOfChunk = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, -mapGenerator.gridSize.x);
+                neighbourCubesData2.cubePosition = newCubeDataPosition + (Vector3.left + Vector3.back);
             }
             else if (newCubeCorner == Corner.XNegative_ZPositive)
             {
-                Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.left;
-                Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, 0.0f);
-                cornerCubes.Add(Corner.XPositive_ZPositive, neighborCubePosition0, centerOfNeighborChunk0);
+                neighbourCubesData0.edgeType = Corner.XPositive_ZPositive;
+                neighbourCubesData0.centerOfChunk = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, 0.0f);
+                neighbourCubesData0.cubePosition = newCubeDataPosition + Vector3.left;
 
-                Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.forward;
-                Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(0.0f, 0.0f, mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XNegative_ZNegative, neighborCubePosition1, centerOfNeighborChunk1);
+                neighbourCubesData1.edgeType = Corner.XPositive_ZPositive;
+                neighbourCubesData1.centerOfChunk = centerOfNewChunk + new Vector3(0.0f, 0.0f, mapGenerator.gridSize.x);
+                neighbourCubesData1.cubePosition = newCubeDataPosition + Vector3.forward;
 
-                Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.left + Vector3.forward);
-                Vector3 centerOfNeighborChunk2 = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XPositive_ZNegative, neighborCubePosition2, centerOfNeighborChunk2);
+                neighbourCubesData2.edgeType = Corner.XPositive_ZNegative;
+                neighbourCubesData2.centerOfChunk = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, mapGenerator.gridSize.x);
+                neighbourCubesData2.cubePosition = newCubeDataPosition + (Vector3.left + Vector3.forward);
             }
             else if (newCubeCorner == Corner.XPositive_ZNegative)
             {
-                Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.right;
-                Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
-                cornerCubes.Add(Corner.XNegative_ZNegative, neighborCubePosition0, centerOfNeighborChunk0);
+                neighbourCubesData0.edgeType = Corner.XNegative_ZNegative;
+                neighbourCubesData0.centerOfChunk = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
+                neighbourCubesData0.cubePosition = newCubeDataPosition + Vector3.right;
 
-                Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.back;
-                Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XPositive_ZPositive, neighborCubePosition1, centerOfNeighborChunk1);
+                neighbourCubesData1.edgeType = Corner.XPositive_ZPositive;
+                neighbourCubesData1.centerOfChunk = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
+                neighbourCubesData1.cubePosition = newCubeDataPosition + Vector3.back;
 
-                Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.right + Vector3.back);
-                Vector3 centerOfNeighborChunk2 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, -mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XNegative_ZPositive, neighborCubePosition2, centerOfNeighborChunk2);
+                neighbourCubesData2.edgeType = Corner.XNegative_ZPositive;
+                neighbourCubesData2.centerOfChunk = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, -mapGenerator.gridSize.x);
+                neighbourCubesData2.cubePosition = newCubeDataPosition + (Vector3.right + Vector3.back);
 
             }
             else if (newCubeCorner == Corner.XPositive_ZPositive)
             {
-                Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.right;
-                Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
-                cornerCubes.Add(Corner.XNegative_ZPositive, neighborCubePosition0, centerOfNeighborChunk0);
+                neighbourCubesData0.edgeType = Corner.XNegative_ZPositive;
+                neighbourCubesData0.centerOfChunk = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
+                neighbourCubesData0.cubePosition = newCubeDataPosition + Vector3.right;
 
-                Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.forward;
-                Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(0.0f, 0.0f, mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XPositive_ZNegative, neighborCubePosition1, centerOfNeighborChunk1);
+                neighbourCubesData1.edgeType = Corner.XPositive_ZNegative;
+                neighbourCubesData1.centerOfChunk = centerOfNewChunk + new Vector3(0.0f, 0.0f, mapGenerator.gridSize.x);
+                neighbourCubesData1.cubePosition = newCubeDataPosition + Vector3.forward;
 
-                Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.right + Vector3.forward);
-                Vector3 centerOfNeighborChunk2 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XNegative_ZNegative, neighborCubePosition2, centerOfNeighborChunk2);
+                neighbourCubesData2.edgeType = Corner.XNegative_ZNegative;
+                neighbourCubesData2.centerOfChunk = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, mapGenerator.gridSize.x);
+                neighbourCubesData2.cubePosition = newCubeDataPosition + (Vector3.right + Vector3.forward);
             }
         }
         else if (newChunkBorder == Border.ZNegative || newChunkBorder == Border.ZPositive)
         {
             if (newCubeCorner == Corner.XNegative_ZNegative)
             {
-                Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.back;
-                Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XNegative_ZPositive, neighborCubePosition0, centerOfNeighborChunk0);
+                neighbourCubesData0.edgeType = Corner.XNegative_ZPositive;
+                neighbourCubesData0.centerOfChunk = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
+                neighbourCubesData0.cubePosition = newCubeDataPosition + Vector3.back;
 
-                Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.left;
-                Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, 0.0f);
-                cornerCubes.Add(Corner.XPositive_ZNegative, neighborCubePosition1, centerOfNeighborChunk1);
+                neighbourCubesData1.edgeType = Corner.XPositive_ZNegative;
+                neighbourCubesData1.centerOfChunk = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, 0.0f);
+                neighbourCubesData1.cubePosition = newCubeDataPosition + Vector3.left;
 
-                Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.back + Vector3.left);
-                Vector3 centerOfNeighborChunk2 = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, -mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XPositive_ZPositive, neighborCubePosition2, centerOfNeighborChunk2);
+                neighbourCubesData2.edgeType = Corner.XPositive_ZPositive;
+                neighbourCubesData2.centerOfChunk = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, -mapGenerator.gridSize.x);
+                neighbourCubesData2.cubePosition = newCubeDataPosition + (Vector3.back + Vector3.left);
             }
             else if (newCubeCorner == Corner.XNegative_ZPositive)
             {
-                Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.forward;
-                Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(0.0f, 0.0f, mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XNegative_ZNegative, neighborCubePosition0, centerOfNeighborChunk0);
+                neighbourCubesData0.edgeType = Corner.XNegative_ZNegative;
+                neighbourCubesData0.centerOfChunk = centerOfNewChunk + new Vector3(0.0f, 0.0f, mapGenerator.gridSize.x);
+                neighbourCubesData0.cubePosition = newCubeDataPosition + Vector3.forward;
 
-                Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.left;
-                Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, 0.0f);
-                cornerCubes.Add(Corner.XPositive_ZPositive, neighborCubePosition1, centerOfNeighborChunk1);
+                neighbourCubesData1.edgeType = Corner.XPositive_ZPositive;
+                neighbourCubesData1.centerOfChunk = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, 0.0f);
+                neighbourCubesData1.cubePosition = newCubeDataPosition + Vector3.left;
 
-                Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.forward + Vector3.left);
-                Vector3 centerOfNeighborChunk2 = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XPositive_ZNegative, neighborCubePosition2, centerOfNeighborChunk2);
+                neighbourCubesData2.edgeType = Corner.XPositive_ZNegative;
+                neighbourCubesData2.centerOfChunk = centerOfNewChunk + new Vector3(-mapGenerator.gridSize.x, 0.0f, mapGenerator.gridSize.x);
+                neighbourCubesData2.cubePosition = newCubeDataPosition + (Vector3.forward + Vector3.left);
             }
             else if (newCubeCorner == Corner.XPositive_ZNegative)
             {
-                Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.back;
-                Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XPositive_ZPositive, neighborCubePosition0, centerOfNeighborChunk0);
+                neighbourCubesData0.edgeType = Corner.XPositive_ZPositive;
+                neighbourCubesData0.centerOfChunk = centerOfNewChunk + new Vector3(0.0f, 0.0f, -mapGenerator.gridSize.x);
+                neighbourCubesData0.cubePosition = newCubeDataPosition + Vector3.back;
 
-                Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.right;
-                Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
-                cornerCubes.Add(Corner.XNegative_ZNegative, neighborCubePosition1, centerOfNeighborChunk1);
+                neighbourCubesData1.edgeType = Corner.XNegative_ZNegative;
+                neighbourCubesData1.centerOfChunk = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
+                neighbourCubesData1.cubePosition = newCubeDataPosition + Vector3.right;
 
-                Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.back + Vector3.right);
-                Vector3 centerOfNeighborChunk2 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, -mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XNegative_ZPositive, neighborCubePosition2, centerOfNeighborChunk2);
+                neighbourCubesData2.edgeType = Corner.XNegative_ZPositive;
+                neighbourCubesData2.centerOfChunk = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, -mapGenerator.gridSize.x);
+                neighbourCubesData2.cubePosition = newCubeDataPosition + (Vector3.back + Vector3.right);
             }
             else if (newCubeCorner == Corner.XPositive_ZPositive)
             {
-                Vector3 neighborCubePosition0 = newCubeDataPosition + Vector3.forward;
-                Vector3 centerOfNeighborChunk0 = centerOfNewChunk + new Vector3(0.0f, 0.0f, mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XPositive_ZNegative, neighborCubePosition0, centerOfNeighborChunk0);
+                neighbourCubesData0.edgeType = Corner.XPositive_ZNegative;
+                neighbourCubesData0.centerOfChunk = centerOfNewChunk + new Vector3(0.0f, 0.0f, mapGenerator.gridSize.x);
+                neighbourCubesData0.cubePosition = newCubeDataPosition + Vector3.forward;
 
-                Vector3 neighborCubePosition1 = newCubeDataPosition + Vector3.right;
-                Vector3 centerOfNeighborChunk1 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
-                cornerCubes.Add(Corner.XNegative_ZPositive, neighborCubePosition1, centerOfNeighborChunk1);
+                neighbourCubesData1.edgeType = Corner.XNegative_ZPositive;
+                neighbourCubesData1.centerOfChunk = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, 0.0f);
+                neighbourCubesData1.cubePosition = newCubeDataPosition + Vector3.right;
 
-                Vector3 neighborCubePosition2 = newCubeDataPosition + (Vector3.forward + Vector3.right);
-                Vector3 centerOfNeighborChunk2 = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, mapGenerator.gridSize.x);
-                cornerCubes.Add(Corner.XNegative_ZNegative, neighborCubePosition2, centerOfNeighborChunk2);
+                neighbourCubesData2.edgeType = Corner.XNegative_ZNegative;
+                neighbourCubesData2.centerOfChunk = centerOfNewChunk + new Vector3(mapGenerator.gridSize.x, 0.0f, mapGenerator.gridSize.x);
+                neighbourCubesData2.cubePosition = newCubeDataPosition + (Vector3.forward + Vector3.right);
             }
         }
 
-        return cornerCubes;
+        NeighbourCubesData<Corner>[] neighbourCubesData = new NeighbourCubesData<Corner>[3] {neighbourCubesData0, neighbourCubesData1, neighbourCubesData2 };
+
+        return neighbourCubesData;
     }
 
-    private bool AreChunksAroundCornerInstantiated(NeigbourCubes<Corner> neighborCubesAroundCorner)
+    private bool AreChunksAroundCornerInstantiated(NeighbourCubesData<Corner>[] neighbourCubesDataAroundCorner)
     {
-        foreach (NeighbourCubesData<Corner> actualPredictedCenterOfChunk in neighborCubesAroundCorner)
+        foreach (NeighbourCubesData<Corner> actualPredictedCenterOfChunk in neighbourCubesDataAroundCorner)
         {
             if (!mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(actualPredictedCenterOfChunk.centerOfChunk))
             {
