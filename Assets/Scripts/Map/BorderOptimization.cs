@@ -36,58 +36,58 @@ public class BorderOptimization : MonoBehaviour
 
     private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
     {
-        Border neighbourChunkBorder = Border.Null;
-        Vector3 neighbourCubePosition = Vector3.zero;
-        Vector3 neighbourChunkCenter = Vector3.zero;
+        NeighbourCubesData<Border> neighbourCubesData = SetNeighborChunkValues(newChunkBorder, newCubeData.position, centerOfXNegativeNeighbourChunk, centerOfXPositiveNeighbourChunk, centerOfZNegativeNeighbourChunk, centerOfZPositiveNeighbourChunk);
 
-        SetNeighborChunkValues(newChunkBorder, newCubeData.position, ref neighbourChunkBorder, ref neighbourCubePosition, ref neighbourChunkCenter, centerOfXNegativeNeighbourChunk, centerOfXPositiveNeighbourChunk, centerOfZNegativeNeighbourChunk, centerOfZPositiveNeighbourChunk);
-
-        if (!DoesNeighborChunkExist(neighbourChunkCenter))
+        if (!DoesNeighborChunkExist(neighbourCubesData.centerOfChunk))
         {
             return;
         }
 
-        Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighbourChunkCenter];
+        Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighbourCubesData.centerOfChunk];
         // Return if New Cube in New Chunk isn't surrounded with cubes from each sides
-        if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunkField, neighbourCubePosition, newChunkBorder))
+        if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunkField, neighbourCubesData.cubePosition, newChunkBorder))
         {
             return;
         }
         newCubeData.isCubeDataSurrounded = true;
 
         // Return if Neighbor Cube in Neighbor Chunk isn't surrounded with cubes from each sides
-        if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunkField, neighbourCubePosition, newChunkFieldData, newCubeData.position, neighbourChunkBorder))
+        if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunkField, neighbourCubesData.cubePosition, newChunkFieldData, newCubeData.position, neighbourCubesData.edgeType))
         {
             return;
         }
-        neighbourChunkField[neighbourCubePosition].cubeInstance.gameObject.SetActive(false);
+        neighbourChunkField[neighbourCubesData.cubePosition].cubeInstance.gameObject.SetActive(false);
     }
 
-    private void SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, ref Border neighborChunkBorder, ref Vector3 neighborCubePosition, ref Vector3 neighbourChunkCenter, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
+    private NeighbourCubesData<Border> SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
     {
+        NeighbourCubesData<Border> neighbourCubesData = new NeighbourCubesData<Border>();
+
         switch (newChunkBorder)
         {
             case Border.XNegative:
-                neighborChunkBorder = Border.XPositive;
-                neighbourChunkCenter = centerOfXNegativeNeighbourChunk;
-                neighborCubePosition = newCubeDataPosition + Vector3.left;
+                neighbourCubesData.edgeType = Border.XPositive;
+                neighbourCubesData.centerOfChunk = centerOfXNegativeNeighbourChunk;
+                neighbourCubesData.cubePosition = newCubeDataPosition + Vector3.left;
                 break;
             case Border.XPositive:
-                neighborChunkBorder = Border.XNegative;
-                neighbourChunkCenter = centerOfXPositiveNeighbourChunk;
-                neighborCubePosition = newCubeDataPosition + Vector3.right;
+                neighbourCubesData.edgeType = Border.XNegative;
+                neighbourCubesData.centerOfChunk = centerOfXPositiveNeighbourChunk;
+                neighbourCubesData.cubePosition = newCubeDataPosition + Vector3.right;
                 break;
             case Border.ZNegative:
-                neighborChunkBorder = Border.ZPositive;
-                neighbourChunkCenter = centerOfZNegativeNeighbourChunk;
-                neighborCubePosition = newCubeDataPosition + Vector3.back;
+                neighbourCubesData.edgeType = Border.ZPositive;
+                neighbourCubesData.centerOfChunk = centerOfZNegativeNeighbourChunk;
+                neighbourCubesData.cubePosition = newCubeDataPosition + Vector3.back;
                 break;
             case Border.ZPositive:
-                neighborChunkBorder = Border.ZNegative;
-                neighbourChunkCenter = centerOfZPositiveNeighbourChunk;
-                neighborCubePosition = newCubeDataPosition + Vector3.forward;
+                neighbourCubesData.edgeType = Border.ZNegative;
+                neighbourCubesData.centerOfChunk = centerOfZPositiveNeighbourChunk;
+                neighbourCubesData.cubePosition = newCubeDataPosition + Vector3.forward;
                 break;
         }
+
+        return neighbourCubesData;
     }
 
     private bool DoesNeighborChunkExist(Vector3 neighborChunkCenter)

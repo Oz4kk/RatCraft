@@ -50,6 +50,7 @@ namespace InternalTypesForMapOptimization
             return GetEnumerator();
         }
     }
+
     internal struct NeighbourCubesData<T>
     {
         public T edgeType;
@@ -114,6 +115,7 @@ namespace InternalTypesForMapOptimization
             XPositiveCorner = centerOfNewChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
             ZNegativeCorner = centerOfNewChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
             ZPositiveCorner = centerOfNewChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
+
 
             foreach (KeyValuePair<Vector3, CubeData> actualCube in actualChunkField)
             {
