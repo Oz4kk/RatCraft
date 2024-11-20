@@ -214,8 +214,8 @@ public class CornerOptimization : MonoBehaviour
     private bool ProcessCubeAtCurrentDirection(Corner currentCorner, Vector3 direction, Vector3 currentCubePosition, Vector3 centerOfCurrentChunk, Vector3 centerOfNewChunk)
     {
         Dictionary<Vector3, CubeData> currentChunkFieldData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfCurrentChunk];
-
         Vector3 predictedCubePosition = currentCubePosition + direction;
+
         if (direction == Vector3.up || direction == Vector3.down)
         {
             if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
