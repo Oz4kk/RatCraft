@@ -40,7 +40,7 @@ public class MapGenerator : MonoBehaviour
     private GameObject player;
     private ChunkGenerator chunkGenerator;
 
-    [HideInInspector] public GridSize gridSize = new GridSize(100, 16, 100);
+    [HideInInspector] public GridSize gridSize = new GridSize(0, 0, 0);
 
     // TO-DO: Delete this after finishing optimalisation
     public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
