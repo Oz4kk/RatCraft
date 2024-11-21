@@ -119,20 +119,6 @@ namespace InternalTypesForMapOptimization
             }
         }
 
-        private bool DoesCubesExiestOnYAxis(Vector3 newCubeDataPosition, Dictionary<Vector3, CubeData> newChunkFieldData)
-        {
-            if (newChunkFieldData.ContainsKey(newCubeDataPosition + Vector3.down))
-            {
-                return true;
-            }
-            else if (newChunkFieldData.ContainsKey(newCubeDataPosition + Vector3.up))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private bool IsNewCubeAtBorder(Vector3 newCubeDataPosition, ref Border newChunkBorder)
         {
             // Negative X border of Actual Chunk
