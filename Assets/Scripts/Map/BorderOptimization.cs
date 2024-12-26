@@ -34,7 +34,7 @@ public class BorderOptimization : MonoBehaviour
         mapOptimization.onIsBorderCube += BorderCubeOptimizationSequence;
     }
 
-    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
+    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder, Vector2 centerOfXNegativeNeighbourChunk, Vector2 centerOfXPositiveNeighbourChunk, Vector2 centerOfZNegativeNeighbourChunk, Vector2 centerOfZPositiveNeighbourChunk)
     {
         NeighbourCubesData<Border> neighbourCubesData = SetNeighborChunkValues(newChunkBorder, newCubeData.position, centerOfXNegativeNeighbourChunk, centerOfXPositiveNeighbourChunk, centerOfZNegativeNeighbourChunk, centerOfZPositiveNeighbourChunk);
 
@@ -59,7 +59,7 @@ public class BorderOptimization : MonoBehaviour
         neighbourChunkField[neighbourCubesData.cubePosition].cubeInstance.gameObject.SetActive(false);
     }
 
-    private NeighbourCubesData<Border> SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
+    private NeighbourCubesData<Border> SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, Vector2 centerOfXNegativeNeighbourChunk, Vector2 centerOfXPositiveNeighbourChunk, Vector2 centerOfZNegativeNeighbourChunk, Vector2 centerOfZPositiveNeighbourChunk)
     {
         NeighbourCubesData<Border> neighbourCubesData = new NeighbourCubesData<Border>();
 
@@ -90,7 +90,7 @@ public class BorderOptimization : MonoBehaviour
         return neighbourCubesData;
     }
 
-    private bool DoesNeighborChunkExist(Vector3 neighborChunkCenter)
+    private bool DoesNeighborChunkExist(Vector2 neighborChunkCenter)
     {
         if (mapGenerator.dictionaryOfCentersWithItsChunkField.ContainsKey(neighborChunkCenter))
         {

@@ -18,9 +18,9 @@ namespace InternalTypesForMapOptimization
     {
         public T edgeType;
         public Vector3 cubePosition;
-        public Vector3 centerOfChunk;
+        public Vector2 centerOfChunk;
 
-        public NeighbourCubesData(T edgeType, Vector3 cubePosition, Vector3 centerOfChunk) : this()
+        public NeighbourCubesData(T edgeType, Vector3 cubePosition, Vector2 centerOfChunk) : this()
         {
             this.edgeType = edgeType;
             this.cubePosition = cubePosition;
@@ -48,8 +48,8 @@ namespace InternalTypesForMapOptimization
 
     public class MapOptimization : MonoBehaviour
     {
-        internal Action<Dictionary<Vector3, CubeData>, CubeData, Border, Vector3, Vector3, Vector3, Vector3> onIsBorderCube;
-        internal Action<CubeData, Vector3, Border, Corner> onIsCornerCube;
+        internal Action<Dictionary<Vector3, CubeData>, CubeData, Border, Vector2, Vector2, Vector2, Vector2> onIsBorderCube;
+        internal Action<CubeData, Vector2, Border, Corner> onIsCornerCube;
 
         private float XNegativeCorner = 0;
         private float XPositiveCorner = 0;
@@ -67,18 +67,17 @@ namespace InternalTypesForMapOptimization
             mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
         }
 
-        private void PrecessAllCubeDataOfUpcommingChunk(Dictionary<Vector3, CubeData> actualChunkField, Vector3 centerOfNewChunk)
+        private void PrecessAllCubeDataOfUpcommingChunk(Dictionary<Vector3, CubeData> actualChunkField, Vector2 centerOfNewChunk)
         {
-            Vector3 centerOfXNegativeNeighbourChunk = new Vector3(centerOfNewChunk.x - mapGenerator.gridSize.x, centerOfNewChunk.y, centerOfNewChunk.z);
-            Vector3 centerOfXPositiveNeighbourChunk = new Vector3(centerOfNewChunk.x + mapGenerator.gridSize.x, centerOfNewChunk.y, centerOfNewChunk.z);
-            Vector3 centerOfZNegativeNeighbourChunk = new Vector3(centerOfNewChunk.x, centerOfNewChunk.y, centerOfNewChunk.z - mapGenerator.gridSize.z);
-            Vector3 centerOfZPositiveNeighbourChunk = new Vector3(centerOfNewChunk.x, centerOfNewChunk.y, centerOfNewChunk.z + mapGenerator.gridSize.z);
+            Vector2 centerOfXNegativeNeighbourChunk = new Vector2(centerOfNewChunk.x - mapGenerator.gridSize.x, centerOfNewChunk.y);
+            Vector2 centerOfXPositiveNeighbourChunk = new Vector2(centerOfNewChunk.x + mapGenerator.gridSize.x, centerOfNewChunk.y);
+            Vector2 centerOfZNegativeNeighbourChunk = new Vector2(centerOfNewChunk.x, centerOfNewChunk.y - mapGenerator.gridSize.z);
+            Vector2 centerOfZPositiveNeighbourChunk = new Vector2(centerOfNewChunk.x, centerOfNewChunk.y + mapGenerator.gridSize.z);
 
             XNegativeCorner = centerOfNewChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
             XPositiveCorner = centerOfNewChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-            ZNegativeCorner = centerOfNewChunk.z - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-            ZPositiveCorner = centerOfNewChunk.z + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-
+            ZNegativeCorner = centerOfNewChunk.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
+            ZPositiveCorner = centerOfNewChunk.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
 
             foreach (KeyValuePair<Vector3, CubeData> actualCube in actualChunkField)
             {
@@ -92,13 +91,8 @@ namespace InternalTypesForMapOptimization
         /// <param name="newCubeData"></param>
         /// <param name="centerOfNewChunk"></param>
         /// <param name="newChunkFieldData"></param>
-        private void OptimizeDataOfNewChunk(CubeData newCubeData, Vector3 centerOfNewChunk, Dictionary<Vector3, CubeData> newChunkFieldData, Vector3 centerOfXNegativeNeighbourChunk, Vector3 centerOfXPositiveNeighbourChunk, Vector3 centerOfZNegativeNeighbourChunk, Vector3 centerOfZPositiveNeighbourChunk)
+        private void OptimizeDataOfNewChunk(CubeData newCubeData, Vector2 centerOfNewChunk, Dictionary<Vector3, CubeData> newChunkFieldData, Vector2 centerOfXNegativeNeighbourChunk, Vector2 centerOfXPositiveNeighbourChunk, Vector2 centerOfZNegativeNeighbourChunk, Vector2 centerOfZPositiveNeighbourChunk)
         {
-            if (newCubeData.position == new Vector3(-13,0,-13))
-            {
-                Debug.Log("hit");
-            }
-
             Border newChunkBorder = Border.Null;
 
             if (IsNewCubeAtBorder(newCubeData.position, ref newChunkBorder))

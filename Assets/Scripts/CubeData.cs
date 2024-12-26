@@ -6,6 +6,7 @@ public class CubeData
 {
     public GameObject cubePrefab;
     public Vector3 position;
+    public Vector2 centerOfChunk;
     public bool isCubeDataSurrounded;
 
     public CubeData(GameObject cubePrefab, Vector3 position, bool isCubeDataSurrounded)

@@ -26,10 +26,14 @@ public class PlaceCubeState : IState
         {
             return;
         }
+
         if (playerCubePlacement.DoesPlayerCollideWithCubePlacementLocation((Vector3)raycastHitLocation))
         {
             return;
         }
+        Vector2 cubePositionWithoutHeight = new Vector2(raycastHitLocation.Value.x, raycastHitLocation.Value.z);
+        Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(cubePositionWithoutHeight);
+        
         GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
         CubeParameters actualCubeParametres = actualCube.GetComponent<CubeParameters>();
 
