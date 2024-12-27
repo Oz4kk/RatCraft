@@ -27,7 +27,7 @@ public class CornerOptimization : MonoBehaviour
         mapOptimization.onIsCornerCube += CornerCubeOptimizationSequence;
     }
 
-    private void CornerCubeOptimizationSequence(CubeData newCubeData, Vector2 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
+    private void CornerCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkField, CubeData newCubeData, Vector2 centerOfNewChunk, Border newChunkBorder, Corner newCubeCorner)
     {
         NeighbourCubesData<Corner>[] neighbourCubesDataAroundCorner = GetNeighborCubesDataAroundCorner(newCubeData.position, centerOfNewChunk, newChunkBorder, newCubeCorner);
 
@@ -37,16 +37,17 @@ public class CornerOptimization : MonoBehaviour
             return;
         }
 
-        // Check if New Cube at corresponding corner of New Chunk is surrrounded. If yes then set New Cube as surrounded, to prevent instatiating that New Cube in the future.
-        if (IsCornerCubeSurrounded(newCubeData.position, centerOfNewChunk, centerOfNewChunk, newCubeCorner))
+        // Check if New Cube at corresponding corner of New Chunk is surrounded. If yes then set New Cube as surrounded, to prevent instatiating that New Cube in the future.
+        if (IsCornerCubeSurrounded(newCubeData.position, centerOfNewChunk, newChunkField, centerOfNewChunk, newCubeCorner))
         {
             newCubeData.isCubeDataSurrounded = true;
         }
-
         // Check if Neighbor Cubes at corresponding corners around New Chunk are surrounded. If yes then deactive Neighbor Cube.
         foreach (NeighbourCubesData<Corner> neighborCube in neighbourCubesDataAroundCorner)
         {
-            if (IsCornerCubeSurrounded(neighborCube.cubePosition, neighborCube.centerOfChunk, centerOfNewChunk, neighborCube.edgeType))
+            Dictionary<Vector3, CubeParameters> currentChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.centerOfChunk];
+            
+            if (IsCornerCubeSurrounded(neighborCube.cubePosition, neighborCube.centerOfChunk, currentChunkField, centerOfNewChunk, neighborCube.edgeType))
             {
                 Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.centerOfChunk];
                 neighbourChunkField[neighborCube.cubePosition].cubeInstance.gameObject.SetActive(false);
@@ -198,11 +199,11 @@ public class CornerOptimization : MonoBehaviour
         return true;
     }
 
-    private bool IsCornerCubeSurrounded(Vector3 currentCubePosition, Vector2 centerOfCurrentChunk, Vector2 centerOfNewChunk, Corner currentCorner)
+    private bool IsCornerCubeSurrounded<T>(Vector3 currentCubePosition, Vector2 centerOfCurrentChunk, Dictionary<Vector3, T> currentChunkField, Vector2 centerOfNewChunk, Corner currentCorner)
     {
         foreach (Vector3 currentDirection in directions)
         {
-            if (!ProcessCubeAtCurrentDirection(currentCorner, currentDirection, currentCubePosition, centerOfCurrentChunk, centerOfNewChunk))
+            if (!ProcessCubeAtCurrentDirection(currentCorner, currentDirection, currentCubePosition, centerOfCurrentChunk, currentChunkField, centerOfNewChunk))
             {
                 return false;
             }
@@ -211,14 +212,19 @@ public class CornerOptimization : MonoBehaviour
         return true;
     }
 
-    private bool ProcessCubeAtCurrentDirection(Corner currentCorner, Vector3 direction, Vector3 currentCubePosition, Vector2 centerOfCurrentChunk, Vector2 centerOfNewChunk)
+    private bool ProcessCubeAtCurrentDirection<T>(Corner currentCorner, Vector3 direction, Vector3 currentCubePosition, Vector2 centerOfCurrentChunk, Dictionary<Vector3, T> currentChunkField, Vector2 centerOfNewChunk)
     {
-        Dictionary<Vector3, CubeData> currentChunkFieldData = mapGenerator.dictionaryOfCentersWithItsDataChunkField[centerOfCurrentChunk];
+        //Dictionary<Vector3, CubeParameters> currentChunkFieldData = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfCurrentChunk];
         Vector3 predictedCubePosition = currentCubePosition + direction;
 
+        if (currentCubePosition == new Vector3(-13, 2, -12))
+        {
+            Debug.Log("Hovno");
+        }
+        
         if (direction == Vector3.up || direction == Vector3.down)
         {
-            if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+            if (DoesCubeExistInChunk(currentChunkField, predictedCubePosition))
             {
                 return true;
             }
@@ -227,16 +233,16 @@ public class CornerOptimization : MonoBehaviour
         {
             if (IsDirectionMatchingCornerForCurrentChunkField(currentCorner, direction))
             {
-                if (DoesCubeExistInChunk(currentChunkFieldData, predictedCubePosition))
+                if (DoesCubeExistInChunk(currentChunkField, predictedCubePosition))
                 {
                     return true;
                 }
             }
             else
             {
-                Vector3 predictedChunkCenter = SetPredictedChunkCenterAccordingToDirection(direction, centerOfCurrentChunk);
+                Vector2 predictedChunkCenter = SetPredictedChunkCenterAccordingToDirection(direction, centerOfCurrentChunk);
 
-                if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkFieldData, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
+                if (DoesCorrespondingCubeExistInCorrespondingChunk(currentChunkField, currentCubePosition, predictedChunkCenter, predictedCubePosition, centerOfNewChunk))
                 {
                     return true;
                 }
@@ -290,7 +296,7 @@ public class CornerOptimization : MonoBehaviour
         return false;
     }
 
-    private Vector3 SetPredictedChunkCenterAccordingToDirection(Vector3 direction, Vector2 centerOfCurrenChunk)
+    private Vector2 SetPredictedChunkCenterAccordingToDirection(Vector3 direction, Vector2 centerOfCurrenChunk)
     {
         Vector2 predictedChunkCenter = centerOfCurrenChunk;
 
@@ -315,7 +321,7 @@ public class CornerOptimization : MonoBehaviour
     }
 
     // UGLY - Change Naming for this or second method!!
-    private bool DoesCorrespondingCubeExistInCorrespondingChunk(Dictionary<Vector3, CubeData> currentChunkFieldData, Vector3 currentCubePosition, Vector2 predictedChunkCenter, Vector3 predictedCubePosition, Vector2 centerOfNewChunk)
+    private bool DoesCorrespondingCubeExistInCorrespondingChunk<T>(Dictionary<Vector3, T> currentChunkFieldData, Vector3 currentCubePosition, Vector2 predictedChunkCenter, Vector3 predictedCubePosition, Vector2 centerOfNewChunk)
     {
         if (predictedChunkCenter == centerOfNewChunk)
         {

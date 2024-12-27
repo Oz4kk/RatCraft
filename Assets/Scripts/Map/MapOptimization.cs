@@ -48,8 +48,8 @@ namespace InternalTypesForMapOptimization
 
     public class MapOptimization : MonoBehaviour
     {
-        internal Action<Dictionary<Vector3, CubeData>, CubeData, Border, Vector2, Vector2, Vector2, Vector2> onIsBorderCube;
-        internal Action<CubeData, Vector2, Border, Corner> onIsCornerCube;
+        internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Border, Vector2, Vector2, Vector2, Vector2> onIsBorderCube;
+        internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Vector2, Border, Corner> onIsCornerCube;
 
         private float XNegativeCorner = 0;
         private float XPositiveCorner = 0;
@@ -100,7 +100,7 @@ namespace InternalTypesForMapOptimization
                 Corner newCubeCorner = Corner.Null;
                 if (IsNewCubeAtCorner(newCubeData, ref newCubeCorner))
                 {
-                    onIsCornerCube(newCubeData, centerOfNewChunk, newChunkBorder, newCubeCorner);
+                    onIsCornerCube(newChunkFieldData, newCubeData, centerOfNewChunk, newChunkBorder, newCubeCorner);
                 }
                 else
                 {
