@@ -54,7 +54,6 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private uint gridSizeHeight;
     
     // Zmenit druhe dictionary tykajici se samotneho chunku na klasu
-    public Dictionary<Vector2, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsDataChunkField = new Dictionary<Vector2, Dictionary<Vector3, CubeData>>();
     public Dictionary<Vector2, Dictionary<Vector3, CubeParameters>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector2, Dictionary<Vector3, CubeParameters>>();
 
     private Vector2 middlePointOfLastChunk;
@@ -163,28 +162,27 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    private void GeneratePreloadedChunk(Vector2 centerOfUpcommingChunk)
+    private void GeneratePreloadedChunk(Dictionary<Vector3, CubeData> newChunkFiedlData, Vector2 centerOfUpcommingChunk)
     {
-        Dictionary<Vector3, CubeData> dataChunkField = dictionaryOfCentersWithItsDataChunkField[centerOfUpcommingChunk];
         Dictionary<Vector3, CubeParameters> chunkField = new Dictionary<Vector3, CubeParameters>(); 
 
-        foreach (KeyValuePair<Vector3, CubeData> actualCube in dataChunkField)
+        foreach (KeyValuePair<Vector3, CubeData> newCubeData in newChunkFiedlData)
         {
             CubeParameters cubeParameters = null;
 
-            if (actualCube.Value.isCubeDataSurrounded)
+            if (newCubeData.Value.isCubeDataSurrounded)
             {
-                chunkField.Add(actualCube.Key, cubeParameters);
+                chunkField.Add(newCubeData.Key, cubeParameters);
 
                 continue;
             }
-            GameObject cubeInstance = InstantiateAndReturnCube(actualCube.Key, actualCube.Value.cubePrefab);
+            GameObject cubeInstance = InstantiateAndReturnCube(newCubeData.Key, newCubeData.Value.cubePrefab);
             cubeParameters = cubeInstance.GetComponent<CubeParameters>();
 
             ChooseTexture(cubeInstance);
 
             cubeParameters.isCubeInstantiated = true;
-            cubeParameters.position = actualCube.Key;
+            cubeParameters.position = newCubeData.Key;
             cubeParameters.cubeInstance = cubeInstance;
 
             chunkField.Add(cubeParameters.position, cubeParameters);
@@ -230,7 +228,7 @@ public class MapGenerator : MonoBehaviour
 
     private void IfCenterDontExistGenerateChunk(Vector2 centerOfUpcomingChunk)
     {
-        if (!dictionaryOfCentersWithItsDataChunkField.ContainsKey(centerOfUpcomingChunk))
+        if (!dictionaryOfCentersWithItsChunkField.ContainsKey(centerOfUpcomingChunk))
         {
             ChunkGenerationSequence(centerOfUpcomingChunk);
         }
@@ -270,10 +268,10 @@ public class MapGenerator : MonoBehaviour
     //Ugly naming
     private void ChunkGenerationSequence(Vector2 centerOfUpcommingChunk)
     {
-        GenerateDataOfUpcommingChunk(centerOfUpcommingChunk);
+        Dictionary<Vector3, CubeData> newChunkFieldData = GenerateDataOfUpcommingChunk(centerOfUpcommingChunk);
         // Vzdy se ptat sa subscription // Pokud mam referenci tak delegat je zbytecny // nedelat oboustranny reference
-        onDataOfNewChunkGenerated(dictionaryOfCentersWithItsDataChunkField[centerOfUpcommingChunk], centerOfUpcommingChunk);
-        GeneratePreloadedChunk(centerOfUpcommingChunk);
+        onDataOfNewChunkGenerated(newChunkFieldData, centerOfUpcommingChunk);
+        GeneratePreloadedChunk(newChunkFieldData, centerOfUpcommingChunk);
     }
 
 
@@ -281,12 +279,12 @@ public class MapGenerator : MonoBehaviour
     /// Creates Dictionary fullfilled with data for upcoming chunk and adds it to the global dictionaryOfCentersWithItsChunkField dictionary
     /// </summary>
     /// <param name="centerOfPredictedChunk"></param>
-    private void GenerateDataOfUpcommingChunk(Vector2 centerOfPredictedChunk)
+    private Dictionary<Vector3, CubeData> GenerateDataOfUpcommingChunk(Vector2 centerOfPredictedChunk)
     {
         Vector3 startingChunkGenerationPosition = ReturnBeginningPositionOfGeneratedChunk(centerOfPredictedChunk);
-        Dictionary<Vector3, CubeData> predictedDataChunkField = chunkGenerator.GenerateChunkData(startingChunkGenerationPosition);
+        Dictionary<Vector3, CubeData> newChunkFieldData = chunkGenerator.GenerateChunkData(startingChunkGenerationPosition);
 
-        dictionaryOfCentersWithItsDataChunkField.Add(centerOfPredictedChunk, predictedDataChunkField);
+        return newChunkFieldData;
     }
 
     private Vector3 ReturnBeginningPositionOfGeneratedChunk(Vector2 centerOfChunk)
