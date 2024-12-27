@@ -139,6 +139,5 @@ public class ChunkGenerator : MonoBehaviour
         debugActualCubeCounter++;
 
         actualChunkFieldData.Add(cubeData.position, cubeData);
-        mapGenerator.mapFieldData.Add(cubeData.position, cubeData);
     }
 }

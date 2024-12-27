@@ -45,7 +45,6 @@ public class MapGenerator : MonoBehaviour
 
     // TO-DO: Delete this after finishing optimalisation
     public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
-    public Dictionary<Vector3, CubeData> mapFieldData = new Dictionary<Vector3, CubeData>();
 
     public float seed;
 
