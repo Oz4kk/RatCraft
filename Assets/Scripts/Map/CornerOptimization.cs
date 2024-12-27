@@ -214,13 +214,7 @@ public class CornerOptimization : MonoBehaviour
 
     private bool ProcessCubeAtCurrentDirection<T>(Corner currentCorner, Vector3 direction, Vector3 currentCubePosition, Vector2 centerOfCurrentChunk, Dictionary<Vector3, T> currentChunkField, Vector2 centerOfNewChunk)
     {
-        //Dictionary<Vector3, CubeParameters> currentChunkFieldData = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfCurrentChunk];
         Vector3 predictedCubePosition = currentCubePosition + direction;
-
-        if (currentCubePosition == new Vector3(-13, 2, -12))
-        {
-            Debug.Log("Hovno");
-        }
         
         if (direction == Vector3.up || direction == Vector3.down)
         {
