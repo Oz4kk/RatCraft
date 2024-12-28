@@ -24,8 +24,8 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public Action<GameObject> onCubeDestroyed;
-    public Action<GameObject> onCubePlaced;
+    public Action<Vector3> onCubeDestroyed;
+    public Action<Vector3> onCubePlaced;
 
     public GameObject greenCube;
     public GameObject blueCube;
@@ -42,9 +42,6 @@ public class MapGenerator : MonoBehaviour
     private ChunkGenerator chunkGenerator;
 
     [HideInInspector] public GridSize gridSize = new GridSize(0, 0, 0);
-
-    // TO-DO: Delete this after finishing optimalisation
-    public Dictionary<Vector3, GameObject> mapField = new Dictionary<Vector3, GameObject>();
 
     public float seed;
 
@@ -76,12 +73,11 @@ public class MapGenerator : MonoBehaviour
         gridSize.y = (int)gridSizeHeight;
         gridSize.x = (int)gridSizeSides;
         gridSize.z = (int)gridSizeSides;
+        greatestDistanceFromCenterOfTheChunk = (gridSizeSides - 1) / Mathf.Sqrt(2);
     }
 
     private void Start()
     {
-        greatestDistanceFromCenterOfTheChunk = (gridSizeSides - 1) / Mathf.Sqrt(2);
-        
         player = playerSpawn.spawnedPlayer;
         SetNewPredictionValues(new Vector2(player.transform.position.x, player.transform.position.z));
         ChunkGenerationSequence(middlePointOfLastChunk);
@@ -98,25 +94,23 @@ public class MapGenerator : MonoBehaviour
         Vector2 centerOfActualChunk = GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(actualCube.position.x, actualCube.position.z));
         dictionaryOfCentersWithItsChunkField[centerOfActualChunk].Remove(actualCube.position);
         
-        Debug.Log("1st - " + centerOfActualChunk + "" + actualCube.position);
-        
-        //mapField.Remove(actualCube.gameObject.transform.position);
         Destroy(actualCube.gameObject);
 
-        onCubeDestroyed.Invoke(actualCube.gameObject);
+        onCubeDestroyed.Invoke(actualCube.position);
     }
     
-    public GameObject? InstantiateAndReturnCube(Vector3 spawnPosition, GameObject cubePrefab)
+    public GameObject? InstantiateAndReturnCube(Vector3 cubePosition, GameObject cubePrefab)
     {
-        if (!mapField.ContainsKey(spawnPosition))
+        Vector2 chunkCenter = GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubePosition.x, cubePosition.z));
+        Dictionary<Vector3, CubeData> chunkField = dictionaryOfCentersWithItsChunkField[chunkCenter];
+        
+        if (!chunkField.ContainsKey(cubePosition))
         {
-            GameObject actualCube = Instantiate<GameObject>(cubePrefab, spawnPosition, Quaternion.identity);
-            mapField.Add(spawnPosition, actualCube);
+            GameObject actualCube = Instantiate<GameObject>(cubePrefab, cubePosition, Quaternion.identity);
 
             return actualCube;
         }
 
-        DebugManager.Log($"Count of mapField: {mapField.Count}");
         return null;
     }
 
@@ -162,10 +156,15 @@ public class MapGenerator : MonoBehaviour
 
     private void GeneratePreloadedChunk(Dictionary<Vector3, CubeData> newChunkFiedlData, Vector2 centerOfUpcommingChunk)
     {
+        Dictionary<Vector3, CubeData> newChunkField = new Dictionary<Vector3, CubeData>();
+        dictionaryOfCentersWithItsChunkField.Add(centerOfUpcommingChunk, newChunkField);
+        
         foreach (KeyValuePair<Vector3, CubeData> newCubeData in newChunkFiedlData)
         {
             if (newCubeData.Value.isCubeDataSurrounded)
             {
+                newChunkField.Add(newCubeData.Key, newCubeData.Value);
+                
                 continue;
             }
             GameObject cubeInstance = InstantiateAndReturnCube(newCubeData.Key, newCubeData.Value.cubePrefab);
@@ -173,8 +172,9 @@ public class MapGenerator : MonoBehaviour
             ChooseTexture(cubeInstance);
             
             newCubeData.Value.cubeParameters = cubeParameters;
+            
+            newChunkField.Add(newCubeData.Key, newCubeData.Value);
         }
-        dictionaryOfCentersWithItsChunkField.Add(centerOfUpcommingChunk, newChunkFiedlData);
     }
 
     private void SetNewPredictionValues(Vector2 middlePointOfActualChunk)

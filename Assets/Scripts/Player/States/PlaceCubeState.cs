@@ -38,6 +38,6 @@ public class PlaceCubeState : IState
         CubeParameters actualCubeParametres = actualCube.GetComponent<CubeParameters>();
 
         inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
-        mapGenerator.onCubePlaced?.Invoke(actualCube);
+        mapGenerator.onCubePlaced?.Invoke(actualCube.transform.position);
     }
 }

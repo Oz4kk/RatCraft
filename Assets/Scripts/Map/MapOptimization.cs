@@ -209,31 +209,31 @@ namespace InternalTypesForMapOptimization
             actualCube.isCubeDataSurrounded = true;
         }
 
-        private void DeactiavateSurroundedCube(GameObject actualCube, Dictionary<Vector3, GameObject> actualChunkField)
+        private void DeactiavateSurroundedCube(GameObject actualCube, Dictionary<Vector3, CubeData> chunkField)
         {
             byte counter = 0;
 
-            if (actualChunkField.ContainsKey(actualCube.transform.position + Vector3.right))
+            if (chunkField.ContainsKey(actualCube.transform.position + Vector3.right))
             {
                 counter++;
             }
-            if (actualChunkField.ContainsKey(actualCube.transform.position - Vector3.right))
+            if (chunkField.ContainsKey(actualCube.transform.position - Vector3.right))
             {
                 counter++;
             }
-            if (actualChunkField.ContainsKey(actualCube.transform.position + Vector3.up))
+            if (chunkField.ContainsKey(actualCube.transform.position + Vector3.up))
             {
                 counter++;
             }
-            if (actualChunkField.ContainsKey(actualCube.transform.position - Vector3.up))
+            if (chunkField.ContainsKey(actualCube.transform.position - Vector3.up))
             {
                 counter++;
             }
-            if (actualChunkField.ContainsKey(actualCube.transform.position + Vector3.forward))
+            if (chunkField.ContainsKey(actualCube.transform.position + Vector3.forward))
             {
                 counter++;
             }
-            if (actualChunkField.ContainsKey(actualCube.transform.position - Vector3.forward))
+            if (chunkField.ContainsKey(actualCube.transform.position - Vector3.forward))
             {
                 counter++;
             }
@@ -244,59 +244,65 @@ namespace InternalTypesForMapOptimization
             }
         }
 
-        private void DeactivateInvisibleCubesAroundPlacedCube(GameObject actualCube)
+        private void DeactivateInvisibleCubesAroundPlacedCube(Vector3 cubePosition)
         {
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.right))
+            Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubePosition.x, cubePosition.z));
+            Dictionary<Vector3, CubeData> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter];
+            
+            if (chunkField.ContainsKey(cubePosition + Vector3.right))
             {
-                DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position + Vector3.right], mapGenerator.mapField);
+                DeactiavateSurroundedCube(chunkField[cubePosition + Vector3.right].cubeParameters.gameObject, chunkField);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.right))
+            if (chunkField.ContainsKey(cubePosition - Vector3.right))
             {
-                DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position - Vector3.right], mapGenerator.mapField);
+                DeactiavateSurroundedCube(chunkField[cubePosition - Vector3.right].cubeParameters.gameObject, chunkField);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.up))
+            if (chunkField.ContainsKey(cubePosition + Vector3.up))
             {
-                DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position + Vector3.up], mapGenerator.mapField);
+                DeactiavateSurroundedCube(chunkField[cubePosition + Vector3.up].cubeParameters.gameObject, chunkField);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.up))
+            if (chunkField.ContainsKey(cubePosition - Vector3.up))
             {
-                DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position - Vector3.up], mapGenerator.mapField);
+                DeactiavateSurroundedCube(chunkField[cubePosition - Vector3.up].cubeParameters.gameObject, chunkField);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.forward))
+            if (chunkField.ContainsKey(cubePosition + Vector3.forward))
             {
-                DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position + Vector3.forward], mapGenerator.mapField);
+                DeactiavateSurroundedCube(chunkField[cubePosition + Vector3.forward].cubeParameters.gameObject, chunkField);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.forward))
+            if (chunkField.ContainsKey(cubePosition - Vector3.forward))
             {
-                DeactiavateSurroundedCube(mapGenerator.mapField[actualCube.transform.position - Vector3.forward], mapGenerator.mapField);
+                DeactiavateSurroundedCube(chunkField[cubePosition - Vector3.forward].cubeParameters.gameObject, chunkField);
             }
         }
 
-        private void RectivateInvisibleCubesAroundBrokenCube(GameObject actualCube)
+        private void RectivateInvisibleCubesAroundBrokenCube(Vector3 cubePosition)
         {
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.right))
+            Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubePosition.x, cubePosition.z));
+            Dictionary<Vector3, CubeData> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter];
+            
+            if (chunkField.ContainsKey(cubePosition + Vector3.right))
             {
-                mapGenerator.mapField[actualCube.transform.position + Vector3.right].SetActive(true);
+                chunkField[cubePosition + Vector3.right].cubeParameters.gameObject.SetActive(true);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.right))
+            if (chunkField.ContainsKey(cubePosition - Vector3.right))
             {
-                mapGenerator.mapField[actualCube.transform.position - Vector3.right].SetActive(true);
+                chunkField[cubePosition - Vector3.right].cubeParameters.gameObject.SetActive(true);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.up))
+            if (chunkField.ContainsKey(cubePosition + Vector3.up))
             {
-                mapGenerator.mapField[actualCube.transform.position + Vector3.up].SetActive(true);
+                chunkField[cubePosition + Vector3.up].cubeParameters.gameObject.SetActive(true);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.up))
+            if (chunkField.ContainsKey(cubePosition - Vector3.up))
             {
-                mapGenerator.mapField[actualCube.transform.position - Vector3.up].SetActive(true);
+                chunkField[cubePosition - Vector3.up].cubeParameters.gameObject.SetActive(true);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position + Vector3.forward))
+            if (chunkField.ContainsKey(cubePosition + Vector3.forward))
             {
-                mapGenerator.mapField[actualCube.transform.position + Vector3.forward].SetActive(true);
+                chunkField[cubePosition + Vector3.forward].cubeParameters.gameObject.SetActive(true);
             }
-            if (mapGenerator.mapField.ContainsKey(actualCube.transform.position - Vector3.forward))
+            if (chunkField.ContainsKey(cubePosition - Vector3.forward))
             {
-                mapGenerator.mapField[actualCube.transform.position - Vector3.forward].SetActive(true);
+                chunkField[cubePosition - Vector3.forward].cubeParameters.gameObject.SetActive(true);
             }
         }
     }
