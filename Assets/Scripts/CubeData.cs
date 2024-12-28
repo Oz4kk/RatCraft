@@ -5,15 +5,17 @@ using UnityEngine;
 public class CubeData
 {
     public GameObject cubePrefab;
-    public Vector3 position;
-    public Vector2 centerOfChunk;
-    public bool isCubeDataSurrounded;
+    public CubeParameters cubeParameters;
+    public Vector3 position {private set; get;}
+    public Vector2 chunkCenter {private set; get;}
+    
+    public bool isCubeDataSurrounded = false;
 
-    public CubeData(GameObject cubePrefab, Vector3 position, bool isCubeDataSurrounded)
+    public CubeData(GameObject cubePrefab, Vector3 position, Vector2 chunkCenter)
     {
         this.cubePrefab = cubePrefab;
         this.position = position;
-        this.isCubeDataSurrounded = isCubeDataSurrounded;
+        this.chunkCenter = chunkCenter;
     }
 }
 

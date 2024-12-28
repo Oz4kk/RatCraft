@@ -43,20 +43,20 @@ public class BorderOptimization : MonoBehaviour
             return;
         }
 
-        Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighbourCubesData.centerOfChunk];
+        Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighbourCubesData.centerOfChunk];
         // Return if New Cube in New Chunk isn't surrounded with cubes from each sides
-        if (!IsBorderCubeSurrounded<CubeData, CubeParameters>(newChunkFieldData, newCubeData.position, neighbourChunkField, neighbourCubesData.cubePosition, newChunkBorder))
+        if (!IsBorderCubeSurrounded(newChunkFieldData, newCubeData.position, neighbourChunkField, neighbourCubesData.cubePosition, newChunkBorder))
         {
             return;
         }
         newCubeData.isCubeDataSurrounded = true;
 
         // Return if Neighbor Cube in Neighbor Chunk isn't surrounded with cubes from each sides
-        if (!IsBorderCubeSurrounded<CubeParameters, CubeData>(neighbourChunkField, neighbourCubesData.cubePosition, newChunkFieldData, newCubeData.position, neighbourCubesData.edgeType))
+        if (!IsBorderCubeSurrounded(neighbourChunkField, neighbourCubesData.cubePosition, newChunkFieldData, newCubeData.position, neighbourCubesData.edgeType))
         {
             return;
         }
-        neighbourChunkField[neighbourCubesData.cubePosition].cubeInstance.gameObject.SetActive(false);
+        neighbourChunkField[neighbourCubesData.cubePosition].cubeParameters.gameObject.SetActive(false);
     }
 
     private NeighbourCubesData<Border> SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, Vector2 centerOfXNegativeNeighbourChunk, Vector2 centerOfXPositiveNeighbourChunk, Vector2 centerOfZNegativeNeighbourChunk, Vector2 centerOfZPositiveNeighbourChunk)
@@ -100,7 +100,7 @@ public class BorderOptimization : MonoBehaviour
         return false;
     }
 
-    private bool IsBorderCubeSurrounded<T, A>(Dictionary<Vector3, T> firstChunkFieldData, Vector3 firstCubePosition, Dictionary<Vector3, A> secondChunkFieldData, Vector3 secondCubePosition, Border border)
+    private bool IsBorderCubeSurrounded(Dictionary<Vector3, CubeData> firstChunkFieldData, Vector3 firstCubePosition, Dictionary<Vector3, CubeData> secondChunkFieldData, Vector3 secondCubePosition, Border border)
     {
         foreach (Border actaualBorder in borders)
         {

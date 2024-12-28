@@ -78,14 +78,14 @@ public class ChunkGenerator : MonoBehaviour
     //    onChunkGenerated?.Invoke(actualChunkField);
     //}
 
-    public Dictionary<Vector3, CubeData> GenerateChunkData(Vector3 startingChunkGenerationPosition)
+    public Dictionary<Vector3, CubeData> GenerateChunkData(Vector2 newChunkCenter, Vector3 startingChunkGenerationPosition)
     {
         uint debugBlueCubeCounter = 0;
         uint dubugGreenCubeCounter = 0;
         uint debugBrownCubeCounter = 0;
         uint debugPinkCubeCounter = 0;
 
-        Dictionary<Vector3, CubeData> actualChunkFieldData = new Dictionary<Vector3, CubeData>();
+        Dictionary<Vector3, CubeData> newChunkFieldData = new Dictionary<Vector3, CubeData>();
 
         for (int x = (int)startingChunkGenerationPosition.x; x < mapGenerator.gridSize.x + (int)startingChunkGenerationPosition.x; x++)
         {
@@ -106,19 +106,19 @@ public class ChunkGenerator : MonoBehaviour
 
                         if (resultSample > 0.5)
                         {
-                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.greenCube, ref dubugGreenCubeCounter, ref actualChunkFieldData);
+                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.greenCube, ref dubugGreenCubeCounter, ref newChunkFieldData, newChunkCenter);
                         }
                         else if (resultSample > 0.375)
                         {
-                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.brownCube, ref debugBrownCubeCounter, ref actualChunkFieldData);
+                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.brownCube, ref debugBrownCubeCounter, ref newChunkFieldData, newChunkCenter);
                         }
                         else if (resultSample > 0.25)
                         {
-                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.blueCube, ref debugBlueCubeCounter, ref actualChunkFieldData);
+                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.blueCube, ref debugBlueCubeCounter, ref newChunkFieldData, newChunkCenter);
                         }
                         else
                         {
-                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.pinkCube, ref debugPinkCubeCounter, ref actualChunkFieldData);
+                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.pinkCube, ref debugPinkCubeCounter, ref newChunkFieldData, newChunkCenter);
                         }
                     }
                 }
@@ -129,12 +129,12 @@ public class ChunkGenerator : MonoBehaviour
         DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
         DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
 
-        return actualChunkFieldData;
+        return newChunkFieldData;
     }
 
-    private void ChunkDataGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubeColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, CubeData> actualChunkFieldData)
+    private void ChunkDataGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubeColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, CubeData> actualChunkFieldData, Vector2 chunkCenter)
     {
-        CubeData cubeData = new CubeData(actualCubeColor, upcomingCubePosition, false);
+        CubeData cubeData = new CubeData(actualCubeColor, upcomingCubePosition, chunkCenter);
 
         debugActualCubeCounter++;
 

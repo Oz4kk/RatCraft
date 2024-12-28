@@ -53,7 +53,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] private uint gridSizeHeight;
     
     // Zmenit druhe dictionary tykajici se samotneho chunku na klasu
-    public Dictionary<Vector2, Dictionary<Vector3, CubeParameters>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector2, Dictionary<Vector3, CubeParameters>>();
+    public Dictionary<Vector2, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector2, Dictionary<Vector3, CubeData>>();
 
     private Vector2 middlePointOfLastChunk;
     
@@ -123,10 +123,9 @@ public class MapGenerator : MonoBehaviour
     
     public Vector2 GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(Vector2 cubePositionWithoutHeight)
     {
-        Dictionary<Vector2, float> distances = new Dictionary<Vector2, float>();
         Vector2 nearestChunkCenter = Vector2.zero;
         
-        foreach (KeyValuePair<Vector2, Dictionary<Vector3, CubeParameters>> chunkField in dictionaryOfCentersWithItsChunkField)
+        foreach (KeyValuePair<Vector2, Dictionary<Vector3, CubeData>> chunkField in dictionaryOfCentersWithItsChunkField)
         {
             float distance = Vector2.Distance(chunkField.Key, cubePositionWithoutHeight);
             Debug.Log("chunkField = " + chunkField.Key + ", distance = " + distance);
@@ -163,30 +162,19 @@ public class MapGenerator : MonoBehaviour
 
     private void GeneratePreloadedChunk(Dictionary<Vector3, CubeData> newChunkFiedlData, Vector2 centerOfUpcommingChunk)
     {
-        Dictionary<Vector3, CubeParameters> chunkField = new Dictionary<Vector3, CubeParameters>(); 
-
         foreach (KeyValuePair<Vector3, CubeData> newCubeData in newChunkFiedlData)
         {
-            CubeParameters cubeParameters = null;
-
             if (newCubeData.Value.isCubeDataSurrounded)
             {
-                chunkField.Add(newCubeData.Key, cubeParameters);
-
                 continue;
             }
             GameObject cubeInstance = InstantiateAndReturnCube(newCubeData.Key, newCubeData.Value.cubePrefab);
-            cubeParameters = cubeInstance.GetComponent<CubeParameters>();
-
+            CubeParameters cubeParameters = cubeInstance.GetComponent<CubeParameters>();
             ChooseTexture(cubeInstance);
-
-            cubeParameters.isCubeInstantiated = true;
-            cubeParameters.position = newCubeData.Key;
-            cubeParameters.cubeInstance = cubeInstance;
-
-            chunkField.Add(cubeParameters.position, cubeParameters);
+            
+            newCubeData.Value.cubeParameters = cubeParameters;
         }
-        dictionaryOfCentersWithItsChunkField.Add(centerOfUpcommingChunk, chunkField);
+        dictionaryOfCentersWithItsChunkField.Add(centerOfUpcommingChunk, newChunkFiedlData);
     }
 
     private void SetNewPredictionValues(Vector2 middlePointOfActualChunk)
@@ -277,11 +265,11 @@ public class MapGenerator : MonoBehaviour
     /// <summary>
     /// Creates Dictionary fullfilled with data for upcoming chunk and adds it to the global dictionaryOfCentersWithItsChunkField dictionary
     /// </summary>
-    /// <param name="centerOfPredictedChunk"></param>
-    private Dictionary<Vector3, CubeData> GenerateDataOfUpcommingChunk(Vector2 centerOfPredictedChunk)
+    /// <param name="newChunkCenter"></param>
+    private Dictionary<Vector3, CubeData> GenerateDataOfUpcommingChunk(Vector2 newChunkCenter)
     {
-        Vector3 startingChunkGenerationPosition = ReturnBeginningPositionOfGeneratedChunk(centerOfPredictedChunk);
-        Dictionary<Vector3, CubeData> newChunkFieldData = chunkGenerator.GenerateChunkData(startingChunkGenerationPosition);
+        Vector3 startingChunkGenerationPosition = ReturnBeginningPositionOfGeneratedChunk(newChunkCenter);
+        Dictionary<Vector3, CubeData> newChunkFieldData = chunkGenerator.GenerateChunkData(newChunkCenter, startingChunkGenerationPosition);
 
         return newChunkFieldData;
     }
@@ -289,18 +277,5 @@ public class MapGenerator : MonoBehaviour
     private Vector3 ReturnBeginningPositionOfGeneratedChunk(Vector2 centerOfChunk)
     {
         return new Vector3(centerOfChunk.x - gridSize.x / 2, 0.0f, centerOfChunk.y - gridSize.x / 2);
-    }
-
-
-    public Dictionary<Vector3, GameObject> GetChunkBorderCubes()
-    {
-        Dictionary<Vector3, GameObject> borderField = new Dictionary<Vector3, GameObject>();
-
-        return borderField;
-    }
-
-    public Vector3 ChooseNeighbourSide()
-    {
-        return Vector3.right;
     }
 }

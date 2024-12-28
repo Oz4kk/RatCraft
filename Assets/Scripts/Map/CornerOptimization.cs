@@ -45,12 +45,12 @@ public class CornerOptimization : MonoBehaviour
         // Check if Neighbor Cubes at corresponding corners around New Chunk are surrounded. If yes then deactive Neighbor Cube.
         foreach (NeighbourCubesData<Corner> neighborCube in neighbourCubesDataAroundCorner)
         {
-            Dictionary<Vector3, CubeParameters> currentChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.centerOfChunk];
+            Dictionary<Vector3, CubeData> currentChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.centerOfChunk];
             
             if (IsCornerCubeSurrounded(neighborCube.cubePosition, neighborCube.centerOfChunk, currentChunkField, centerOfNewChunk, neighborCube.edgeType))
             {
-                Dictionary<Vector3, CubeParameters> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.centerOfChunk];
-                neighbourChunkField[neighborCube.cubePosition].cubeInstance.gameObject.SetActive(false);
+                Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.centerOfChunk];
+                neighbourChunkField[neighborCube.cubePosition].cubeParameters.gameObject.SetActive(false);
             }
         }
     }
@@ -326,7 +326,7 @@ public class CornerOptimization : MonoBehaviour
         }
         else
         {
-            Dictionary<Vector3, CubeParameters> neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
+            Dictionary<Vector3, CubeData> neighborChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[predictedChunkCenter];
             if (DoesCubeExistInChunk(neighborChunkField, predictedCubePosition))
             {
                 return true;

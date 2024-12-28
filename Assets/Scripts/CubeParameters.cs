@@ -8,10 +8,7 @@ public class CubeParameters : MonoBehaviour
     public float brittleness;
 
     public Vector3 position;
-    public bool isCubeInstantiated = false;
     
-    [HideInInspector]
-    public GameObject cubeInstance;
     [HideInInspector] 
     public float damage = 0;
 }
