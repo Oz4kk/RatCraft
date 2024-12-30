@@ -53,6 +53,7 @@ public class MapGenerator : MonoBehaviour
     public Dictionary<Vector2, Dictionary<Vector3, CubeData>> dictionaryOfCentersWithItsChunkField = new Dictionary<Vector2, Dictionary<Vector3, CubeData>>();
 
     private Vector2 middlePointOfLastChunk;
+    private Vector2 centerOfFirstChunk;
     
     private float xPositivePrediction;
     private float xNegativePrediction;
@@ -63,8 +64,6 @@ public class MapGenerator : MonoBehaviour
     private float dirtValue = 7.0f;
     private float rockValue = 2.0f;
     
-    private float greatestDistanceFromCenterOfTheChunk;
-
     private void Awake()
     {
         playerSpawn = GetComponent<PlayerSpawn>();
@@ -73,12 +72,12 @@ public class MapGenerator : MonoBehaviour
         gridSize.y = (int)gridSizeHeight;
         gridSize.x = (int)gridSizeSides;
         gridSize.z = (int)gridSizeSides;
-        greatestDistanceFromCenterOfTheChunk = (gridSizeSides - 1) / Mathf.Sqrt(2);
     }
 
     private void Start()
     {
         player = playerSpawn.spawnedPlayer;
+        centerOfFirstChunk = (new Vector2(player.transform.position.x, player.transform.position.z));
         SetNewPredictionValues(new Vector2(player.transform.position.x, player.transform.position.z));
         ChunkGenerationSequence(middlePointOfLastChunk);
     }
@@ -99,33 +98,46 @@ public class MapGenerator : MonoBehaviour
         onCubeDestroyed.Invoke(actualCube.position);
     }
     
-    public GameObject? InstantiateAndReturnCube(Vector3 cubePosition, GameObject cubePrefab)
+    public GameObject InstantiateAndReturnCube(Vector3 cubePosition, GameObject cubePrefab)
+    {
+        GameObject newCube = Instantiate<GameObject>(cubePrefab, cubePosition, Quaternion.identity);
+        
+        return newCube;
+    }
+    
+    public void InstantiateCube(CubeData cubeData, Vector3 cubePosition, GameObject cubePrefab)
     {
         Vector2 chunkCenter = GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubePosition.x, cubePosition.z));
         Dictionary<Vector3, CubeData> chunkField = dictionaryOfCentersWithItsChunkField[chunkCenter];
         
-        if (!chunkField.ContainsKey(cubePosition))
-        {
-            GameObject actualCube = Instantiate<GameObject>(cubePrefab, cubePosition, Quaternion.identity);
-
-            return actualCube;
-        }
-
-        return null;
+        GameObject newCube = Instantiate<GameObject>(cubePrefab, cubePosition, Quaternion.identity);
+        CubeParameters cubeParameters = newCube.GetComponent<CubeParameters>();
+        ChooseTexture(newCube);
+        
+        cubeParameters.position = cubeData.position;
+        cubeData.cubeParameters = cubeParameters;
+        
+        cubeData.isCubeDataSurrounded = false;
     }
 
+    private void SetCubeData()
+    {
+        
+    }
     
     public Vector2 GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(Vector2 cubePositionWithoutHeight)
     {
         Vector2 nearestChunkCenter = Vector2.zero;
+        float lastLowestDistance = float.MaxValue;
         
         foreach (KeyValuePair<Vector2, Dictionary<Vector3, CubeData>> chunkField in dictionaryOfCentersWithItsChunkField)
         {
-            float distance = Vector2.Distance(chunkField.Key, cubePositionWithoutHeight);
+            float distance = Vector2.Distance(cubePositionWithoutHeight, chunkField.Key);
             Debug.Log("chunkField = " + chunkField.Key + ", distance = " + distance);
             
-            if (distance <= greatestDistanceFromCenterOfTheChunk)
+            if (distance < lastLowestDistance)
             {
+                lastLowestDistance = distance;
                 nearestChunkCenter = chunkField.Key;
             }
         }
@@ -170,7 +182,8 @@ public class MapGenerator : MonoBehaviour
             GameObject cubeInstance = InstantiateAndReturnCube(newCubeData.Key, newCubeData.Value.cubePrefab);
             CubeParameters cubeParameters = cubeInstance.GetComponent<CubeParameters>();
             ChooseTexture(cubeInstance);
-            
+
+            cubeParameters.position = newCubeData.Value.position;
             newCubeData.Value.cubeParameters = cubeParameters;
             
             newChunkField.Add(newCubeData.Key, newCubeData.Value);
