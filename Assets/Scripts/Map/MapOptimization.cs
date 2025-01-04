@@ -310,7 +310,7 @@ namespace InternalTypesForMapOptimization
         {
             if (cubeData.isCubeDataSurrounded)
             {
-                mapGenerator.InstantiateCube(cubeData, cubeData.position, cubeData.cubePrefab);
+                mapGenerator.InstantiateCube(cubeData);
             }
             else
             {

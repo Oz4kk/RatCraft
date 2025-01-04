@@ -105,12 +105,12 @@ public class MapGenerator : MonoBehaviour
         return newCube;
     }
     
-    public void InstantiateCube(CubeData cubeData, Vector3 cubePosition, GameObject cubePrefab)
+    public void InstantiateCube(CubeData cubeData)
     {
-        Vector2 chunkCenter = GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubePosition.x, cubePosition.z));
+        Vector2 chunkCenter = GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubeData.position.x, cubeData.position.z));
         Dictionary<Vector3, CubeData> chunkField = dictionaryOfCentersWithItsChunkField[chunkCenter];
         
-        GameObject newCube = Instantiate<GameObject>(cubePrefab, cubePosition, Quaternion.identity);
+        GameObject newCube = Instantiate<GameObject>(cubeData.cubePrefab, cubeData.position, Quaternion.identity);
         CubeParameters cubeParameters = newCube.GetComponent<CubeParameters>();
         ChooseTexture(newCube);
         
@@ -179,12 +179,7 @@ public class MapGenerator : MonoBehaviour
                 
                 continue;
             }
-            GameObject cubeInstance = InstantiateAndReturnCube(newCubeData.Key, newCubeData.Value.cubePrefab);
-            CubeParameters cubeParameters = cubeInstance.GetComponent<CubeParameters>();
-            ChooseTexture(cubeInstance);
-
-            cubeParameters.position = newCubeData.Value.position;
-            newCubeData.Value.cubeParameters = cubeParameters;
+            InstantiateCube(newCubeData.Value);
             
             newChunkField.Add(newCubeData.Key, newCubeData.Value);
         }
