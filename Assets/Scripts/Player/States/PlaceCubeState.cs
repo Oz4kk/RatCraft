@@ -33,10 +33,14 @@ public class PlaceCubeState : IState
         }
         Vector2 cubePositionWithoutHeight = new Vector2(raycastHitLocation.Value.x, raycastHitLocation.Value.z);
         Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(cubePositionWithoutHeight);
-        
-        GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, inventoryHandler.GetSelectedCube());
-        CubeParameters actualCubeParametres = actualCube.GetComponent<CubeParameters>();
 
+        GameObject cubePrefab = inventoryHandler.GetSelectedCube();
+        
+        GameObject actualCube = mapGenerator.InstantiateAndReturnCube((Vector3)raycastHitLocation, cubePrefab);
+        CubeData actualCubeData = new CubeData(cubePrefab, (Vector3)raycastHitLocation, chunkCenter);
+        mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter].Add(actualCube.transform.position, actualCubeData);
+
+        CubeParameters actualCubeParametres = actualCube.GetComponent<CubeParameters>();
         inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
         mapGenerator.onCubePlaced?.Invoke(actualCube.transform.position);
     }
