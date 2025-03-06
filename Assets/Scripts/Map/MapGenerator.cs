@@ -102,6 +102,10 @@ public class MapGenerator : MonoBehaviour
     {
         GameObject newCube = Instantiate<GameObject>(cubePrefab, cubePosition, Quaternion.identity);
         
+        Vector2 chunkCenter = GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubePosition.x, cubePosition.z));
+        CubeData actualCubeData = new CubeData(cubePrefab, cubePosition, chunkCenter);
+        dictionaryOfCentersWithItsChunkField[chunkCenter].Add(cubePosition, actualCubeData);
+        
         return newCube;
     }
     
