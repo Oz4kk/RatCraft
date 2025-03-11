@@ -24,7 +24,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    public Action<Vector3> onCubeDestroyed;
+    public Action<CubeData> onCubeDestroyed;
     public Action<Vector3> onCubePlaced;
 
     public GameObject greenCube;
@@ -94,39 +94,36 @@ public class MapGenerator : MonoBehaviour
         dictionaryOfCentersWithItsChunkField[centerOfActualChunk].Remove(actualCube.position);
         
         Destroy(actualCube.gameObject);
-
-        onCubeDestroyed.Invoke(actualCube.position);
+        
+        onCubeDestroyed.Invoke(actualCube.cubeData);
     }
     
-    public GameObject InstantiateAndReturnCube(Vector3 cubePosition, GameObject cubePrefab)
+    public CubeParameters InstantiateOuterCube(CubeData newCubeData)
     {
-        GameObject newCube = Instantiate<GameObject>(cubePrefab, cubePosition, Quaternion.identity);
+        GameObject newCube = Instantiate<GameObject>(newCubeData.cubePrefab, newCubeData.position, Quaternion.identity);
         
-        Vector2 chunkCenter = GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubePosition.x, cubePosition.z));
-        CubeData actualCubeData = new CubeData(cubePrefab, cubePosition, chunkCenter);
-        dictionaryOfCentersWithItsChunkField[chunkCenter].Add(cubePosition, actualCubeData);
+        dictionaryOfCentersWithItsChunkField[newCubeData.chunkCenter].Add(newCubeData.position, newCubeData);
+        CubeParameters newCubeParameters = newCube.GetComponent<CubeParameters>();
         
-        return newCube;
+        newCubeParameters.position = newCubeData.position;
+        newCubeParameters.cubeData = newCubeData;
+        newCubeData.cubeParameters = newCubeParameters;
+        newCubeData.isCubeDataSurrounded = false;
+        
+        return newCubeParameters;
     }
     
-    public void InstantiateCube(CubeData cubeData)
+    public void InstantiatePredeterminedCube(CubeData newCubeData)
     {
-        Vector2 chunkCenter = GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubeData.position.x, cubeData.position.z));
-        Dictionary<Vector3, CubeData> chunkField = dictionaryOfCentersWithItsChunkField[chunkCenter];
+        GameObject newCube = Instantiate<GameObject>(newCubeData.cubePrefab, newCubeData.position, Quaternion.identity);
         
-        GameObject newCube = Instantiate<GameObject>(cubeData.cubePrefab, cubeData.position, Quaternion.identity);
         CubeParameters cubeParameters = newCube.GetComponent<CubeParameters>();
         ChooseTexture(newCube);
         
-        cubeParameters.position = cubeData.position;
-        cubeData.cubeParameters = cubeParameters;
-        
-        cubeData.isCubeDataSurrounded = false;
-    }
-
-    private void SetCubeData()
-    {
-        
+        cubeParameters.position = newCubeData.position;
+        cubeParameters.cubeData = newCubeData;
+        newCubeData.cubeParameters = cubeParameters;
+        newCubeData.isCubeDataSurrounded = false;
     }
     
     public Vector2 GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(Vector2 cubePositionWithoutHeight)
@@ -183,7 +180,7 @@ public class MapGenerator : MonoBehaviour
                 
                 continue;
             }
-            InstantiateCube(newCubeData.Value);
+            InstantiatePredeterminedCube(newCubeData.Value);
             
             newChunkField.Add(newCubeData.Key, newCubeData.Value);
         }

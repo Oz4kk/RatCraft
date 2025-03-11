@@ -32,11 +32,17 @@ public class BorderOptimization : MonoBehaviour
         mapOptimization = GetComponent<MapOptimization>(); 
 
         mapOptimization.onIsBorderCube += BorderCubeOptimizationSequence;
+        mapOptimization.onIsSelectedBorderCube += FindInvisibleCubeAroundBrokenCube;
     }
 
-    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder, Vector2 centerOfXNegativeNeighbourChunk, Vector2 centerOfXPositiveNeighbourChunk, Vector2 centerOfZNegativeNeighbourChunk, Vector2 centerOfZPositiveNeighbourChunk)
+    private void FindInvisibleCubeAroundBrokenCube(CubeData cubeData, Border cubeBorder)
     {
-        NeighbourCubesData<Border> neighbourCubesData = SetNeighborChunkValues(newChunkBorder, newCubeData.position, centerOfXNegativeNeighbourChunk, centerOfXPositiveNeighbourChunk, centerOfZNegativeNeighbourChunk, centerOfZPositiveNeighbourChunk);
+        NeighbourCubesData<Border> neighbourCubesData = SetNeighborCubeValues(cubeBorder, cubeData);
+    }
+
+    private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder)
+    {
+        NeighbourCubesData<Border> neighbourCubesData = SetNeighborCubeValues(newChunkBorder, newCubeData);
 
         if (!DoesNeighborChunkExist(neighbourCubesData.centerOfChunk))
         {
@@ -59,31 +65,32 @@ public class BorderOptimization : MonoBehaviour
         neighbourChunkField[neighbourCubesData.cubePosition].cubeParameters.gameObject.SetActive(false);
     }
 
-    private NeighbourCubesData<Border> SetNeighborChunkValues(Border newChunkBorder, Vector3 newCubeDataPosition, Vector2 centerOfXNegativeNeighbourChunk, Vector2 centerOfXPositiveNeighbourChunk, Vector2 centerOfZNegativeNeighbourChunk, Vector2 centerOfZPositiveNeighbourChunk)
+    private NeighbourCubesData<Border> SetNeighborCubeValues(Border newChunkBorder, CubeData newCubeData)
     {
         NeighbourCubesData<Border> neighbourCubesData = new NeighbourCubesData<Border>();
-
+        Vector2 newCubeChunkCenter = newCubeData.chunkCenter;
+        
         switch (newChunkBorder)
         {
             case Border.XNegative:
                 neighbourCubesData.edgeType = Border.XPositive;
-                neighbourCubesData.centerOfChunk = centerOfXNegativeNeighbourChunk;
-                neighbourCubesData.cubePosition = newCubeDataPosition + Vector3.left;
+                neighbourCubesData.centerOfChunk = new Vector2(newCubeChunkCenter.x - mapGenerator.gridSize.x, newCubeChunkCenter.y); // centerOfXNegativeNeighbourChunk
+                neighbourCubesData.cubePosition = newCubeData.position + Vector3.left;
                 break;
             case Border.XPositive:
                 neighbourCubesData.edgeType = Border.XNegative;
-                neighbourCubesData.centerOfChunk = centerOfXPositiveNeighbourChunk;
-                neighbourCubesData.cubePosition = newCubeDataPosition + Vector3.right;
+                neighbourCubesData.centerOfChunk = new Vector2(newCubeChunkCenter.x + mapGenerator.gridSize.x, newCubeChunkCenter.y); // centerOfXPositiveNeighbourChunk
+                neighbourCubesData.cubePosition = newCubeData.position + Vector3.right;
                 break;
             case Border.ZNegative:
                 neighbourCubesData.edgeType = Border.ZPositive;
-                neighbourCubesData.centerOfChunk = centerOfZNegativeNeighbourChunk;
-                neighbourCubesData.cubePosition = newCubeDataPosition + Vector3.back;
+                neighbourCubesData.centerOfChunk = new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y - mapGenerator.gridSize.x); // centerOfZNegativeNeighbourChunk
+                neighbourCubesData.cubePosition = newCubeData.position + Vector3.back;
                 break;
             case Border.ZPositive:
                 neighbourCubesData.edgeType = Border.ZNegative;
-                neighbourCubesData.centerOfChunk = centerOfZPositiveNeighbourChunk;
-                neighbourCubesData.cubePosition = newCubeDataPosition + Vector3.forward;
+                neighbourCubesData.centerOfChunk = new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y + mapGenerator.gridSize.y); // centerOfZPositiveNeighbourChunk
+                neighbourCubesData.cubePosition = newCubeData.position + Vector3.forward;
                 break;
         }
 

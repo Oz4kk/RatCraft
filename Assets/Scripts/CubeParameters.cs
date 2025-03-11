@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class CubeParameters : MonoBehaviour
 {
+    // When Instantiating cube cubeData & position must be set!
+    
     public CubeType cubeType;
     public float brittleness;
-
-    public Vector3 position;
-    
     [HideInInspector] 
     public float damage = 0;
+    
+    public Vector3 position;
+    [HideInInspector]
+    public CubeData cubeData;
 }
