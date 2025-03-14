@@ -33,7 +33,6 @@ public class BorderOptimization : MonoBehaviour
         Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighborCubeValues.chunkCenter];
         
         NeighbourCubesData<Border>[] neighbourCubesValuesAroundSelectedCube = GetNeighborCubeValuesAroundSelectedCube(selectedCubeData.position, selectedCubeData.chunkCenter, cubeBorder, potentionalNeighborCubeValues.chunkCenter);
-        NeighbourCubesData<Border>[] neighbourCubesValuesAroundNeighbourCube = GetNeighborCubeValuesAroundSelectedCube(potentionalNeighborCubeValues.cubePosition, potentionalNeighborCubeValues.chunkCenter, potentionalNeighborCubeValues.edgeType, selectedCubeData.chunkCenter);
 
         ExposeVisibleCubesAroundSelectedCube(chunkField, neighbourCubesValuesAroundSelectedCube, potentionalNeighborCubeValues.chunkCenter);
         if (!neighbourChunkField.ContainsKey(potentionalNeighborCubeValues.cubePosition))
