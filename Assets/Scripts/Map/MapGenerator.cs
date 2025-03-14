@@ -97,33 +97,25 @@ public class MapGenerator : MonoBehaviour
         
         onCubeDestroyed.Invoke(actualCube.cubeData);
     }
-    
-    public CubeParameters InstantiateOuterCube(CubeData newCubeData)
+
+    public void InstantiatePredeterminedCubeSequence(CubeData cubeData)
     {
-        GameObject newCube = Instantiate<GameObject>(newCubeData.cubePrefab, newCubeData.position, Quaternion.identity);
-        
-        dictionaryOfCentersWithItsChunkField[newCubeData.chunkCenter].Add(newCubeData.position, newCubeData);
-        CubeParameters newCubeParameters = newCube.GetComponent<CubeParameters>();
-        
-        newCubeParameters.position = newCubeData.position;
-        newCubeParameters.cubeData = newCubeData;
-        newCubeData.cubeParameters = newCubeParameters;
-        newCubeData.isCubeDataSurrounded = false;
-        
-        return newCubeParameters;
+        CubeParameters cubeParemeters = InstantiateCube(cubeData);
+        ChooseTexture(cubeParemeters.gameObject);
     }
     
-    public void InstantiatePredeterminedCube(CubeData newCubeData)
+    public CubeParameters InstantiateCube(CubeData newCubeData)
     {
         GameObject newCube = Instantiate<GameObject>(newCubeData.cubePrefab, newCubeData.position, Quaternion.identity);
         
         CubeParameters cubeParameters = newCube.GetComponent<CubeParameters>();
-        ChooseTexture(newCube);
         
         cubeParameters.position = newCubeData.position;
         cubeParameters.cubeData = newCubeData;
         newCubeData.cubeParameters = cubeParameters;
         newCubeData.isCubeDataSurrounded = false;
+
+        return cubeParameters;
     }
     
     public Vector2 GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(Vector2 cubePositionWithoutHeight)
@@ -146,7 +138,7 @@ public class MapGenerator : MonoBehaviour
         return nearestChunkCenter;
     }
     
-    private void ChooseTexture(GameObject actualCube)
+    public void ChooseTexture(GameObject actualCube)
     {
         Material actualMaterial = actualCube.GetComponent<Renderer>().material;
         if (actualCube.transform.position.y > grassValue)
@@ -180,7 +172,7 @@ public class MapGenerator : MonoBehaviour
                 
                 continue;
             }
-            InstantiatePredeterminedCube(newCubeData.Value);
+            InstantiatePredeterminedCubeSequence(newCubeData.Value);
             
             newChunkField.Add(newCubeData.Key, newCubeData.Value);
         }

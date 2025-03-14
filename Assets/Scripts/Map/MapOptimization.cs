@@ -18,13 +18,13 @@ namespace InternalTypesForMapOptimization
     {
         public T edgeType;
         public Vector3 cubePosition;
-        public Vector2 centerOfChunk;
+        public Vector2 chunkCenter;
 
-        public NeighbourCubesData(T edgeType, Vector3 cubePosition, Vector2 centerOfChunk) : this()
+        public NeighbourCubesData(T edgeType, Vector3 cubePosition, Vector2 chunkCenter) : this()
         {
             this.edgeType = edgeType;
             this.cubePosition = cubePosition;
-            this.centerOfChunk = centerOfChunk;
+            this.chunkCenter = chunkCenter;
         }
     }
 
@@ -49,8 +49,18 @@ namespace InternalTypesForMapOptimization
     public class MapOptimization : MonoBehaviour
     {
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Border> onIsBorderCube;
-        internal System.Action<CubeData, Border> onIsSelectedBorderCube;
+        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsSelectedBorderCube;
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Vector2, Border, Corner> onIsCornerCube;
+        
+        internal readonly Vector3[] directions = new[]
+        {
+            // Vertical Y directions
+            Vector3.up, Vector3.down,
+            // Horizontal X directions
+            Vector3.right, Vector3.left,
+            // Horizontal Z directions
+            Vector3.forward, Vector3.back
+        };
         
         private float XNegativeCorner = 0;
         private float XPositiveCorner = 0;
@@ -286,41 +296,26 @@ namespace InternalTypesForMapOptimization
                 }
                 else
                 {
-                    onIsSelectedBorderCube(cubeData, cubeBorder);
+                    onIsSelectedBorderCube(cubeData, chunkField, cubeBorder);
                 }
             }
-
-            if (chunkField.ContainsKey(cubeData.position + Vector3.right))
+            else
             {
-                ExposeCube(chunkField[cubeData.position + Vector3.right]);
-            }
-            if (chunkField.ContainsKey(cubeData.position + Vector3.left))
-            {
-                ExposeCube(chunkField[cubeData.position + Vector3.left]);
-            }
-            if (chunkField.ContainsKey(cubeData.position + Vector3.up))
-            {
-                ExposeCube(chunkField[cubeData.position + Vector3.up]);
-            }
-            if (chunkField.ContainsKey(cubeData.position + Vector3.down))
-            {
-                ExposeCube(chunkField[cubeData.position + Vector3.down]);
-            }
-            if (chunkField.ContainsKey(cubeData.position + Vector3.forward))
-            {
-                ExposeCube(chunkField[cubeData.position + Vector3.forward]);
-            }
-            if (chunkField.ContainsKey(cubeData.position + Vector3.back))
-            {
-                ExposeCube(chunkField[cubeData.position + Vector3.back]);
+                foreach (Vector3 direction in directions)
+                {
+                    if (chunkField.ContainsKey(cubeData.position + direction))
+                    {
+                        ExposeCube(chunkField[cubeData.position + direction]);
+                    }
+                }
             }
         }
         
-        private void ExposeCube(CubeData cubeData)
+        public void ExposeCube(CubeData cubeData)
         {
             if (cubeData.isCubeDataSurrounded)
             {
-                mapGenerator.InstantiatePredeterminedCube(cubeData);
+                mapGenerator.InstantiatePredeterminedCubeSequence(cubeData);
             }
             else
             {
@@ -328,10 +323,8 @@ namespace InternalTypesForMapOptimization
                 {
                     return;
                 }
-                else
-                {
-                    cubeData.cubeParameters.gameObject.SetActive(true);
-                }
+                
+                cubeData.cubeParameters.gameObject.SetActive(true);
             }
         }
     }

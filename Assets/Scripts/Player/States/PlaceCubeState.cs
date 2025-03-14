@@ -33,9 +33,10 @@ public class PlaceCubeState : IState
         
         GameObject cubePrefab = inventoryHandler.GetSelectedCube();
         Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(raycastHitLocation.Value.x, raycastHitLocation.Value.z));
-        
         CubeData newCubeData = new CubeData(cubePrefab, (Vector3)raycastHitLocation, chunkCenter);
-        CubeParameters actualCubeParametres = mapGenerator.InstantiateOuterCube(newCubeData);
+        
+        CubeParameters actualCubeParametres = mapGenerator.InstantiateCube(newCubeData);
+        mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter].Add(newCubeData.position, newCubeData);
         
         inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
         mapGenerator.onCubePlaced?.Invoke(newCubeData.position);
