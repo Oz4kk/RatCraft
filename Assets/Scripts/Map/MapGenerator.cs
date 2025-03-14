@@ -25,7 +25,7 @@ public class MapGenerator : MonoBehaviour
     }
 
     public Action<CubeData> onCubeDestroyed;
-    public Action<Vector3> onCubePlaced;
+    public Action<CubeData> onCubePlaced;
 
     public GameObject greenCube;
     public GameObject blueCube;

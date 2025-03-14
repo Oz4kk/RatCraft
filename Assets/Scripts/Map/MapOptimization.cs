@@ -14,16 +14,16 @@ using static UnityEngine.UI.GridLayoutGroup;
 
 namespace InternalTypesForMapOptimization
 {
-    internal struct NeighbourCubesData<T>
+    internal struct NeighbourCubesValues<T>
     {
         public T edgeType;
-        public Vector3 cubePosition;
+        public Vector3 position;
         public Vector2 chunkCenter;
 
-        public NeighbourCubesData(T edgeType, Vector3 cubePosition, Vector2 chunkCenter) : this()
+        public NeighbourCubesValues(T edgeType, Vector3 position, Vector2 chunkCenter) : this()
         {
             this.edgeType = edgeType;
-            this.cubePosition = cubePosition;
+            this.position = position;
             this.chunkCenter = chunkCenter;
         }
     }
@@ -49,7 +49,8 @@ namespace InternalTypesForMapOptimization
     public class MapOptimization : MonoBehaviour
     {
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Border> onIsBorderCube;
-        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsSelectedBorderCube;
+        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsDestroyedBorderCube;
+        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsPlacedBorderCube;
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Vector2, Border, Corner> onIsCornerCube;
         
         internal readonly Vector3[] directions = new[]
@@ -212,16 +213,32 @@ namespace InternalTypesForMapOptimization
             actualCube.SetActive(false);
         }
 
-        private void DeactivateInvisibleCubesAroundPlacedCube(Vector3 cubePosition)
+        private void DeactivateInvisibleCubesAroundPlacedCube(CubeData cubeData)
         {
-            Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubePosition.x, cubePosition.z));
+            Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubeData.position.x, cubeData.position.z));
             Dictionary<Vector3, CubeData> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter];
-
-            foreach (Vector3 direction in directions)
+            
+            Border cubeBorder = Border.Null;
+            if (IsCubeAtBorder(cubeData.position, ref cubeBorder))
             {
-                if (chunkField.ContainsKey(cubePosition + direction))
+                Corner cubeCorner = Corner.Null;
+                if (IsCubeAtCorner(cubeData, ref cubeCorner))
                 {
-                    DeactiavateSurroundedCube(chunkField[cubePosition + direction].cubeParameters.gameObject, chunkField);
+                    
+                }
+                else
+                {
+                    onIsPlacedBorderCube(cubeData, chunkField, cubeBorder);
+                }
+            }
+            else
+            {
+                foreach (Vector3 direction in directions)
+                {
+                    if (chunkField.ContainsKey(cubeData.position + direction))
+                    {
+                        DeactiavateSurroundedCube(chunkField[cubeData.position + direction].cubeParameters.gameObject, chunkField);
+                    }
                 }
             }
         }
@@ -241,7 +258,7 @@ namespace InternalTypesForMapOptimization
                 }
                 else
                 {
-                    onIsSelectedBorderCube(cubeData, chunkField, cubeBorder);
+                    onIsDestroyedBorderCube(cubeData, chunkField, cubeBorder);
                 }
             }
             else

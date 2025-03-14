@@ -24,48 +24,87 @@ public class BorderOptimization : MonoBehaviour
         mapOptimization = GetComponent<MapOptimization>(); 
 
         mapOptimization.onIsBorderCube += BorderCubeOptimizationSequence;
-        mapOptimization.onIsSelectedBorderCube += FindInvisibleCubeAroundBrokenCube;
+        mapOptimization.onIsPlacedBorderCube += BorderCubePlacementSequence;
+        mapOptimization.onIsDestroyedBorderCube += FindInvisibleCubeAroundBrokenCube;
     }
 
-    private void FindInvisibleCubeAroundBrokenCube(CubeData selectedCubeData, Dictionary<Vector3, CubeData> chunkField, Border cubeBorder)
+    private void BorderCubePlacementSequence(CubeData newCubeData, Dictionary<Vector3, CubeData> chunkField, Border border)
     {
-        NeighbourCubesData<Border> potentionalNeighborCubeValues = SetNeighborCubeValues(cubeBorder, selectedCubeData);
-        Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighborCubeValues.chunkCenter];
+        NeighbourCubesValues<Border> potentionalNeighbourCubeValues = SetNeighborCubeValues(border, newCubeData);
+        Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
         
-        NeighbourCubesData<Border>[] neighbourCubesValuesAroundSelectedCube = GetNeighborCubeValuesAroundSelectedCube(selectedCubeData.position, selectedCubeData.chunkCenter, cubeBorder, potentionalNeighborCubeValues.chunkCenter);
-
-        ExposeVisibleCubesAroundSelectedCube(chunkField, neighbourCubesValuesAroundSelectedCube, potentionalNeighborCubeValues.chunkCenter);
-        if (!neighbourChunkField.ContainsKey(potentionalNeighborCubeValues.cubePosition))
+        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundPlacedCube = GetNeighborCubeValuesAroundSelectedCube(newCubeData.position, newCubeData.chunkCenter, border, potentionalNeighbourCubeValues.chunkCenter);
+        
+        HideInvisibleCubeAroundPlacedCubeInItsChunk(chunkField, neighbourCubesValuesAroundPlacedCube, potentionalNeighbourCubeValues.chunkCenter, potentionalNeighbourCubeValues.position, neighbourChunkField);
+        if (!neighbourChunkField.ContainsKey(potentionalNeighbourCubeValues.position))
         {
             return;
         }
         
-        CubeData neighbourCubeData = neighbourChunkField[potentionalNeighborCubeValues.cubePosition];
-        mapOptimization.ExposeCube(neighbourCubeData);
+        CubeData neighbourCubeData = neighbourChunkField[potentionalNeighbourCubeValues.position];
+        neighbourCubeData.cubeParameters.gameObject.SetActive(false);
     }
 
-    private void ExposeVisibleCubesAroundSelectedCube(Dictionary<Vector3, CubeData> chunkField, NeighbourCubesData<Border>[] neighbourCubesValuesAroundSelectedCube, Vector2 neighborChunkCenter)
+    private void HideInvisibleCubeAroundPlacedCubeInItsChunk(Dictionary<Vector3, CubeData> chunkField, NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube, Vector2 neighborChunkCenter, Vector3 neighbourCubePosition, Dictionary<Vector3, CubeData> neighbourChunkField)
     {
-        foreach (NeighbourCubesData<Border> neighbourCubeValue in neighbourCubesValuesAroundSelectedCube)
+        foreach (NeighbourCubesValues<Border> neighbourCubeValue in neighbourCubesValuesAroundSelectedCube)
         {
             if (neighbourCubeValue.chunkCenter == neighborChunkCenter)
             {
                 continue;
             } 
-            if (!chunkField.ContainsKey(neighbourCubeValue.cubePosition))
+            if (!chunkField.ContainsKey(neighbourCubeValue.position))
+            {
+                continue;
+            }
+            if (!IsBorderCubeSurrounded(chunkField, neighbourCubeValue.position, neighbourChunkField, neighbourCubePosition, neighbourCubeValue.edgeType))
             {
                 continue;
             }
 
-            CubeData cubeData = chunkField[neighbourCubeValue.cubePosition];
+            chunkField[neighbourCubeValue.position].cubeParameters.gameObject.SetActive(false);
+        }
+    }
+
+    private void FindInvisibleCubeAroundBrokenCube(CubeData destroyedCubeData, Dictionary<Vector3, CubeData> destroyedCubeChunkField, Border destroyedCubeBorder)
+    {
+        NeighbourCubesValues<Border> potentionalNeighbourCubeValues = SetNeighborCubeValues(destroyedCubeBorder, destroyedCubeData);
+        Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
+        
+        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundDestroyedCube = GetNeighborCubeValuesAroundSelectedCube(destroyedCubeData.position, destroyedCubeData.chunkCenter, destroyedCubeBorder, potentionalNeighbourCubeValues.chunkCenter);
+
+        ExposeVisibleCubesAroundSelectedCubeInItsChunk(destroyedCubeChunkField, neighbourCubesValuesAroundDestroyedCube, potentionalNeighbourCubeValues.chunkCenter);
+        if (!neighbourChunkField.ContainsKey(potentionalNeighbourCubeValues.position))
+        {
+            return;
+        }
+        
+        CubeData neighbourCubeData = neighbourChunkField[potentionalNeighbourCubeValues.position];
+        mapOptimization.ExposeCube(neighbourCubeData);
+    }
+
+    private void ExposeVisibleCubesAroundSelectedCubeInItsChunk(Dictionary<Vector3, CubeData> chunkField, NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube, Vector2 neighborChunkCenter)
+    {
+        foreach (NeighbourCubesValues<Border> neighbourCubeValue in neighbourCubesValuesAroundSelectedCube)
+        {
+            if (neighbourCubeValue.chunkCenter == neighborChunkCenter)
+            {
+                continue;
+            } 
+            if (!chunkField.ContainsKey(neighbourCubeValue.position))
+            {
+                continue;
+            }
+
+            CubeData cubeData = chunkField[neighbourCubeValue.position];
             
             mapOptimization.ExposeCube(cubeData);
         }
     }
 
-    private NeighbourCubesData<Border>[] GetNeighborCubeValuesAroundSelectedCube(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neighborChunkCenter)
+    private NeighbourCubesValues<Border>[] GetNeighborCubeValuesAroundSelectedCube(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neighborChunkCenter)
     {
-        NeighbourCubesData<Border>[] neighbourCubesValuesAroundSelectedCube = new NeighbourCubesData<Border>[6];
+        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube = new NeighbourCubesValues<Border>[6];
         
         for (int i = 0; i < mapOptimization.directions.Length; i++)
         {
@@ -77,11 +116,11 @@ public class BorderOptimization : MonoBehaviour
         return neighbourCubesValuesAroundSelectedCube;
     }
 
-    private NeighbourCubesData<Border> SetNeighborCubeValue(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neigborChunkCenter, Vector3 direction)
+    private NeighbourCubesValues<Border> SetNeighborCubeValue(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neigborChunkCenter, Vector3 direction)
     {
-        NeighbourCubesData<Border> neighbourCubeValue = new NeighbourCubesData<Border>();
+        NeighbourCubesValues<Border> neighbourCubeValue = new NeighbourCubesValues<Border>();
 
-        neighbourCubeValue.cubePosition = cubePosition + direction;
+        neighbourCubeValue.position = cubePosition + direction;
         switch (border)
         {
             case Border.XNegative:
@@ -159,59 +198,59 @@ public class BorderOptimization : MonoBehaviour
 
     private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder)
     {
-        NeighbourCubesData<Border> neighbourCubesData = SetNeighborCubeValues(newChunkBorder, newCubeData);
+        NeighbourCubesValues<Border> neighbourCubeValues = SetNeighborCubeValues(newChunkBorder, newCubeData);
 
-        if (!DoesNeighborChunkExist(neighbourCubesData.chunkCenter))
+        if (!DoesNeighborChunkExist(neighbourCubeValues.chunkCenter))
         {
             return;
         }
 
-        Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighbourCubesData.chunkCenter];
+        Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighbourCubeValues.chunkCenter];
         // Return if New Cube in New Chunk isn't surrounded with cubes from each sides
-        if (!IsBorderCubeSurrounded(newChunkFieldData, newCubeData.position, neighbourChunkField, neighbourCubesData.cubePosition, newChunkBorder))
+        if (!IsBorderCubeSurrounded(newChunkFieldData, newCubeData.position, neighbourChunkField, neighbourCubeValues.position, newChunkBorder))
         {
             return;
         }
         newCubeData.isCubeDataSurrounded = true;
 
         // Return if Neighbor Cube in Neighbor Chunk isn't surrounded with cubes from each sides
-        if (!IsBorderCubeSurrounded(neighbourChunkField, neighbourCubesData.cubePosition, newChunkFieldData, newCubeData.position, neighbourCubesData.edgeType))
+        if (!IsBorderCubeSurrounded(neighbourChunkField, neighbourCubeValues.position, newChunkFieldData, newCubeData.position, neighbourCubeValues.edgeType))
         {
             return;
         }
-        neighbourChunkField[neighbourCubesData.cubePosition].cubeParameters.gameObject.SetActive(false);
+        neighbourChunkField[neighbourCubeValues.position].cubeParameters.gameObject.SetActive(false);
     }
 
-    private NeighbourCubesData<Border> SetNeighborCubeValues(Border newChunkBorder, CubeData newCubeData)
+    private NeighbourCubesValues<Border> SetNeighborCubeValues(Border newChunkBorder, CubeData newCubeData)
     {
-        NeighbourCubesData<Border> neighbourCubesData = new NeighbourCubesData<Border>();
+        NeighbourCubesValues<Border> neighbourCubesValues = new NeighbourCubesValues<Border>();
         Vector2 newCubeChunkCenter = newCubeData.chunkCenter;
         
         switch (newChunkBorder)
         {
             case Border.XNegative:
-                neighbourCubesData.edgeType = Border.XPositive;
-                neighbourCubesData.chunkCenter = new Vector2(newCubeChunkCenter.x - mapGenerator.gridSize.x, newCubeChunkCenter.y); 
-                neighbourCubesData.cubePosition = newCubeData.position + Vector3.left;
+                neighbourCubesValues.edgeType = Border.XPositive;
+                neighbourCubesValues.chunkCenter = new Vector2(newCubeChunkCenter.x - mapGenerator.gridSize.x, newCubeChunkCenter.y); 
+                neighbourCubesValues.position = newCubeData.position + Vector3.left;
                 break;
             case Border.XPositive:
-                neighbourCubesData.edgeType = Border.XNegative;
-                neighbourCubesData.chunkCenter = new Vector2(newCubeChunkCenter.x + mapGenerator.gridSize.x, newCubeChunkCenter.y); 
-                neighbourCubesData.cubePosition = newCubeData.position + Vector3.right;
+                neighbourCubesValues.edgeType = Border.XNegative;
+                neighbourCubesValues.chunkCenter = new Vector2(newCubeChunkCenter.x + mapGenerator.gridSize.x, newCubeChunkCenter.y); 
+                neighbourCubesValues.position = newCubeData.position + Vector3.right;
                 break;
             case Border.ZNegative:
-                neighbourCubesData.edgeType = Border.ZPositive;
-                neighbourCubesData.chunkCenter = new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y - mapGenerator.gridSize.x); 
-                neighbourCubesData.cubePosition = newCubeData.position + Vector3.back;
+                neighbourCubesValues.edgeType = Border.ZPositive;
+                neighbourCubesValues.chunkCenter = new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y - mapGenerator.gridSize.x); 
+                neighbourCubesValues.position = newCubeData.position + Vector3.back;
                 break;
             case Border.ZPositive:
-                neighbourCubesData.edgeType = Border.ZNegative;
-                neighbourCubesData.chunkCenter = new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y + mapGenerator.gridSize.x); 
-                neighbourCubesData.cubePosition = newCubeData.position + Vector3.forward;
+                neighbourCubesValues.edgeType = Border.ZNegative;
+                neighbourCubesValues.chunkCenter = new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y + mapGenerator.gridSize.x); 
+                neighbourCubesValues.position = newCubeData.position + Vector3.forward;
                 break;
         }
 
-        return neighbourCubesData;
+        return neighbourCubesValues;
     }
 
     private bool DoesNeighborChunkExist(Vector2 neighborChunkCenter)

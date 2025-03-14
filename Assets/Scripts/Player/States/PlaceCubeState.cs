@@ -39,6 +39,6 @@ public class PlaceCubeState : IState
         mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter].Add(newCubeData.position, newCubeData);
         
         inventoryHandler.RemoveItemFromInventory(actualCubeParametres);
-        mapGenerator.onCubePlaced?.Invoke(newCubeData.position);
+        mapGenerator.onCubePlaced?.Invoke(newCubeData);
     }
 }
