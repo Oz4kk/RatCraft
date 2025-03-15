@@ -16,10 +16,10 @@ public class CornerOptimization : MonoBehaviour
         mapOptimization = GetComponent<MapOptimization>();
 
         mapOptimization.onIsCornerCube += CornerCubeOptimizationSequence;
-        mapOptimization.onIsDestroyedCornerCube += FindInvisibleCubeAroundBrokenCube;
+        mapOptimization.onIsDestroyedCornerCube += FindVisibleCubesAroundBrokenCube;
     }
 
-    private void FindInvisibleCubeAroundBrokenCube(CubeData destroyedCubeData, Dictionary<Vector3, CubeData> destroyedCubeChunkField, Border destroyedCubeBorder, Corner corner)
+    private void FindVisibleCubesAroundBrokenCube(CubeData destroyedCubeData, Dictionary<Vector3, CubeData> destroyedCubeChunkField, Border destroyedCubeBorder, Corner corner)
     {
         NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner = GetCornerCubesValuesAroundSelectedCornerCube(destroyedCubeData.position, destroyedCubeData.chunkCenter, corner);
         NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner = GetBorderCubesValuesAroundSelectedCornerCube(destroyedCubeData.position, destroyedCubeData.chunkCenter, corner);
@@ -28,28 +28,30 @@ public class CornerOptimization : MonoBehaviour
         {
             if (IsDirectionMatchingCornerForCurrentChunkField(corner, direction))
             {
-                foreach (NeighbourCubesValues<Corner> neighborCornerCube in cornerCubesValuesAroundCorner)
-                {
-                    Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCornerCube.chunkCenter];
-
-                    if (!neighborCubeChunkField.ContainsKey(neighborCornerCube.position))
-                    {
-                        continue;
-                    }
-                    
-                    // IsNeigborCornerCubeSurrounded?
-                }
+                ExposeVisibleCubes(cornerCubesValuesAroundCorner);
             }
-            if (!destroyedCubeChunkField.ContainsKey(destroyedCubeData.position + direction))
+            else
             {
-                
+                ExposeVisibleCubes(borderCubesValuesAroundCorner);
             }
         }
-        
-        //NeighbourCubesValues<Border> potentionalNeighbourCubeValues = SetNeighborCubeValues(destroyedCubeBorder, destroyedCubeData);
-        //Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
-        
-        //NeighbourCubesValues<Border>[] neighbourCubesValuesAroundDestroyedCube = GetNeighborCubeValuesAroundSelectedCube(destroyedCubeData.position, destroyedCubeData.chunkCenter, destroyedCubeBorder, potentionalNeighbourCubeValues.chunkCenter);
+    }
+
+    private void ExposeVisibleCubes<T>(NeighbourCubesValues<T>[] cornerCubesValuesAroundCorner)
+    {
+        foreach (NeighbourCubesValues<T> neighborCornerCube in cornerCubesValuesAroundCorner)
+        {
+            Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCornerCube.chunkCenter];
+
+            if (!neighborCubeChunkField.ContainsKey(neighborCornerCube.position))
+            {
+                continue;
+            }
+                    
+            CubeData neighbourCubeData = neighborCubeChunkField[neighborCornerCube.position];
+            
+            mapOptimization.ExposeCube(neighbourCubeData);                
+        }
     }
 
     private void IsNeighborCornerCubeSurrounded()
