@@ -25,12 +25,12 @@ public class BorderOptimization : MonoBehaviour
 
         mapOptimization.onIsBorderCube += BorderCubeOptimizationSequence;
         mapOptimization.onIsPlacedBorderCube += BorderCubePlacementSequence;
-        mapOptimization.onIsDestroyedBorderCube += FindInvisibleCubeAroundBrokenCube;
+        mapOptimization.onIsDestroyedBorderCube += FindInvisibleCubeAroundDestroyedCube;
     }
 
     private void BorderCubePlacementSequence(CubeData newCubeData, Dictionary<Vector3, CubeData> chunkField, Border border)
     {
-        NeighbourCubesValues<Border> potentionalNeighbourCubeValues = SetNeighborCubeValues(border, newCubeData);
+        NeighbourCubesValues<Border> potentionalNeighbourCubeValues = GetNeighborCubeValues(border, newCubeData);
         Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
         
         NeighbourCubesValues<Border>[] neighbourCubesValuesAroundPlacedCube = GetNeighborCubeValuesAroundSelectedCube(newCubeData.position, newCubeData.chunkCenter, border, potentionalNeighbourCubeValues.chunkCenter);
@@ -66,9 +66,9 @@ public class BorderOptimization : MonoBehaviour
         }
     }
 
-    private void FindInvisibleCubeAroundBrokenCube(CubeData destroyedCubeData, Dictionary<Vector3, CubeData> destroyedCubeChunkField, Border destroyedCubeBorder)
+    private void FindInvisibleCubeAroundDestroyedCube(CubeData destroyedCubeData, Dictionary<Vector3, CubeData> destroyedCubeChunkField, Border destroyedCubeBorder)
     {
-        NeighbourCubesValues<Border> potentionalNeighbourCubeValues = SetNeighborCubeValues(destroyedCubeBorder, destroyedCubeData);
+        NeighbourCubesValues<Border> potentionalNeighbourCubeValues = GetNeighborCubeValues(destroyedCubeBorder, destroyedCubeData);
         Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
         
         NeighbourCubesValues<Border>[] neighbourCubesValuesAroundDestroyedCube = GetNeighborCubeValuesAroundSelectedCube(destroyedCubeData.position, destroyedCubeData.chunkCenter, destroyedCubeBorder, potentionalNeighbourCubeValues.chunkCenter);
@@ -198,7 +198,7 @@ public class BorderOptimization : MonoBehaviour
 
     private void BorderCubeOptimizationSequence(Dictionary<Vector3, CubeData> newChunkFieldData, CubeData newCubeData, Border newChunkBorder)
     {
-        NeighbourCubesValues<Border> neighbourCubeValues = SetNeighborCubeValues(newChunkBorder, newCubeData);
+        NeighbourCubesValues<Border> neighbourCubeValues = GetNeighborCubeValues(newChunkBorder, newCubeData);
 
         if (!DoesNeighborChunkExist(neighbourCubeValues.chunkCenter))
         {
@@ -221,7 +221,7 @@ public class BorderOptimization : MonoBehaviour
         neighbourChunkField[neighbourCubeValues.position].cubeParameters.gameObject.SetActive(false);
     }
 
-    private NeighbourCubesValues<Border> SetNeighborCubeValues(Border newChunkBorder, CubeData newCubeData)
+    private NeighbourCubesValues<Border> GetNeighborCubeValues(Border newChunkBorder, CubeData newCubeData)
     {
         NeighbourCubesValues<Border> neighbourCubesValues = new NeighbourCubesValues<Border>();
         Vector2 newCubeChunkCenter = newCubeData.chunkCenter;

@@ -27,8 +27,8 @@ namespace InternalTypesForMapOptimization
             this.chunkCenter = chunkCenter;
         }
     }
-
-    internal enum Border
+    
+    internal enum Border : byte
     {
         Null,
         XPositive,
@@ -37,13 +37,13 @@ namespace InternalTypesForMapOptimization
         ZNegative
     }
 
-    internal enum Corner
+    internal enum Corner : byte
     {
         Null,
-        XPositive_ZPositive,
-        XPositive_ZNegative,
-        XNegative_ZPositive,
-        XNegative_ZNegative
+        XPositiveZPositive,
+        XPositiveZNegative,
+        XNegativeZPositive,
+        XNegativeZNegative
     }
 
     public class MapOptimization : MonoBehaviour
@@ -52,6 +52,7 @@ namespace InternalTypesForMapOptimization
         internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsDestroyedBorderCube;
         internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsPlacedBorderCube;
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Vector2, Border, Corner> onIsCornerCube;
+        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border, Corner> onIsDestroyedCornerCube;
         
         internal readonly Vector3[] directions = new[]
         {
@@ -163,22 +164,22 @@ namespace InternalTypesForMapOptimization
         {
             if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZNegativeCorner)
             {
-                corner = Corner.XNegative_ZNegative;
+                corner = Corner.XNegativeZNegative;
                 return true;
             }
             else if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZPositiveCorner)
             {
-                corner = Corner.XNegative_ZPositive;
+                corner = Corner.XNegativeZPositive;
                 return true;
             }
             else if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZNegativeCorner)
             {
-                corner = Corner.XPositive_ZNegative;
+                corner = Corner.XPositiveZNegative;
                 return true;
             }
             else if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZPositiveCorner)
             {
-                corner = Corner.XPositive_ZPositive;
+                corner = Corner.XPositiveZPositive;
                 return true;
             }
 
@@ -254,7 +255,7 @@ namespace InternalTypesForMapOptimization
                 Corner cubeCorner = Corner.Null;
                 if (IsCubeAtCorner(cubeData, ref cubeCorner))
                 {
-                    
+                    onIsDestroyedCornerCube(cubeData, chunkField, cubeBorder, cubeCorner);
                 }
                 else
                 {
