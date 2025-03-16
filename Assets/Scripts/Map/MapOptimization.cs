@@ -49,10 +49,13 @@ namespace InternalTypesForMapOptimization
     public class MapOptimization : MonoBehaviour
     {
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Border> onIsBorderCube;
-        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsDestroyedBorderCube;
-        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsPlacedBorderCube;
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Vector2, Border, Corner> onIsCornerCube;
+        
+        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsDestroyedBorderCube;
         internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border, Corner> onIsDestroyedCornerCube;
+        
+        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsPlacedBorderCube;
+        internal System.Action<CubeData, Corner> onIsPlacedCornerCube;
         
         internal readonly Vector3[] directions = new[]
         {
@@ -92,7 +95,6 @@ namespace InternalTypesForMapOptimization
         private void OptimizeDataOfNewChunk(CubeData newCubeData, Vector2 centerOfNewChunk, Dictionary<Vector3, CubeData> newChunkFieldData)
         {
             Border newChunkBorder = Border.Null;
-
             if (IsCubeAtBorder(newCubeData.position, ref newChunkBorder))
             {
                 Corner newCubeCorner = Corner.Null;
@@ -218,7 +220,7 @@ namespace InternalTypesForMapOptimization
                 Corner cubeCorner = Corner.Null;
                 if (IsCubeAtCorner(cubeData, chunkCenter, ref cubeCorner))
                 {
-                    
+                    onIsPlacedCornerCube(cubeData, cubeCorner);
                 }
                 else
                 {

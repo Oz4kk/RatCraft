@@ -17,6 +17,7 @@ public class CornerOptimization : MonoBehaviour
 
         mapOptimization.onIsCornerCube += CornerCubeOptimizationSequence;
         mapOptimization.onIsDestroyedCornerCube += FindVisibleCubesAroundBrokenCube;
+        mapOptimization.onIsPlacedCornerCube += CornerCubePlacementSequence;
     }
 
     private void FindVisibleCubesAroundBrokenCube(CubeData destroyedCubeData, Dictionary<Vector3, CubeData> destroyedCubeChunkField, Border destroyedCubeBorder, Corner corner)
@@ -41,11 +42,6 @@ public class CornerOptimization : MonoBehaviour
     {
         foreach (NeighbourCubesValues<T> neighborCube in cubesValuesAroundCorner)
         {
-            if (neighborCube.position == new Vector3(-12, 11, 13))
-            {
-                Debug.Log("aaa");
-            }
-            
             Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.chunkCenter];
 
             if (!neighborCubeChunkField.ContainsKey(neighborCube.position))
@@ -59,11 +55,65 @@ public class CornerOptimization : MonoBehaviour
         }
     }
 
-    private void IsNeighborCornerCubeSurrounded()
+    private void CornerCubePlacementSequence(CubeData placedCubeData , Corner corner)
     {
+        NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner = GetCornerCubesValuesAroundSelectedCornerCube(placedCubeData.position, placedCubeData.chunkCenter, corner);
+        NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner = GetBorderCubesValuesAroundSelectedCornerCube(placedCubeData.position, placedCubeData.chunkCenter, corner);
         
+        foreach (Vector3 direction in mapOptimization.directions)
+        {
+            if (IsDirectionMatchingCornerForCurrentChunkField(corner, direction))
+            {
+                foreach (NeighbourCubesValues<Corner> cornerCubeValue in cornerCubesValuesAroundCorner)
+                {
+                    if (cornerCubeValue.position == new Vector3(-13, 11, 12))
+                    {
+                        Debug.Log("AAA");
+                    }
+                    
+                    Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[cornerCubeValue.chunkCenter];
+                    if (!neighborCubeChunkField.ContainsKey(cornerCubeValue.position))
+                    {
+                        continue;
+                    }
+                    
+                    // NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner2 = GetCornerCubesValuesAroundSelectedCornerCube(cornerCubeValue.position, cornerCubeValue.chunkCenter, corner);
+                    // foreach (NeighbourCubesValues<Corner> cornerCubeValue2 in cornerCubesValuesAroundCorner2)
+                    // {
+                    //     Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[cornerCubeValue.chunkCenter];
+                    //     if (!neighborCubeChunkField.ContainsKey(cornerCubeValue.position))
+                    //     {
+                    //         continue;
+                    //     }
+                    // }
+                    
+                    CubeData neighbourCubeData = neighborCubeChunkField[cornerCubeValue.position];
+                    
+                    neighbourCubeData.cubeParameters.gameObject.SetActive(false);
+                    
+                }
+            }
+            else
+            {
+                foreach (NeighbourCubesValues<Border> borderCubeValue in borderCubesValuesAroundCorner)
+                {
+                    NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner2 = GetBorderCubesValuesAroundSelectedCornerCube(borderCubeValue.position, borderCubeValue.chunkCenter, corner);
+                    
+                    
+                    
+                    Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[borderCubeValue.chunkCenter];
+                    if (!neighborCubeChunkField.ContainsKey(borderCubeValue.position))
+                    {
+                        continue;
+                    }
+                    CubeData neighbourCubeData = neighborCubeChunkField[borderCubeValue.position];
+                    
+                    neighbourCubeData.cubeParameters.gameObject.SetActive(false);
+                }
+            }
+        }
     }
-
+    
     private NeighbourCubesValues<Border>[] GetBorderCubesValuesAroundSelectedCornerCube(Vector3 cubePosition, Vector2 chunkCenter, Corner corner)
     {
         NeighbourCubesValues<Border> neighbourCubeValues0 = new NeighbourCubesValues<Border>();
