@@ -63,11 +63,6 @@ namespace InternalTypesForMapOptimization
             // Horizontal Z directions
             Vector3.forward, Vector3.back
         };
-        
-        private float XNegativeCorner = 0;
-        private float XPositiveCorner = 0;
-        private float ZNegativeCorner = 0;
-        private float ZPositiveCorner = 0;
 
         protected static MapGenerator mapGenerator;
 
@@ -82,11 +77,6 @@ namespace InternalTypesForMapOptimization
 
         private void PrecessAllCubeDataOfUpcommingChunk(Dictionary<Vector3, CubeData> actualChunkField, Vector2 centerOfNewChunk)
         {
-            XNegativeCorner = centerOfNewChunk.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-            XPositiveCorner = centerOfNewChunk.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-            ZNegativeCorner = centerOfNewChunk.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-            ZPositiveCorner = centerOfNewChunk.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-
             foreach (KeyValuePair<Vector3, CubeData> actualCube in actualChunkField)
             {
                 OptimizeDataOfNewChunk(actualCube.Value, centerOfNewChunk, actualChunkField);
@@ -106,7 +96,7 @@ namespace InternalTypesForMapOptimization
             if (IsCubeAtBorder(newCubeData.position, ref newChunkBorder))
             {
                 Corner newCubeCorner = Corner.Null;
-                if (IsCubeAtCorner(newCubeData, ref newCubeCorner))
+                if (IsCubeAtCorner(newCubeData, centerOfNewChunk, ref newCubeCorner))
                 {
                     onIsCornerCube(newChunkFieldData, newCubeData, centerOfNewChunk, newChunkBorder, newCubeCorner);
                 }
@@ -159,59 +149,29 @@ namespace InternalTypesForMapOptimization
             return false;
         }
         
-        private bool IsCubeAtCorner2(CubeData newCubeData, Vector2 chunkCenter, ref Corner corner)
+        private bool IsCubeAtCorner(CubeData newCubeData, Vector2 chunkCenter, ref Corner corner)
         {
+            float XNegativeCorner = chunkCenter.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
+            float XPositiveCorner = chunkCenter.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
+            float ZNegativeCorner = chunkCenter.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
+            float ZPositiveCorner = chunkCenter.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
             
-            float XNegativeCorner2 = chunkCenter.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-            float XPositiveCorner2 = chunkCenter.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-            float ZNegativeCorner2 = chunkCenter.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-            float ZPositiveCorner2 = chunkCenter.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-            Debug.Log("CC - " + chunkCenter.x + " " + chunkCenter.y);
-            Debug.Log((chunkCenter.x - 12.0f) % 25.0f);
-            Debug.Log((chunkCenter.y + 12.0f) % 25.0f);
-            
-            if (newCubeData.position.x == XNegativeCorner2 && newCubeData.position.z == ZNegativeCorner2)
-            {
-                corner = Corner.XNegativeZNegative;
-                return true;
-            } 
-            if (newCubeData.position.x == XNegativeCorner2 && newCubeData.position.z == ZPositiveCorner2)
-            {
-                corner = Corner.XNegativeZPositive;
-                return true;
-            } 
-            if (newCubeData.position.x == XPositiveCorner2 && newCubeData.position.z == ZNegativeCorner2)
-            {
-                corner = Corner.XPositiveZNegative;
-                return true;
-            } 
-            if (newCubeData.position.x == XPositiveCorner2 && newCubeData.position.z == ZPositiveCorner2)
-            {
-                corner = Corner.XPositiveZPositive;
-                return true;
-            }
-
-            return false;
-        }
-        
-        private bool IsCubeAtCorner(CubeData newCubeData, ref Corner corner)
-        {
             if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZNegativeCorner)
             {
                 corner = Corner.XNegativeZNegative;
                 return true;
-            }
-            else if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZPositiveCorner)
+            } 
+            if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZPositiveCorner)
             {
                 corner = Corner.XNegativeZPositive;
                 return true;
-            }
-            else if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZNegativeCorner)
+            } 
+            if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZNegativeCorner)
             {
                 corner = Corner.XPositiveZNegative;
                 return true;
-            }
-            else if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZPositiveCorner)
+            } 
+            if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZPositiveCorner)
             {
                 corner = Corner.XPositiveZPositive;
                 return true;
@@ -219,7 +179,6 @@ namespace InternalTypesForMapOptimization
 
             return false;
         }
-
 
         private void DeactiavateSurroundedCubeData(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField)
         {
@@ -257,7 +216,7 @@ namespace InternalTypesForMapOptimization
             if (IsCubeAtBorder(cubeData.position, ref cubeBorder))
             {
                 Corner cubeCorner = Corner.Null;
-                if (IsCubeAtCorner(cubeData, ref cubeCorner))
+                if (IsCubeAtCorner(cubeData, chunkCenter, ref cubeCorner))
                 {
                     
                 }
@@ -287,7 +246,7 @@ namespace InternalTypesForMapOptimization
             if (IsCubeAtBorder(cubeData.position, ref cubeBorder))
             {
                 Corner cubeCorner = Corner.Null;
-                if (IsCubeAtCorner2(cubeData, chunkCenter, ref cubeCorner))
+                if (IsCubeAtCorner(cubeData, chunkCenter, ref cubeCorner))
                 {
                     onIsDestroyedCornerCube(cubeData, chunkField, cubeBorder, cubeCorner);
                 }
