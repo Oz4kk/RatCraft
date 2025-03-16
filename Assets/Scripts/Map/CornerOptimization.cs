@@ -37,18 +37,23 @@ public class CornerOptimization : MonoBehaviour
         }
     }
 
-    private void ExposeVisibleCubes<T>(NeighbourCubesValues<T>[] cornerCubesValuesAroundCorner)
+    private void ExposeVisibleCubes<T>(NeighbourCubesValues<T>[] cubesValuesAroundCorner)
     {
-        foreach (NeighbourCubesValues<T> neighborCornerCube in cornerCubesValuesAroundCorner)
+        foreach (NeighbourCubesValues<T> neighborCube in cubesValuesAroundCorner)
         {
-            Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCornerCube.chunkCenter];
+            if (neighborCube.position == new Vector3(-12, 11, 13))
+            {
+                Debug.Log("aaa");
+            }
+            
+            Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCube.chunkCenter];
 
-            if (!neighborCubeChunkField.ContainsKey(neighborCornerCube.position))
+            if (!neighborCubeChunkField.ContainsKey(neighborCube.position))
             {
                 continue;
             }
                     
-            CubeData neighbourCubeData = neighborCubeChunkField[neighborCornerCube.position];
+            CubeData neighbourCubeData = neighborCubeChunkField[neighborCube.position];
             
             mapOptimization.ExposeCube(neighbourCubeData);                
         }
@@ -127,14 +132,6 @@ public class CornerOptimization : MonoBehaviour
                 neighbourCubeValues1.chunkCenter = chunkCenter + new Vector2(0.0f, -mapGenerator.gridSize.x);
                 neighbourCubeValues1.edgeType = Corner.XNegativeZPositive;
                 
-                // neighbourCubeValues2.position = cubePosition + Vector3.right;
-                // neighbourCubeValues2.chunkCenter = chunkCenter;
-                // neighbourCubeValues2.edgeType = Border.ZNegative;
-                //
-                // neighbourCubeValues3.position = cubePosition + Vector3.forward;
-                // neighbourCubeValues3.chunkCenter = chunkCenter;
-                // neighbourCubeValues3.edgeType = Border.XNegative;
-                
                 neighbourCubeValues2.position = cubePosition + Vector3.up;
                 neighbourCubeValues2.chunkCenter = chunkCenter;
                 neighbourCubeValues2.edgeType = corner;
@@ -151,14 +148,6 @@ public class CornerOptimization : MonoBehaviour
                 neighbourCubeValues1.position = cubePosition + Vector3.forward;
                 neighbourCubeValues1.chunkCenter = chunkCenter + new Vector2(0.0f, mapGenerator.gridSize.x);
                 neighbourCubeValues1.edgeType = Corner.XNegativeZNegative;
-                
-                // neighbourCubeValues2.position = cubePosition + Vector3.right;
-                // neighbourCubeValues2.chunkCenter = chunkCenter;
-                // neighbourCubeValues2.edgeType = Border.ZPositive;
-                //
-                // neighbourCubeValues3.position = cubePosition + Vector3.back;
-                // neighbourCubeValues3.chunkCenter = chunkCenter;
-                // neighbourCubeValues3.edgeType = Border.XNegative;
                 
                 neighbourCubeValues2.position = cubePosition + Vector3.up;
                 neighbourCubeValues2.chunkCenter = chunkCenter;
@@ -177,14 +166,6 @@ public class CornerOptimization : MonoBehaviour
                 neighbourCubeValues1.chunkCenter = chunkCenter + new Vector2(0.0f, -mapGenerator.gridSize.x);
                 neighbourCubeValues1.edgeType = Corner.XPositiveZPositive;
                 
-                // neighbourCubeValues2.position = cubePosition + Vector3.left;
-                // neighbourCubeValues2.chunkCenter = chunkCenter;
-                // neighbourCubeValues2.edgeType = Border.ZNegative;
-                //
-                // neighbourCubeValues3.position = cubePosition + Vector3.forward;
-                // neighbourCubeValues3.chunkCenter = chunkCenter;
-                // neighbourCubeValues3.edgeType = Border.XPositive;
-                
                 neighbourCubeValues2.position = cubePosition + Vector3.up;
                 neighbourCubeValues2.chunkCenter = chunkCenter;
                 neighbourCubeValues2.edgeType = corner;
@@ -201,14 +182,6 @@ public class CornerOptimization : MonoBehaviour
                 neighbourCubeValues1.position = cubePosition + Vector3.forward;
                 neighbourCubeValues1.chunkCenter = chunkCenter + new Vector2(0.0f, mapGenerator.gridSize.x);
                 neighbourCubeValues1.edgeType = Corner.XPositiveZNegative;
-                
-                // neighbourCubeValues2.position = cubePosition + Vector3.left;
-                // neighbourCubeValues2.chunkCenter = chunkCenter;
-                // neighbourCubeValues2.edgeType = Border.ZPositive;
-                //
-                // neighbourCubeValues3.position = cubePosition + Vector3.back;
-                // neighbourCubeValues3.chunkCenter = chunkCenter;
-                // neighbourCubeValues3.edgeType = Border.XPositive;
                 
                 neighbourCubeValues2.position = cubePosition + Vector3.up;
                 neighbourCubeValues2.chunkCenter = chunkCenter;

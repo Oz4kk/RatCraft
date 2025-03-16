@@ -133,7 +133,7 @@ namespace InternalTypesForMapOptimization
             }
             // Positive X border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            else if ((newCubeDataPosition.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((newCubeDataPosition.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
             {
                 newChunkBorder = Border.XNegative;
 
@@ -141,7 +141,7 @@ namespace InternalTypesForMapOptimization
             }
             // Negative Z border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            else if ((newCubeDataPosition.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((newCubeDataPosition.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
             {
                 newChunkBorder = Border.ZPositive;
 
@@ -149,7 +149,7 @@ namespace InternalTypesForMapOptimization
             }
             // Postive Z border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            else if ((newCubeDataPosition.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((newCubeDataPosition.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
             {
                 newChunkBorder = Border.ZNegative;
 
@@ -158,8 +158,42 @@ namespace InternalTypesForMapOptimization
 
             return false;
         }
+        
+        private bool IsCubeAtCorner2(CubeData newCubeData, Vector2 chunkCenter, ref Corner corner)
+        {
+            
+            float XNegativeCorner2 = chunkCenter.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
+            float XPositiveCorner2 = chunkCenter.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
+            float ZNegativeCorner2 = chunkCenter.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
+            float ZPositiveCorner2 = chunkCenter.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
+            Debug.Log("CC - " + chunkCenter.x + " " + chunkCenter.y);
+            Debug.Log((chunkCenter.x - 12.0f) % 25.0f);
+            Debug.Log((chunkCenter.y + 12.0f) % 25.0f);
+            
+            if (newCubeData.position.x == XNegativeCorner2 && newCubeData.position.z == ZNegativeCorner2)
+            {
+                corner = Corner.XNegativeZNegative;
+                return true;
+            } 
+            if (newCubeData.position.x == XNegativeCorner2 && newCubeData.position.z == ZPositiveCorner2)
+            {
+                corner = Corner.XNegativeZPositive;
+                return true;
+            } 
+            if (newCubeData.position.x == XPositiveCorner2 && newCubeData.position.z == ZNegativeCorner2)
+            {
+                corner = Corner.XPositiveZNegative;
+                return true;
+            } 
+            if (newCubeData.position.x == XPositiveCorner2 && newCubeData.position.z == ZPositiveCorner2)
+            {
+                corner = Corner.XPositiveZPositive;
+                return true;
+            }
 
-
+            return false;
+        }
+        
         private bool IsCubeAtCorner(CubeData newCubeData, ref Corner corner)
         {
             if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZNegativeCorner)
@@ -253,7 +287,7 @@ namespace InternalTypesForMapOptimization
             if (IsCubeAtBorder(cubeData.position, ref cubeBorder))
             {
                 Corner cubeCorner = Corner.Null;
-                if (IsCubeAtCorner(cubeData, ref cubeCorner))
+                if (IsCubeAtCorner2(cubeData, chunkCenter, ref cubeCorner))
                 {
                     onIsDestroyedCornerCube(cubeData, chunkField, cubeBorder, cubeCorner);
                 }
