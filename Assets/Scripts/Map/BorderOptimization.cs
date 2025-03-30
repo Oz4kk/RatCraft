@@ -40,6 +40,11 @@ public class BorderOptimization : MonoBehaviour
         {
             return;
         }
+
+        if (!IsBorderCubeSurrounded(chunkField, newCubeData.position, neighbourChunkField, potentionalNeighbourCubeValues.position, border))
+        {
+            return;
+        }
         
         CubeData neighbourCubeData = neighbourChunkField[potentionalNeighbourCubeValues.position];
         neighbourCubeData.cubeParameters.gameObject.SetActive(false);
