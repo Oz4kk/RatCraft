@@ -36,12 +36,16 @@ public class BorderOptimization : MonoBehaviour
         NeighbourCubesValues<Border>[] neighbourCubesValuesAroundPlacedCube = GetNeighborCubeValuesAroundSelectedCube(newCubeData.position, newCubeData.chunkCenter, border, potentionalNeighbourCubeValues.chunkCenter);
         
         HideInvisibleCubeAroundPlacedCubeInItsChunk(chunkField, neighbourCubesValuesAroundPlacedCube, potentionalNeighbourCubeValues.chunkCenter, potentionalNeighbourCubeValues.position, neighbourChunkField);
+        HideInvisibleCubeAroundPlacedCubeInNeighborChunk(border, neighbourChunkField, potentionalNeighbourCubeValues);
+    }
+
+    private void HideInvisibleCubeAroundPlacedCubeInNeighborChunk(Border border, Dictionary<Vector3, CubeData> neighbourChunkField, NeighbourCubesValues<Border> potentionalNeighbourCubeValues)
+    {
         if (!neighbourChunkField.ContainsKey(potentionalNeighbourCubeValues.position))
         {
             return;
         }
-
-        if (!IsBorderCubeSurrounded(chunkField, newCubeData.position, neighbourChunkField, potentionalNeighbourCubeValues.position, border))
+        if (!IsBorderCubeSurrounded2(neighbourChunkField, potentionalNeighbourCubeValues.position, border))
         {
             return;
         }
@@ -266,6 +270,24 @@ public class BorderOptimization : MonoBehaviour
         }
 
         return false;
+    }
+    
+    private bool IsBorderCubeSurrounded2(Dictionary<Vector3, CubeData> firstChunkFieldData, Vector3 firstCubePosition, Border border)
+    {
+        foreach (Vector3 actualDirection in mapOptimization.directions)
+        {
+            // Continue to the next foreach interation if Actual Direction is the same as Current Border
+            if (IsDirectionMatchingBorder(actualDirection, border))
+            {
+                continue;
+            }
+            if (!firstChunkFieldData.ContainsKey(firstCubePosition))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private bool IsBorderCubeSurrounded(Dictionary<Vector3, CubeData> firstChunkFieldData, Vector3 firstCubePosition, Dictionary<Vector3, CubeData> secondChunkFieldData, Vector3 secondCubePosition, Border border)
