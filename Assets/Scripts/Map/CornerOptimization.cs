@@ -62,62 +62,58 @@ public class CornerOptimization : MonoBehaviour
         NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner = GetCornerCubesValuesAroundSelectedCornerCube(placedCubeData.position, placedCubeData.chunkCenter, corner);
         NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner = GetBorderCubesValuesAroundSelectedCornerCube(placedCubeData.position, placedCubeData.chunkCenter, corner);
         
-        foreach (Vector3 direction in mapOptimization.directions)
+        //Vector3 predictedCubePosition = placedCubeData.position + direction;
+
+        foreach (NeighbourCubesValues<Corner> cornerCubeValue in cornerCubesValuesAroundCorner)
         {
-            if (IsDirectionMatchingCornerForCurrentChunkField(corner, direction))
+            // Debug
+            if (cornerCubeValue.position == new Vector3(-12, 10, 12))
             {
-                foreach (NeighbourCubesValues<Corner> cornerCubeValue in cornerCubesValuesAroundCorner)
-                {
-                    // Debug
-                    if (cornerCubeValue.position == new Vector3(-13, 11, 12))
-                    {
-                        Debug.Log("AAA");
-                    }
-                    // Debug
-                    
-                    Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[cornerCubeValue.chunkCenter];
-                    if (!neighborCubeChunkField.ContainsKey(cornerCubeValue.position))
-                    {
-                        continue;
-                    }
-                    
-                    NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner2 = GetCornerCubesValuesAroundSelectedCornerCube(placedCubeData.position, placedCubeData.chunkCenter, corner);
-                    NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner2 = GetBorderCubesValuesAroundSelectedCornerCube(placedCubeData.position, placedCubeData.chunkCenter, corner);
-                    
-                    if (!AreNeighborCubesSurrounded(cornerCubesValuesAroundCorner2, cornerCubeValue))
-                    {
-                        continue;
-                    }
-                    if (!AreNeighborCubesSurrounded(borderCubesValuesAroundCorner2, cornerCubeValue))
-                    {
-                        continue;
-                    }
-                    
-                    CubeData neighbourCubeData = neighborCubeChunkField[cornerCubeValue.position];
-                    neighbourCubeData.cubeParameters.gameObject.SetActive(false);
-                }
+                Debug.Log("AAA");
             }
-            else
+            // Debug
+
+            Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[cornerCubeValue.chunkCenter];
+            if (!neighborCubeChunkField.ContainsKey(cornerCubeValue.position))
             {
-                foreach (NeighbourCubesValues<Border> borderCubeValue in borderCubesValuesAroundCorner)
-                {
-                    Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[borderCubeValue.chunkCenter];
-                    if (!neighborCubeChunkField.ContainsKey(borderCubeValue.position))
-                    {
-                        continue;
-                    }
-                    
-                    NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner3 = borderOptimization.GetNeighborCubeValuesAroundSelectedCube(borderCubeValue.position, borderCubeValue.chunkCenter, borderCubeValue.edgeType, GetNeighborChunkCenter(borderCubeValue.edgeType, borderCubeValue.chunkCenter));
-                    
-                    if (!AreNeighborCubesSurrounded(borderCubesValuesAroundCorner3, borderCubeValue))
-                    {
-                        continue;
-                    }
-                    
-                    CubeData neighbourCubeData = neighborCubeChunkField[borderCubeValue.position];
-                    neighbourCubeData.cubeParameters.gameObject.SetActive(false);
-                }
+                continue;
             }
+
+            NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner2 = GetCornerCubesValuesAroundSelectedCornerCube(cornerCubeValue.position, cornerCubeValue.chunkCenter, cornerCubeValue.edgeType);
+            NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner2 = GetBorderCubesValuesAroundSelectedCornerCube(cornerCubeValue.position, cornerCubeValue.chunkCenter, cornerCubeValue.edgeType);
+
+            if (!AreNeighborCubesSurrounded(cornerCubesValuesAroundCorner2, cornerCubeValue))
+            {
+                continue;
+            }
+
+            if (!AreNeighborCubesSurrounded(borderCubesValuesAroundCorner2, cornerCubeValue))
+            {
+                continue;
+            }
+
+            CubeData neighbourCubeData = neighborCubeChunkField[cornerCubeValue.position];
+            neighbourCubeData.cubeParameters.gameObject.SetActive(false);
+        }
+
+        foreach (NeighbourCubesValues<Border> borderCubeValue in borderCubesValuesAroundCorner)
+        {
+            Dictionary<Vector3, CubeData> neighborCubeChunkField =
+                mapGenerator.dictionaryOfCentersWithItsChunkField[borderCubeValue.chunkCenter];
+            if (!neighborCubeChunkField.ContainsKey(borderCubeValue.position))
+            {
+                continue;
+            }
+
+            NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner3 = borderOptimization.GetNeighborCubeValuesAroundSelectedCube(borderCubeValue.position, borderCubeValue.chunkCenter, borderCubeValue.edgeType, GetNeighborChunkCenter(borderCubeValue.edgeType, borderCubeValue.chunkCenter));
+
+            if (!AreNeighborCubesSurrounded(borderCubesValuesAroundCorner3, borderCubeValue))
+            {
+                continue;
+            }
+
+            CubeData neighbourCubeData = neighborCubeChunkField[borderCubeValue.position];
+            neighbourCubeData.cubeParameters.gameObject.SetActive(false);
         }
     }
 
@@ -144,13 +140,20 @@ public class CornerOptimization : MonoBehaviour
         return opositeChunkCenter;
     }
 
-    private bool AreNeighborCubesSurrounded<T, T1>(NeighbourCubesValues<T>[] cornerCubesValuesAroundCorner2, NeighbourCubesValues<T1> cornerCubeValue)
+    private bool AreNeighborCubesSurrounded<T, T1>(NeighbourCubesValues<T>[] cornerCubesValuesAroundCorner, NeighbourCubesValues<T1> cornerCubeValue)
     {
-        foreach (NeighbourCubesValues<T> cornerCubeValues in cornerCubesValuesAroundCorner2)
+        foreach (NeighbourCubesValues<T> cornerCubeValue2 in cornerCubesValuesAroundCorner)
         {
-            Dictionary<Vector3, CubeData> neighborCubeChunkField2 = mapGenerator.dictionaryOfCentersWithItsChunkField[cornerCubeValues.chunkCenter];
+            // Debug
+            if (cornerCubeValue2.position == new Vector3(-12, 10, 12))
+            {
+                Debug.Log("AAA");
+            }
+            // Debug
+            
+            Dictionary<Vector3, CubeData> neighborCubeChunkField2 = mapGenerator.dictionaryOfCentersWithItsChunkField[cornerCubeValue2.chunkCenter];
                             
-            if (!neighborCubeChunkField2.ContainsKey(cornerCubeValue.position))
+            if (!neighborCubeChunkField2.ContainsKey(cornerCubeValue2.position))
             {
                 return false;
             }
