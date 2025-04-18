@@ -66,7 +66,7 @@ namespace InternalTypesForMapOptimization
             // Horizontal Z directions
             Vector3.forward, Vector3.back
         };
-
+        
         protected static MapGenerator mapGenerator;
 
         void Awake()

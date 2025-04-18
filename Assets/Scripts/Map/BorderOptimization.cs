@@ -33,25 +33,44 @@ public class BorderOptimization : MonoBehaviour
         NeighbourCubesValues<Border> potentionalNeighbourCubeValues = GetNeighborCubeValues(border, newCubeData);
         Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
         
-        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundPlacedCube = GetNeighborCubeValuesAroundSelectedCube(newCubeData.position, newCubeData.chunkCenter, border, potentionalNeighbourCubeValues.chunkCenter);
+        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundPlacedCube = GetNeighborCubeValuesAroundSelectedCube2(newCubeData.position, newCubeData.chunkCenter, border, potentionalNeighbourCubeValues.chunkCenter);
         
         HideInvisibleCubeAroundPlacedCubeInItsChunk(chunkField, neighbourCubesValuesAroundPlacedCube, potentionalNeighbourCubeValues.chunkCenter, potentionalNeighbourCubeValues.position, neighbourChunkField);
-        HideInvisibleCubeAroundPlacedCubeInNeighborChunk(border, neighbourChunkField, potentionalNeighbourCubeValues);
+        HideInvisibleCubeAroundPlacedCubeInNeighborChunk(neighbourChunkField, potentionalNeighbourCubeValues);
     }
-
-    private void HideInvisibleCubeAroundPlacedCubeInNeighborChunk(Border border, Dictionary<Vector3, CubeData> neighbourChunkField, NeighbourCubesValues<Border> potentionalNeighbourCubeValues)
+    
+    private void HideInvisibleCubeAroundPlacedCubeInNeighborChunk(Dictionary<Vector3, CubeData> neighbourChunkField, NeighbourCubesValues<Border> potentionalNeighbourCubeValues)
     {
         if (!neighbourChunkField.ContainsKey(potentionalNeighbourCubeValues.position))
         {
             return;
         }
-        if (!IsBorderCubeSurrounded2(neighbourChunkField, potentionalNeighbourCubeValues.position, border))
+        if (!IsBorderCubeSurrounded2(neighbourChunkField, potentionalNeighbourCubeValues.position, potentionalNeighbourCubeValues.edgeType))
         {
             return;
         }
         
         CubeData neighbourCubeData = neighbourChunkField[potentionalNeighbourCubeValues.position];
         neighbourCubeData.cubeParameters.gameObject.SetActive(false);
+    }
+    
+    private bool IsBorderCubeSurrounded2(Dictionary<Vector3, CubeData> chunkFieldData, Vector3 cubePosition, Border border)
+    {
+        foreach (Vector3 actualDirection in mapOptimization.directions)
+        {
+            // Continue to the next foreach iteration if Actual Direction is the same as Current Border
+            if (IsDirectionMatchingBorder(actualDirection, border))
+            {
+                continue;
+            }
+            Vector3 predictedCubePosition = cubePosition + actualDirection;
+            if (!chunkFieldData.ContainsKey(predictedCubePosition))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private void HideInvisibleCubeAroundPlacedCubeInItsChunk(Dictionary<Vector3, CubeData> chunkField, NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube, Vector2 neighborChunkCenter, Vector3 neighbourCubePosition, Dictionary<Vector3, CubeData> neighbourChunkField)
@@ -80,7 +99,7 @@ public class BorderOptimization : MonoBehaviour
         NeighbourCubesValues<Border> potentionalNeighbourCubeValues = GetNeighborCubeValues(destroyedCubeBorder, destroyedCubeData);
         Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
         
-        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundDestroyedCube = GetNeighborCubeValuesAroundSelectedCube(destroyedCubeData.position, destroyedCubeData.chunkCenter, destroyedCubeBorder, potentionalNeighbourCubeValues.chunkCenter);
+        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundDestroyedCube = GetNeighborCubeValuesAroundSelectedCube2(destroyedCubeData.position, destroyedCubeData.chunkCenter, destroyedCubeBorder, potentionalNeighbourCubeValues.chunkCenter);
 
         ExposeVisibleCubesAroundSelectedCubeInItsChunk(destroyedCubeChunkField, neighbourCubesValuesAroundDestroyedCube, potentionalNeighbourCubeValues.chunkCenter);
         if (!neighbourChunkField.ContainsKey(potentionalNeighbourCubeValues.position))
@@ -110,6 +129,28 @@ public class BorderOptimization : MonoBehaviour
             mapOptimization.ExposeCube(cubeData);
         }
     }
+    
+    internal NeighbourCubesValues<Border>[] GetNeighborCubeValuesAroundSelectedCube2(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neighborChunkCenter)
+    {
+        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube = new NeighbourCubesValues<Border>[5];
+        Vector3 direction;
+
+        int arrayLength = mapOptimization.directions.Length;
+        for (int i = 0; i < arrayLength; i++)
+        {
+            direction = mapOptimization.directions[i];
+            
+            if (IsDirectionMatchingBorder(direction, border))
+            {
+                i--;
+                arrayLength--;
+                continue;
+            }
+            neighbourCubesValuesAroundSelectedCube[i] = SetNeighborCubeValue(cubePosition, chunkCenter, border, neighborChunkCenter, direction);
+        }
+
+        return neighbourCubesValuesAroundSelectedCube;
+    }
 
     internal NeighbourCubesValues<Border>[] GetNeighborCubeValuesAroundSelectedCube(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neighborChunkCenter)
     {
@@ -125,7 +166,7 @@ public class BorderOptimization : MonoBehaviour
         return neighbourCubesValuesAroundSelectedCube;
     }
 
-    private NeighbourCubesValues<Border> SetNeighborCubeValue(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neigborChunkCenter, Vector3 direction)
+    private NeighbourCubesValues<Border> SetNeighborCubeValue(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neigbourChunkCenter, Vector3 direction)
     {
         NeighbourCubesValues<Border> neighbourCubeValue = new NeighbourCubesValues<Border>();
 
@@ -136,7 +177,7 @@ public class BorderOptimization : MonoBehaviour
                 if (direction == Vector3.left)
                 {
                     neighbourCubeValue.edgeType = Border.XPositive;
-                    neighbourCubeValue.chunkCenter = neigborChunkCenter;
+                    neighbourCubeValue.chunkCenter = neigbourChunkCenter;
                 }
                 else if (direction == Vector3.right)
                 {
@@ -153,7 +194,7 @@ public class BorderOptimization : MonoBehaviour
                 if (direction == Vector3.right)
                 {
                     neighbourCubeValue.edgeType = Border.XNegative;
-                    neighbourCubeValue.chunkCenter = neigborChunkCenter;
+                    neighbourCubeValue.chunkCenter = neigbourChunkCenter;
                 }
                 else if (direction == Vector3.left)
                 {
@@ -170,7 +211,7 @@ public class BorderOptimization : MonoBehaviour
                 if (direction == Vector3.back)
                 {
                     neighbourCubeValue.edgeType = Border.ZPositive;
-                    neighbourCubeValue.chunkCenter = neigborChunkCenter;
+                    neighbourCubeValue.chunkCenter = neigbourChunkCenter;
                 }
                 else if (direction == Vector3.forward)
                 {
@@ -187,7 +228,7 @@ public class BorderOptimization : MonoBehaviour
                 if (direction == Vector3.forward)
                 {
                     neighbourCubeValue.edgeType = Border.ZNegative;
-                    neighbourCubeValue.chunkCenter = neigborChunkCenter;
+                    neighbourCubeValue.chunkCenter = neigbourChunkCenter;
                 }
                 else if (direction == Vector3.back)
                 {
@@ -270,24 +311,6 @@ public class BorderOptimization : MonoBehaviour
         }
 
         return false;
-    }
-    
-    private bool IsBorderCubeSurrounded2(Dictionary<Vector3, CubeData> firstChunkFieldData, Vector3 firstCubePosition, Border border)
-    {
-        foreach (Vector3 actualDirection in mapOptimization.directions)
-        {
-            // Continue to the next foreach interation if Actual Direction is the same as Current Border
-            if (IsDirectionMatchingBorder(actualDirection, border))
-            {
-                continue;
-            }
-            if (!firstChunkFieldData.ContainsKey(firstCubePosition))
-            {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private bool IsBorderCubeSurrounded(Dictionary<Vector3, CubeData> firstChunkFieldData, Vector3 firstCubePosition, Dictionary<Vector3, CubeData> secondChunkFieldData, Vector3 secondCubePosition, Border border)

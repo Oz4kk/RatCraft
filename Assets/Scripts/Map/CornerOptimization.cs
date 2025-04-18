@@ -98,8 +98,7 @@ public class CornerOptimization : MonoBehaviour
 
         foreach (NeighbourCubesValues<Border> borderCubeValue in borderCubesValuesAroundCorner)
         {
-            Dictionary<Vector3, CubeData> neighborCubeChunkField =
-                mapGenerator.dictionaryOfCentersWithItsChunkField[borderCubeValue.chunkCenter];
+            Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[borderCubeValue.chunkCenter];
             if (!neighborCubeChunkField.ContainsKey(borderCubeValue.position))
             {
                 continue;
