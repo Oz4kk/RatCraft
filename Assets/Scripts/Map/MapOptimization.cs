@@ -111,92 +111,92 @@ namespace InternalTypesForMapOptimization
         /// <param name="newChunkFieldData"></param>
         private void OptimizeDataOfNewChunk(CubeData newCubeData, Vector2 centerOfNewChunk, Dictionary<Vector3, CubeData> newChunkFieldData)
         {
-            Border newChunkBorder = Border.Null;
-            if (IsCubeAtBorder(newCubeData.position, ref newChunkBorder))
+            Border border = GetBorderOfCube(newCubeData.position);
+            Corner corner = IsCubeAtCorner(newCubeData.position, centerOfNewChunk);
+            if (border != Border.Null)
             {
-                Corner newCubeCorner = Corner.Null;
-                if (IsCubeAtCorner(newCubeData, centerOfNewChunk, ref newCubeCorner))
+                if (corner != Corner.Null)
                 {
-                    onIsCornerCube(newChunkFieldData, newCubeData, centerOfNewChunk, newChunkBorder, newCubeCorner);
+                    onIsCornerCube(newChunkFieldData, newCubeData, centerOfNewChunk, border, corner);
+                    return;
                 }
-                else
-                {
-                    onIsBorderCube(newChunkFieldData, newCubeData, newChunkBorder);
-                }
-            }
+                onIsBorderCube(newChunkFieldData, newCubeData, border);
+            } 
             else
             {
                 DeactiavateSurroundedCubeData(newCubeData, newChunkFieldData);
             }
         }
 
-        private bool IsCubeAtBorder(Vector3 newCubeDataPosition, ref Border newChunkBorder)
+        private Border GetBorderOfCube(Vector3 cubeDataPosition)
         {
+            Border border;
             // Negative X border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            if ((newCubeDataPosition.x - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((cubeDataPosition.x - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
             {
-                newChunkBorder = Border.XPositive;
-
-                return true;
+                border = Border.XPositive;
+                return border;
             }
             // Positive X border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            if ((newCubeDataPosition.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((cubeDataPosition.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
             {
-                newChunkBorder = Border.XNegative;
-
-                return true;
+                border = Border.XNegative;
+                return border;
             }
             // Negative Z border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            if ((newCubeDataPosition.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((cubeDataPosition.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
             {
-                newChunkBorder = Border.ZPositive;
-
-                return true;
+                border = Border.ZPositive;
+                return border;
             }
             // Postive Z border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            if ((newCubeDataPosition.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((cubeDataPosition.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
             {
-                newChunkBorder = Border.ZNegative;
-
-                return true;
+                border = Border.ZNegative;
+                return border;
             }
-
-            return false;
+            border = Border.Null;
+            return border;
         }
         
-        private bool IsCubeAtCorner(CubeData newCubeData, Vector2 chunkCenter, ref Corner corner)
+        private Corner IsCubeAtCorner(Vector3 newCubeDataPosition, Vector2 chunkCenter)
         {
             float XNegativeCorner = chunkCenter.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
             float XPositiveCorner = chunkCenter.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
             float ZNegativeCorner = chunkCenter.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
             float ZPositiveCorner = chunkCenter.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-            
-            if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZNegativeCorner)
+
+            Corner corner;
+            // XNegativeZNegative corner
+            if (newCubeDataPosition.x == XNegativeCorner && newCubeDataPosition.z == ZNegativeCorner)
             {
                 corner = Corner.XNegativeZNegative;
-                return true;
+                return corner;
             } 
-            if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == ZPositiveCorner)
+            // XNegativeZPositive corner
+            if (newCubeDataPosition.x == XNegativeCorner && newCubeDataPosition.z == ZPositiveCorner)
             {
                 corner = Corner.XNegativeZPositive;
-                return true;
+                return corner;
             } 
-            if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZNegativeCorner)
+            // XPositiveZNegative corner
+            if (newCubeDataPosition.x == XPositiveCorner && newCubeDataPosition.z == ZNegativeCorner)
             {
                 corner = Corner.XPositiveZNegative;
-                return true;
+                return corner;
             } 
-            if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == ZPositiveCorner)
+            // XPositiveZPositive corner
+            if (newCubeDataPosition.x == XPositiveCorner && newCubeDataPosition.z == ZPositiveCorner)
             {
                 corner = Corner.XPositiveZPositive;
-                return true;
+                return corner;
             }
-
-            return false;
+            corner = Corner.Null;
+            return corner;
         }
 
         private void DeactiavateSurroundedCubeData(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField)
@@ -208,13 +208,11 @@ namespace InternalTypesForMapOptimization
                     return;
                 }
             }
-
             actualCube.isCubeDataSurrounded = true;
         }
 
         private void DeactiavateSurroundedCube(GameObject actualCube, Dictionary<Vector3, CubeData> chunkField)
         {
-
             foreach (Vector3 direction in directions)
             {
                 if (!chunkField.ContainsKey(actualCube.transform.position + direction))
@@ -222,7 +220,6 @@ namespace InternalTypesForMapOptimization
                     return;
                 }
             }
-            
             actualCube.SetActive(false);
         }
 
@@ -231,19 +228,17 @@ namespace InternalTypesForMapOptimization
             Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubeData.position.x, cubeData.position.z));
             Dictionary<Vector3, CubeData> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter];
             
-            Border cubeBorder = Border.Null;
-            if (IsCubeAtBorder(cubeData.position, ref cubeBorder))
+            Border border = GetBorderOfCube(cubeData.position);
+            Corner corner = IsCubeAtCorner(cubeData.position, chunkCenter);
+            if (border != Border.Null)
             {
-                Corner cubeCorner = Corner.Null;
-                if (IsCubeAtCorner(cubeData, chunkCenter, ref cubeCorner))
+                if (corner != Corner.Null)
                 {
-                    onIsPlacedCornerCube(cubeData, cubeCorner);
+                    onIsPlacedCornerCube(cubeData, corner);
+                    return;
                 }
-                else
-                {
-                    onIsPlacedBorderCube(cubeData, chunkField, cubeBorder);
-                }
-            }
+                onIsPlacedBorderCube(cubeData, chunkField, border);
+            } 
             else
             {
                 foreach (Vector3 direction in directions)
@@ -261,18 +256,16 @@ namespace InternalTypesForMapOptimization
             Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubeData.position.x, cubeData.position.z));
             Dictionary<Vector3, CubeData> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter];
             
-            Border cubeBorder = Border.Null;
-            if (IsCubeAtBorder(cubeData.position, ref cubeBorder))
+            Border border = GetBorderOfCube(cubeData.position);
+            Corner corner = IsCubeAtCorner(cubeData.position, chunkCenter);
+            if (border != Border.Null)
             {
-                Corner cubeCorner = Corner.Null;
-                if (IsCubeAtCorner(cubeData, chunkCenter, ref cubeCorner))
+                if (corner != Corner.Null)
                 {
-                    onIsDestroyedCornerCube(cubeData, chunkField, cubeBorder, cubeCorner);
+                    onIsDestroyedCornerCube(cubeData, chunkField, border, corner);
+                    return;
                 }
-                else
-                {
-                    onIsDestroyedBorderCube(cubeData, chunkField, cubeBorder);
-                }
+                onIsDestroyedBorderCube(cubeData, chunkField, border);
             }
             else
             {
