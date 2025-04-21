@@ -77,6 +77,23 @@ namespace InternalTypesForMapOptimization
             mapGenerator.onCubeDestroyed += FindInvisibleCubesAroundBrokenCube;
             mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
         }
+        
+        public void ExposeCube(CubeData cubeData)
+        {
+            if (cubeData.isCubeDataSurrounded)
+            {
+                mapGenerator.InstantiatePredeterminedCubeSequence(cubeData);
+            }
+            else
+            {
+                if (cubeData.cubeParameters.gameObject.activeInHierarchy)
+                {
+                    return;
+                }
+                
+                cubeData.cubeParameters.gameObject.SetActive(true);
+            }
+        }
 
         private void PrecessAllCubeDataOfUpcommingChunk(Dictionary<Vector3, CubeData> actualChunkField, Vector2 centerOfNewChunk)
         {
@@ -266,23 +283,6 @@ namespace InternalTypesForMapOptimization
                         ExposeCube(chunkField[cubeData.position + direction]);
                     }
                 }
-            }
-        }
-        
-        public void ExposeCube(CubeData cubeData)
-        {
-            if (cubeData.isCubeDataSurrounded)
-            {
-                mapGenerator.InstantiatePredeterminedCubeSequence(cubeData);
-            }
-            else
-            {
-                if (cubeData.cubeParameters.gameObject.activeInHierarchy)
-                {
-                    return;
-                }
-                
-                cubeData.cubeParameters.gameObject.SetActive(true);
             }
         }
     }

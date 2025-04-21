@@ -3,12 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using InternalTypesForMapOptimization;
 using Unity.Collections;
+using Unity.VisualScripting;
 using UnityEngine.UI;
 
 public class BorderOptimization : MonoBehaviour
 {
+    private enum BorderSideAroundCorner : byte
+    {
+        Null,
+        XPositiveZPositive_Xnegative,
+        XPositiveZPositive_Znegative,
+        XPositiveZNegative_Xnegative,
+        XPositiveZNegative_Zpositive,
+        XNegativeZPositive_Xpositive,
+        XNegativeZPositive_Znegative,
+        XNegativeZNegative_Xpositive,
+        XNegativeZNegative_Zpositive,
+    }
+    
     private MapGenerator mapGenerator;
     private MapOptimization mapOptimization;
+    private CornerOptimization cornerOptimization;
 
     private static readonly Border[] borders = new[]
     {
@@ -21,22 +36,136 @@ public class BorderOptimization : MonoBehaviour
     private void Awake()
     {
         mapGenerator = GetComponent<MapGenerator>();
-        mapOptimization = GetComponent<MapOptimization>(); 
+        mapOptimization = GetComponent<MapOptimization>();
+        cornerOptimization = GetComponent<CornerOptimization>();
 
         mapOptimization.onIsBorderCube += BorderCubeOptimizationSequence;
         mapOptimization.onIsPlacedBorderCube += BorderCubePlacementSequence;
         mapOptimization.onIsDestroyedBorderCube += FindInvisibleCubesAroundDestroyedCube;
+    }
+    
+    internal NeighbourCubesValues<Border>[] GetNeighborCubeValuesAroundSelectedCube(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neighborChunkCenter)
+    {
+        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube = new NeighbourCubesValues<Border>[6];
+        
+        for (int i = 0; i < mapOptimization.directions.Length; i++)
+        {
+            Vector3 direction = mapOptimization.directions[i];
+            
+            neighbourCubesValuesAroundSelectedCube[i] = SetNeighborCubeValue(cubePosition, chunkCenter, border, neighborChunkCenter, direction);
+        }
+
+        return neighbourCubesValuesAroundSelectedCube;
     }
 
     private void BorderCubePlacementSequence(CubeData newCubeData, Dictionary<Vector3, CubeData> chunkField, Border border)
     {
         NeighbourCubesValues<Border> potentionalNeighbourCubeValues = GetNeighborCubeValues(border, newCubeData);
         Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
+
+        BorderSideAroundCorner borderSideAroundCorner = BorderSideAroundCorner.Null;
         
-        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundPlacedCube = GetNeighborCubeValuesAroundSelectedCube2(newCubeData.position, newCubeData.chunkCenter, border, potentionalNeighbourCubeValues.chunkCenter);
+        if (!IsBorderCubeNearCorner(newCubeData, newCubeData.chunkCenter, ref borderSideAroundCorner))
+        {
+            NeighbourCubesValues<Border>[] neighbourCubesValuesAroundPlacedCube = GetNeighborCubeValuesAroundSelectedCube2(newCubeData.position, newCubeData.chunkCenter, border, potentionalNeighbourCubeValues.chunkCenter);
+            
+            HideInvisibleCubeAroundPlacedCubeInItsChunk(chunkField, neighbourCubesValuesAroundPlacedCube, potentionalNeighbourCubeValues.chunkCenter, potentionalNeighbourCubeValues.position, neighbourChunkField);
+            HideInvisibleCubeAroundPlacedCubeInNeighborChunk(neighbourChunkField, potentionalNeighbourCubeValues);
+        }
+        else
+        {
+            NeighbourCubesValues<Border>[] neighbourCubesValuesAroundPlacedCube = GetNeighborCubeValuesAroundSelectedCube3(newCubeData.position, newCubeData.chunkCenter, border, borderSideAroundCorner, potentionalNeighbourCubeValues.chunkCenter);
+            NeighbourCubesValues<Corner> potentionalCornerCubeValues = GetCornerCubeValues(borderSideAroundCorner, newCubeData);
+            
+            HideInvisibleCubeAroundPlacedCubeInItsChunk(chunkField, neighbourCubesValuesAroundPlacedCube, potentionalNeighbourCubeValues.chunkCenter, potentionalNeighbourCubeValues.position, neighbourChunkField);
+            HideInvisibleCubeAroundPlacedCubeInNeighborChunk(neighbourChunkField, potentionalNeighbourCubeValues);
+            HideInvisibleCornerCubeAroundPlacedCubeInItsChunk(potentionalCornerCubeValues, chunkField);
+        }
+    }
+
+    private void HideInvisibleCornerCubeAroundPlacedCubeInItsChunk(NeighbourCubesValues<Corner> potentionalCornerCubeValues, Dictionary<Vector3, CubeData> chunkField)
+    {
+        if (!chunkField.ContainsKey(potentionalCornerCubeValues.position))
+        {
+            return;
+        }
         
-        HideInvisibleCubeAroundPlacedCubeInItsChunk(chunkField, neighbourCubesValuesAroundPlacedCube, potentionalNeighbourCubeValues.chunkCenter, potentionalNeighbourCubeValues.position, neighbourChunkField);
-        HideInvisibleCubeAroundPlacedCubeInNeighborChunk(neighbourChunkField, potentionalNeighbourCubeValues);
+        NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner = cornerOptimization.GetCornerCubesValuesAroundSelectedCornerCube(potentionalCornerCubeValues.position, potentionalCornerCubeValues.chunkCenter, potentionalCornerCubeValues.edgeType);
+        NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner = cornerOptimization.GetBorderCubesValuesAroundSelectedCornerCube(potentionalCornerCubeValues.position, potentionalCornerCubeValues.chunkCenter, potentionalCornerCubeValues.edgeType);
+
+        foreach (NeighbourCubesValues<Corner> neighborCornerCube in cornerCubesValuesAroundCorner)
+        {
+            Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborCornerCube.chunkCenter];
+            
+            if (!neighbourChunkField.ContainsKey(neighborCornerCube.position))
+            {
+                return;
+            }
+        }
+
+        foreach (NeighbourCubesValues<Border> neighborBorderCube in borderCubesValuesAroundCorner)
+        {
+            Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[neighborBorderCube.chunkCenter];
+            
+            if (!neighbourChunkField.ContainsKey(neighborBorderCube.position))
+            {
+                return;
+            } 
+        }
+        
+        CubeData cornerCubeData = chunkField[potentionalCornerCubeValues.position];
+        cornerCubeData.cubeParameters.gameObject.SetActive(false);
+    }
+
+    private bool IsBorderCubeNearCorner(CubeData newCubeData, Vector2 chunkCenter, ref BorderSideAroundCorner borderSideAroundCorner)
+    {
+        float XNegativeCorner = chunkCenter.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
+        float XPositiveCorner = chunkCenter.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
+        float ZNegativeCorner = chunkCenter.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
+        float ZPositiveCorner = chunkCenter.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
+            
+        if (newCubeData.position.x == (XNegativeCorner + 1.0f) && newCubeData.position.z == ZNegativeCorner)
+        {
+            borderSideAroundCorner = BorderSideAroundCorner.XNegativeZNegative_Xpositive;
+            return true;
+        }
+        if (newCubeData.position.x == XNegativeCorner && newCubeData.position.z == (ZNegativeCorner + 1.0f))
+        {
+            borderSideAroundCorner = BorderSideAroundCorner.XNegativeZNegative_Zpositive;
+            return true;
+        }
+        if (newCubeData.position.x == (XNegativeCorner + 1.0f) && newCubeData.position.z == ZPositiveCorner)
+        {
+            borderSideAroundCorner = BorderSideAroundCorner.XNegativeZPositive_Xpositive;
+            return true;
+        }
+        if (newCubeData.position.x == XNegativeCorner  && newCubeData.position.z == (ZPositiveCorner - 1.0f))
+        {
+            borderSideAroundCorner = BorderSideAroundCorner.XNegativeZPositive_Znegative;
+            return true;
+        } 
+        if (newCubeData.position.x == (XPositiveCorner - 1.0f) && newCubeData.position.z == ZNegativeCorner)
+        {
+            borderSideAroundCorner = BorderSideAroundCorner.XPositiveZNegative_Xnegative;
+            return true;
+        } 
+        if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == (ZNegativeCorner + 1.0f))
+        {
+            borderSideAroundCorner = BorderSideAroundCorner.XPositiveZNegative_Zpositive;
+            return true;
+        } 
+        if (newCubeData.position.x == (XPositiveCorner - 1.0f) && newCubeData.position.z == ZPositiveCorner)
+        {
+            borderSideAroundCorner = BorderSideAroundCorner.XPositiveZPositive_Xnegative;
+            return true;
+        }
+        if (newCubeData.position.x == XPositiveCorner && newCubeData.position.z == (ZPositiveCorner - 1.0f))
+        {
+            borderSideAroundCorner = BorderSideAroundCorner.XPositiveZPositive_Znegative;
+            return true;
+        }
+
+        return false;
     }
     
     private void HideInvisibleCubeAroundPlacedCubeInNeighborChunk(Dictionary<Vector3, CubeData> neighbourChunkField, NeighbourCubesValues<Border> potentionalNeighbourCubeValues)
@@ -130,7 +259,36 @@ public class BorderOptimization : MonoBehaviour
         }
     }
     
-    internal NeighbourCubesValues<Border>[] GetNeighborCubeValuesAroundSelectedCube2(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neighborChunkCenter)
+    private NeighbourCubesValues<Border>[] GetNeighborCubeValuesAroundSelectedCube3(Vector3 cubePosition, Vector3 chunkCenter, Border border, BorderSideAroundCorner borderSideAroundCorner, Vector3 neighborChunkCenter)
+    {
+        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube = new NeighbourCubesValues<Border>[4];
+        Vector3 direction;
+
+        int arrayLength = mapOptimization.directions.Length;
+        for (int i = 0; i < arrayLength; i++)
+        {
+            direction = mapOptimization.directions[i];
+            
+            if (IsDirectionMatchingBorder(direction, border))
+            {
+                i--;
+                arrayLength--;
+                continue;
+            }
+
+            if (IsDirectionMatchingBorderSideAroundCorner(direction, borderSideAroundCorner))
+            {
+                i--;
+                arrayLength--;
+                continue;
+            }
+            neighbourCubesValuesAroundSelectedCube[i] = SetNeighborCubeValue(cubePosition, chunkCenter, border, neighborChunkCenter, direction);
+        }
+
+        return neighbourCubesValuesAroundSelectedCube;
+    }
+    
+    private NeighbourCubesValues<Border>[] GetNeighborCubeValuesAroundSelectedCube2(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neighborChunkCenter)
     {
         NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube = new NeighbourCubesValues<Border>[5];
         Vector3 direction;
@@ -146,20 +304,6 @@ public class BorderOptimization : MonoBehaviour
                 arrayLength--;
                 continue;
             }
-            neighbourCubesValuesAroundSelectedCube[i] = SetNeighborCubeValue(cubePosition, chunkCenter, border, neighborChunkCenter, direction);
-        }
-
-        return neighbourCubesValuesAroundSelectedCube;
-    }
-
-    internal NeighbourCubesValues<Border>[] GetNeighborCubeValuesAroundSelectedCube(Vector3 cubePosition, Vector3 chunkCenter, Border border, Vector3 neighborChunkCenter)
-    {
-        NeighbourCubesValues<Border>[] neighbourCubesValuesAroundSelectedCube = new NeighbourCubesValues<Border>[6];
-        
-        for (int i = 0; i < mapOptimization.directions.Length; i++)
-        {
-            Vector3 direction = mapOptimization.directions[i];
-            
             neighbourCubesValuesAroundSelectedCube[i] = SetNeighborCubeValue(cubePosition, chunkCenter, border, neighborChunkCenter, direction);
         }
 
@@ -271,6 +415,53 @@ public class BorderOptimization : MonoBehaviour
         neighbourChunkField[neighbourCubeValues.position].cubeParameters.gameObject.SetActive(false);
     }
 
+    private NeighbourCubesValues<Corner> GetCornerCubeValues(BorderSideAroundCorner borderSideAroundCorner, CubeData newCubeData)
+    {
+        NeighbourCubesValues<Corner> neighbourCubesValues = new NeighbourCubesValues<Corner>();
+        neighbourCubesValues.chunkCenter = newCubeData.chunkCenter;
+        
+        switch (borderSideAroundCorner)
+        {
+            case BorderSideAroundCorner.XNegativeZNegative_Xpositive:
+                neighbourCubesValues.edgeType = Corner.XNegativeZNegative;
+                neighbourCubesValues.position = newCubeData.position + -(Vector3.right);
+                break;
+            case BorderSideAroundCorner.XNegativeZNegative_Zpositive:
+                neighbourCubesValues.edgeType = Corner.XNegativeZNegative;
+                neighbourCubesValues.position = newCubeData.position + -(Vector3.forward);
+                break;
+            
+            case BorderSideAroundCorner.XNegativeZPositive_Xpositive:
+                neighbourCubesValues.edgeType = Corner.XNegativeZPositive;
+                neighbourCubesValues.position = newCubeData.position + -(Vector3.right);
+                break;
+            case BorderSideAroundCorner.XNegativeZPositive_Znegative:
+                neighbourCubesValues.edgeType = Corner.XNegativeZPositive;
+                neighbourCubesValues.position = newCubeData.position + Vector3.forward;
+                break;
+            
+            case BorderSideAroundCorner.XPositiveZPositive_Xnegative:
+                neighbourCubesValues.edgeType = Corner.XPositiveZPositive;
+                neighbourCubesValues.position = newCubeData.position + Vector3.right;
+                break;
+            case BorderSideAroundCorner.XPositiveZPositive_Znegative:
+                neighbourCubesValues.edgeType = Corner.XPositiveZPositive;
+                neighbourCubesValues.position = newCubeData.position + Vector3.forward;
+                break;
+            
+            case BorderSideAroundCorner.XPositiveZNegative_Xnegative:
+                neighbourCubesValues.edgeType = Corner.XPositiveZNegative;
+                neighbourCubesValues.position = newCubeData.position + Vector3.right;
+                break;
+            case BorderSideAroundCorner.XPositiveZNegative_Zpositive:
+                neighbourCubesValues.edgeType = Corner.XPositiveZNegative;
+                neighbourCubesValues.position = newCubeData.position + -(Vector3.forward);
+                break;
+        }
+
+        return neighbourCubesValues;
+    }
+
     private NeighbourCubesValues<Border> GetNeighborCubeValues(Border newChunkBorder, CubeData newCubeData)
     {
         NeighbourCubesValues<Border> neighbourCubesValues = new NeighbourCubesValues<Border>();
@@ -360,6 +551,48 @@ public class BorderOptimization : MonoBehaviour
             return true;
         }
         if (actualDirection == -(Vector3.forward) && border == Border.ZNegative)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
+    private bool IsDirectionMatchingBorderSideAroundCorner(Vector3 actualDirection, BorderSideAroundCorner borderSideAroundCorner)
+    {
+        // XnegativeZnegative corner
+        if (actualDirection == -(Vector3.right) && borderSideAroundCorner == BorderSideAroundCorner.XNegativeZNegative_Xpositive)
+        {
+            return true;
+        }
+        if (actualDirection == -(Vector3.forward) && borderSideAroundCorner == BorderSideAroundCorner.XNegativeZNegative_Zpositive)
+        {
+            return true;
+        }
+        // XnegativeZpositive corner
+        if (actualDirection == -(Vector3.right) && borderSideAroundCorner == BorderSideAroundCorner.XNegativeZPositive_Xpositive)
+        {
+            return true;
+        }
+        if (actualDirection == Vector3.forward && borderSideAroundCorner == BorderSideAroundCorner.XNegativeZPositive_Znegative)
+        {
+            return true;
+        }
+        // XpositiveZpositive corner
+        if (actualDirection == Vector3.right && borderSideAroundCorner == BorderSideAroundCorner.XPositiveZPositive_Xnegative)
+        {
+            return true;
+        }
+        if (actualDirection == Vector3.forward && borderSideAroundCorner == BorderSideAroundCorner.XPositiveZPositive_Znegative)
+        {
+            return true;
+        }
+        // XPositiveZnegative corner
+        if (actualDirection == Vector3.right && borderSideAroundCorner == BorderSideAroundCorner.XPositiveZNegative_Xnegative)
+        {
+            return true;
+        }
+        if (actualDirection == -(Vector3.forward) && borderSideAroundCorner == BorderSideAroundCorner.XPositiveZNegative_Zpositive)
         {
             return true;
         }

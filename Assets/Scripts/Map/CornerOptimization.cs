@@ -62,17 +62,8 @@ public class CornerOptimization : MonoBehaviour
         NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner = GetCornerCubesValuesAroundSelectedCornerCube(placedCubeData.position, placedCubeData.chunkCenter, corner);
         NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner = GetBorderCubesValuesAroundSelectedCornerCube(placedCubeData.position, placedCubeData.chunkCenter, corner);
         
-        //Vector3 predictedCubePosition = placedCubeData.position + direction;
-
         foreach (NeighbourCubesValues<Corner> cornerCubeValue in cornerCubesValuesAroundCorner)
         {
-            // Debug
-            if (cornerCubeValue.position == new Vector3(-12, 10, 12))
-            {
-                Debug.Log("AAA");
-            }
-            // Debug
-
             Dictionary<Vector3, CubeData> neighborCubeChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[cornerCubeValue.chunkCenter];
             if (!neighborCubeChunkField.ContainsKey(cornerCubeValue.position))
             {
@@ -143,13 +134,6 @@ public class CornerOptimization : MonoBehaviour
     {
         foreach (NeighbourCubesValues<T> cornerCubeValue2 in cornerCubesValuesAroundCorner)
         {
-            // Debug
-            if (cornerCubeValue2.position == new Vector3(-12, 10, 12))
-            {
-                Debug.Log("AAA");
-            }
-            // Debug
-            
             Dictionary<Vector3, CubeData> neighborCubeChunkField2 = mapGenerator.dictionaryOfCentersWithItsChunkField[cornerCubeValue2.chunkCenter];
                             
             if (!neighborCubeChunkField2.ContainsKey(cornerCubeValue2.position))
@@ -161,7 +145,7 @@ public class CornerOptimization : MonoBehaviour
         return true;
     }
 
-    private NeighbourCubesValues<Border>[] GetBorderCubesValuesAroundSelectedCornerCube(Vector3 cubePosition, Vector2 chunkCenter, Corner corner)
+    internal NeighbourCubesValues<Border>[] GetBorderCubesValuesAroundSelectedCornerCube(Vector3 cubePosition, Vector2 chunkCenter, Corner corner)
     {
         NeighbourCubesValues<Border> neighbourCubeValues0 = new NeighbourCubesValues<Border>();
         NeighbourCubesValues<Border> neighbourCubeValues1 = new NeighbourCubesValues<Border>();
@@ -210,7 +194,7 @@ public class CornerOptimization : MonoBehaviour
         return neighbourCubesValues;
     } 
     
-    private NeighbourCubesValues<Corner>[] GetCornerCubesValuesAroundSelectedCornerCube(Vector3 cubePosition, Vector2 chunkCenter, Corner corner)
+    internal NeighbourCubesValues<Corner>[] GetCornerCubesValuesAroundSelectedCornerCube(Vector3 cubePosition, Vector2 chunkCenter, Corner corner)
     {
         NeighbourCubesValues<Corner> neighbourCubeValues0 = new NeighbourCubesValues<Corner>();
         NeighbourCubesValues<Corner> neighbourCubeValues1 = new NeighbourCubesValues<Corner>();
