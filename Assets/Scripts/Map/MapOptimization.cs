@@ -201,26 +201,24 @@ namespace InternalTypesForMapOptimization
 
         private void DeactiavateSurroundedCubeData(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField)
         {
-            foreach (Vector3 direction in directions)
+            List<CubeData> neigbors = ProcessDirections(actualCube, actualChunkField);
+
+            if (neigbors.Count != directions.Length)
             {
-                if (!actualChunkField.ContainsKey(actualCube.position + direction))
-                {
-                    return;
-                }
+                return;
             }
             actualCube.isCubeDataSurrounded = true;
         }
 
-        private void DeactiavateSurroundedCube(GameObject actualCube, Dictionary<Vector3, CubeData> chunkField)
+        private void DeactiavateSurroundedCube(CubeData actualCube, Dictionary<Vector3, CubeData> chunkField)
         {
-            foreach (Vector3 direction in directions)
+            List<CubeData> neigbors = ProcessDirections(actualCube, chunkField);
+            
+            if (neigbors.Count != directions.Length)
             {
-                if (!chunkField.ContainsKey(actualCube.transform.position + direction))
-                {
-                    return;
-                }
+                return;
             }
-            actualCube.SetActive(false);
+            actualCube.cubeParameters.gameObject.SetActive(false);
         }
 
         private void DeactivateInvisibleCubesAroundPlacedCube(CubeData cubeData)
@@ -245,15 +243,8 @@ namespace InternalTypesForMapOptimization
 
                 foreach (CubeData actualCubeData in neighbors)
                 {
-                    DeactiavateSurroundedCube(actualCubeData.cubeParameters.gameObject, chunkField);
+                    DeactiavateSurroundedCube(actualCubeData, chunkField);
                 }
-                // foreach (Vector3 direction in directions)
-                // {
-                //     if (chunkField.ContainsKey(cubeData.position + direction))
-                //     {
-                //         DeactiavateSurroundedCube(chunkField[cubeData.position + direction].cubeParameters.gameObject, chunkField);
-                //     }
-                // }
             }
         }
 
@@ -281,13 +272,6 @@ namespace InternalTypesForMapOptimization
                 {
                     ExposeCube(actualCubeData);
                 }
-                // foreach (Vector3 direction in directions)
-                // {
-                //     if (chunkField.ContainsKey(cubeData.position + direction))
-                //     {
-                //         ExposeCube(chunkField[cubeData.position + direction]);
-                //     }
-                // }
             }
         }
 
