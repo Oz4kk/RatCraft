@@ -241,13 +241,19 @@ namespace InternalTypesForMapOptimization
             } 
             else
             {
-                foreach (Vector3 direction in directions)
+                List<CubeData> neighbors = ProcessDirections(cubeData, chunkField);
+
+                foreach (CubeData actualCubeData in neighbors)
                 {
-                    if (chunkField.ContainsKey(cubeData.position + direction))
-                    {
-                        DeactiavateSurroundedCube(chunkField[cubeData.position + direction].cubeParameters.gameObject, chunkField);
-                    }
+                    DeactiavateSurroundedCube(actualCubeData.cubeParameters.gameObject, chunkField);
                 }
+                // foreach (Vector3 direction in directions)
+                // {
+                //     if (chunkField.ContainsKey(cubeData.position + direction))
+                //     {
+                //         DeactiavateSurroundedCube(chunkField[cubeData.position + direction].cubeParameters.gameObject, chunkField);
+                //     }
+                // }
             }
         }
 
@@ -269,14 +275,35 @@ namespace InternalTypesForMapOptimization
             }
             else
             {
-                foreach (Vector3 direction in directions)
+                List<CubeData> neighbors = ProcessDirections(cubeData, chunkField);
+
+                foreach (CubeData actualCubeData in neighbors)
                 {
-                    if (chunkField.ContainsKey(cubeData.position + direction))
-                    {
-                        ExposeCube(chunkField[cubeData.position + direction]);
-                    }
+                    ExposeCube(actualCubeData);
+                }
+                // foreach (Vector3 direction in directions)
+                // {
+                //     if (chunkField.ContainsKey(cubeData.position + direction))
+                //     {
+                //         ExposeCube(chunkField[cubeData.position + direction]);
+                //     }
+                // }
+            }
+        }
+
+        private List<CubeData> ProcessDirections(CubeData cubeData, Dictionary<Vector3, CubeData> chunkField)
+        {
+            List<CubeData> neighbors = new List<CubeData>();
+            foreach (Vector3 direction in directions)
+            {
+                Vector3 actualPosition = cubeData.position + direction;
+                if (chunkField.ContainsKey(cubeData.position + direction))
+                {
+                    neighbors.Add(chunkField[actualPosition]);
                 }
             }
+            
+            return neighbors;
         }
     }
 }
