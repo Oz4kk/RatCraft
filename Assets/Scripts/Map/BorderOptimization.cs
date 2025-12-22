@@ -58,7 +58,7 @@ public class BorderOptimization : MonoBehaviour
         return neighbourCubesValuesAroundSelectedCube;
     }
 
-    private void BorderCubePlacementSequence(CubeData newCubeData, Dictionary<Vector3, CubeData> chunkField, Border border)
+    private void BorderCubePlacementSequence(Dictionary<Vector3, CubeData> chunkField, CubeData newCubeData, Border border)
     {
         NeighbourCubesValues<Border> potentionalNeighbourCubeValues = GetNeighborCubeValues(border, newCubeData);
         Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];
@@ -223,7 +223,7 @@ public class BorderOptimization : MonoBehaviour
         }
     }
 
-    private void FindInvisibleCubesAroundDestroyedCube(CubeData destroyedCubeData, Dictionary<Vector3, CubeData> destroyedCubeChunkField, Border destroyedCubeBorder)
+    private void FindInvisibleCubesAroundDestroyedCube(Dictionary<Vector3, CubeData> destroyedCubeChunkField, CubeData destroyedCubeData, Border destroyedCubeBorder)
     {
         NeighbourCubesValues<Border> potentionalNeighbourCubeValues = GetNeighborCubeValues(destroyedCubeBorder, destroyedCubeData);
         Dictionary<Vector3, CubeData> neighbourChunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[potentionalNeighbourCubeValues.chunkCenter];

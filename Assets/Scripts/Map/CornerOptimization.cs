@@ -22,7 +22,7 @@ public class CornerOptimization : MonoBehaviour
         mapOptimization.onIsPlacedCornerCube += CornerCubePlacementSequence;
     }
 
-    private void FindVisibleCubesAroundBrokenCube(CubeData destroyedCubeData, Dictionary<Vector3, CubeData> destroyedCubeChunkField, Border destroyedCubeBorder, Corner corner)
+    private void FindVisibleCubesAroundBrokenCube(Dictionary<Vector3, CubeData> destroyedCubeChunkField, CubeData destroyedCubeData, Border destroyedCubeBorder, Corner corner)
     {
         NeighbourCubesValues<Corner>[] cornerCubesValuesAroundCorner = GetCornerCubesValuesAroundSelectedCornerCube(destroyedCubeData.position, destroyedCubeData.chunkCenter, corner);
         NeighbourCubesValues<Border>[] borderCubesValuesAroundCorner = GetBorderCubesValuesAroundSelectedCornerCube(destroyedCubeData.position, destroyedCubeData.chunkCenter, corner);

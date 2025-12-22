@@ -51,10 +51,10 @@ namespace InternalTypesForMapOptimization
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Border> onIsBorderCube;
         internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Vector2, Border, Corner> onIsCornerCube;
         
-        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsDestroyedBorderCube;
-        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border, Corner> onIsDestroyedCornerCube;
+        internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Border> onIsDestroyedBorderCube;
+        internal System.Action<Dictionary<Vector3, CubeData>, CubeData,  Border, Corner> onIsDestroyedCornerCube;
         
-        internal System.Action<CubeData, Dictionary<Vector3, CubeData>, Border> onIsPlacedBorderCube;
+        internal System.Action<Dictionary<Vector3, CubeData>, CubeData, Border> onIsPlacedBorderCube;
         internal System.Action<CubeData, Corner> onIsPlacedCornerCube;
         
         internal readonly Vector3[] directions = new[]
@@ -68,11 +68,119 @@ namespace InternalTypesForMapOptimization
         };
         
         protected static MapGenerator mapGenerator;
+        
+        private ICubeOptimizationOperation optimizationOperation;
+        private NewChunkOptimization newChunkOptimization;
+        private DeactivateInvisibleCubesOptimization deactivateInvisibleCubesOptimization;
+        private FindInvisibleCubesAroundBrokenCubeOptimization findInvisibleCubesAroundBrokenCubeOptimization;
 
+        private Action<CubeData> onExposeCube;
+        private Action<CubeData> onDeactiavateSurroundedCube;
+        
+        private class NewChunkOptimization : ICubeOptimizationOperation
+        {
+            private MapOptimization mapOptimization;
+
+            public NewChunkOptimization(MapOptimization mapOptimization)
+            {
+                this.mapOptimization = mapOptimization;
+            }
+
+            public void HandleCornerCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData, Vector2 chunkCenter, Border border, Corner corner)
+            {
+                mapOptimization.onIsCornerCube(chunkField, cubeData, chunkCenter, border, corner);
+            }
+
+            public void HandleBorderCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData, Border border)
+            {
+                mapOptimization.onIsBorderCube(chunkField, cubeData, border);
+            }
+
+            public void HandleNeighborCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData)
+            {
+                mapOptimization.DeactiavateSurroundedCubeData(chunkField, cubeData);
+            }
+        }
+
+        private class DeactivateInvisibleCubesOptimization : ICubeOptimizationOperation
+        {
+            private MapOptimization mapOptimization;
+        
+            public DeactivateInvisibleCubesOptimization(MapOptimization mapOptimization)
+            {
+                this.mapOptimization = mapOptimization;
+            }
+        
+            public void HandleCornerCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData, Vector2 chunkCenter, Border border, Corner corner)
+            {
+                mapOptimization.onIsPlacedCornerCube(cubeData, corner);
+            }
+        
+            public void HandleBorderCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData, Border border)
+            {
+                mapOptimization.onIsPlacedBorderCube(chunkField, cubeData, border);
+            }
+        
+            public void HandleNeighborCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData)
+            {
+                mapOptimization.OptimizeNeighbors(chunkField, cubeData, mapOptimization.onDeactiavateSurroundedCube);
+            }
+        }
+        
+        private class FindInvisibleCubesAroundBrokenCubeOptimization : ICubeOptimizationOperation
+        {
+            private MapOptimization mapOptimization;
+        
+            public FindInvisibleCubesAroundBrokenCubeOptimization(MapOptimization mapOptimization)
+            {
+                this.mapOptimization = mapOptimization;
+            }
+        
+            public void HandleCornerCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData, Vector2 chunkCenter, Border border, Corner corner)
+            {
+                mapOptimization.onIsDestroyedCornerCube(chunkField, cubeData, border, corner);
+            }
+        
+            public void HandleBorderCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData, Border border)
+            {
+                mapOptimization.onIsDestroyedBorderCube(chunkField, cubeData, border);
+            }
+        
+            public void HandleNeighborCube(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData)
+            {
+                mapOptimization.OptimizeNeighbors(chunkField, cubeData, mapOptimization.onExposeCube);
+            }
+        }
+
+        private void ProcessCubeOptimization(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData, Vector2 centerOfNewChunk, ICubeOptimizationOperation optimizationOperation)
+        {
+            Border border = GetBorderOfCube(cubeData.position);
+            Corner corner = IsCubeAtCorner(cubeData.position, centerOfNewChunk);
+            if (border != Border.Null)
+            {
+                if (corner != Corner.Null)
+                {
+                    optimizationOperation.HandleCornerCube(chunkField, cubeData, centerOfNewChunk, border, corner);
+                    return;
+                }
+                optimizationOperation.HandleBorderCube(chunkField, cubeData, border);
+            } 
+            else
+            {
+                optimizationOperation.HandleNeighborCube(chunkField, cubeData);
+            }
+        }
+        
         void Awake()
         {
             mapGenerator = GetComponent<MapGenerator>();
-
+            newChunkOptimization = new NewChunkOptimization(this);
+            deactivateInvisibleCubesOptimization = new DeactivateInvisibleCubesOptimization(this);
+            findInvisibleCubesAroundBrokenCubeOptimization = new FindInvisibleCubesAroundBrokenCubeOptimization(this);
+                
+            onExposeCube += ExposeCube;
+            onDeactiavateSurroundedCube += DeactiavateSurroundedCube;
+                
             mapGenerator.onDataOfNewChunkGenerated += PrecessAllCubeDataOfUpcommingChunk;
             mapGenerator.onCubeDestroyed += FindInvisibleCubesAroundBrokenCube;
             mapGenerator.onCubePlaced += DeactivateInvisibleCubesAroundPlacedCube;
@@ -99,32 +207,7 @@ namespace InternalTypesForMapOptimization
         {
             foreach (KeyValuePair<Vector3, CubeData> actualCube in actualChunkField)
             {
-                OptimizeDataOfNewChunk(actualCube.Value, centerOfNewChunk, actualChunkField);
-            }
-        }
-
-        /// <summary>
-        /// Optimization of cubes that are not on the edge of the chunk and.. 
-        /// </summary>
-        /// <param name="newCubeData"></param>
-        /// <param name="centerOfNewChunk"></param>
-        /// <param name="newChunkFieldData"></param>
-        private void OptimizeDataOfNewChunk(CubeData newCubeData, Vector2 centerOfNewChunk, Dictionary<Vector3, CubeData> newChunkFieldData)
-        {
-            Border border = GetBorderOfCube(newCubeData.position);
-            Corner corner = IsCubeAtCorner(newCubeData.position, centerOfNewChunk);
-            if (border != Border.Null)
-            {
-                if (corner != Corner.Null)
-                {
-                    onIsCornerCube(newChunkFieldData, newCubeData, centerOfNewChunk, border, corner);
-                    return;
-                }
-                onIsBorderCube(newChunkFieldData, newCubeData, border);
-            } 
-            else
-            {
-                DeactiavateSurroundedCubeData(newCubeData, newChunkFieldData);
+                ProcessCubeOptimization(actualChunkField, actualCube.Value, centerOfNewChunk, newChunkOptimization);
             }
         }
 
@@ -199,9 +282,9 @@ namespace InternalTypesForMapOptimization
             return corner;
         }
 
-        private void DeactiavateSurroundedCubeData(CubeData actualCube, Dictionary<Vector3, CubeData> actualChunkField)
+        private void DeactiavateSurroundedCubeData(Dictionary<Vector3, CubeData> actualChunkField, CubeData actualCube)
         {
-            List<CubeData> neigbors = ProcessDirections(actualCube, actualChunkField);
+            List<CubeData> neigbors = GetNeighborCubesInEachDirection(actualCube, actualChunkField);
 
             if (neigbors.Count != directions.Length)
             {
@@ -210,11 +293,12 @@ namespace InternalTypesForMapOptimization
             actualCube.isCubeDataSurrounded = true;
         }
 
-        private void DeactiavateSurroundedCube(CubeData actualCube, Dictionary<Vector3, CubeData> chunkField)
+        private void DeactiavateSurroundedCube(CubeData actualCube)
         {
-            List<CubeData> neigbors = ProcessDirections(actualCube, chunkField);
+            Dictionary<Vector3, CubeData> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[actualCube.chunkCenter];
+            List<CubeData> neighbors = GetNeighborCubesInEachDirection(actualCube, chunkField);
             
-            if (neigbors.Count != directions.Length)
+            if (neighbors.Count != directions.Length)
             {
                 return;
             }
@@ -225,27 +309,8 @@ namespace InternalTypesForMapOptimization
         {
             Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubeData.position.x, cubeData.position.z));
             Dictionary<Vector3, CubeData> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter];
-            
-            Border border = GetBorderOfCube(cubeData.position);
-            Corner corner = IsCubeAtCorner(cubeData.position, chunkCenter);
-            if (border != Border.Null)
-            {
-                if (corner != Corner.Null)
-                {
-                    onIsPlacedCornerCube(cubeData, corner);
-                    return;
-                }
-                onIsPlacedBorderCube(cubeData, chunkField, border);
-            } 
-            else
-            {
-                List<CubeData> neighbors = ProcessDirections(cubeData, chunkField);
 
-                foreach (CubeData actualCubeData in neighbors)
-                {
-                    DeactiavateSurroundedCube(actualCubeData, chunkField);
-                }
-            }
+            ProcessCubeOptimization(chunkField, cubeData, chunkCenter, deactivateInvisibleCubesOptimization);
         }
 
         private void FindInvisibleCubesAroundBrokenCube(CubeData cubeData)
@@ -253,31 +318,23 @@ namespace InternalTypesForMapOptimization
             Vector2 chunkCenter = mapGenerator.GetNearestDistanceBetweenPlacedCubePositionAndChunkCenters(new Vector2(cubeData.position.x, cubeData.position.z));
             Dictionary<Vector3, CubeData> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[chunkCenter];
             
-            Border border = GetBorderOfCube(cubeData.position);
-            Corner corner = IsCubeAtCorner(cubeData.position, chunkCenter);
-            if (border != Border.Null)
-            {
-                if (corner != Corner.Null)
-                {
-                    onIsDestroyedCornerCube(cubeData, chunkField, border, corner);
-                    return;
-                }
-                onIsDestroyedBorderCube(cubeData, chunkField, border);
-            }
-            else
-            {
-                List<CubeData> neighbors = ProcessDirections(cubeData, chunkField);
+            ProcessCubeOptimization(chunkField, cubeData, chunkCenter, findInvisibleCubesAroundBrokenCubeOptimization);
+        }
 
-                foreach (CubeData actualCubeData in neighbors)
-                {
-                    ExposeCube(actualCubeData);
-                }
+        private void OptimizeNeighbors(Dictionary<Vector3, CubeData> chunkField, CubeData cubeData, Action<CubeData> optimizationOperation)
+        {
+            List<CubeData> neighbors = GetNeighborCubesInEachDirection(cubeData, chunkField);
+
+            foreach (CubeData actualCubeData in neighbors)
+            {
+                optimizationOperation(actualCubeData);
             }
         }
 
-        private List<CubeData> ProcessDirections(CubeData cubeData, Dictionary<Vector3, CubeData> chunkField)
+        private List<CubeData> GetNeighborCubesInEachDirection(CubeData cubeData, Dictionary<Vector3, CubeData> chunkField)
         {
             List<CubeData> neighbors = new List<CubeData>();
+            
             foreach (Vector3 direction in directions)
             {
                 Vector3 actualPosition = cubeData.position + direction;
