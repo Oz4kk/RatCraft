@@ -5,17 +5,11 @@ using UnityEngine;
 
 public class ChunkGenerator : MonoBehaviour
 {
-    public Action<Dictionary<Vector3, GameObject>> onChunkGenerated;
-
     private MapGenerator mapGenerator;
 
     [SerializeField] private float sidesPerlinScale = 0.0f;
     [SerializeField] private float heightLimit = 0.0f;
     [SerializeField] private float heightPerlinScale = 0.0f;
-
-    private float grassValue = 10.0f;
-    private float dirtValue = 7.0f;
-    private float rockValue = 2.0f;
 
     private void Awake()
     {
@@ -83,21 +77,21 @@ public class ChunkGenerator : MonoBehaviour
 
     //    onChunkGenerated?.Invoke(actualChunkField);
     //}
-    
-    public Dictionary<Vector3, GameObject> GenerateChunkData(Vector3 startingChunkGenerationPosition)
+
+    public Dictionary<Vector3, CubeData> GenerateChunkData(Vector2 newChunkCenter, Vector3 startingChunkGenerationPosition)
     {
         uint debugBlueCubeCounter = 0;
         uint dubugGreenCubeCounter = 0;
         uint debugBrownCubeCounter = 0;
         uint debugPinkCubeCounter = 0;
 
-        Dictionary<Vector3, GameObject> actualChunkFieldData = new Dictionary<Vector3, GameObject>();
+        Dictionary<Vector3, CubeData> newChunkFieldData = new Dictionary<Vector3, CubeData>();
 
-        for (int x = (int)startingChunkGenerationPosition.x; x < mapGenerator.gridSize.x + (int)startingChunkGenerationPosition.x; x++)
+        for (int x = (int)startingChunkGenerationPosition.x; x < mapGenerator.chunkValues.width + (int)startingChunkGenerationPosition.x; x++)
         {
-            for (int y = 0; y < mapGenerator.gridSize.y; y++)
+            for (int y = 0; y < mapGenerator.chunkValues.height; y++)
             {
-                for (int z = (int)startingChunkGenerationPosition.z; z < mapGenerator.gridSize.z + (int)startingChunkGenerationPosition.z; z++)
+                for (int z = (int)startingChunkGenerationPosition.z; z < mapGenerator.chunkValues.width + (int)startingChunkGenerationPosition.z; z++)
                 {
                     float perlinValueCubes = Mathf.PerlinNoise(x * sidesPerlinScale + mapGenerator.seed, z * sidesPerlinScale + mapGenerator.seed);
 
@@ -112,19 +106,19 @@ public class ChunkGenerator : MonoBehaviour
 
                         if (resultSample > 0.5)
                         {
-                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.greenCube, ref dubugGreenCubeCounter, ref actualChunkFieldData);
+                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.greenCube, ref dubugGreenCubeCounter, ref newChunkFieldData, newChunkCenter);
                         }
                         else if (resultSample > 0.375)
                         {
-                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.brownCube, ref debugBrownCubeCounter, ref actualChunkFieldData);
+                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.brownCube, ref debugBrownCubeCounter, ref newChunkFieldData, newChunkCenter);
                         }
                         else if (resultSample > 0.25)
                         {
-                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.blueCube, ref debugBlueCubeCounter, ref actualChunkFieldData);
+                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.blueCube, ref debugBlueCubeCounter, ref newChunkFieldData, newChunkCenter);
                         }
                         else
                         {
-                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.pinkCube, ref debugPinkCubeCounter, ref actualChunkFieldData);
+                            ChunkDataGenerationSequence(upcomingCubePosition, mapGenerator.pinkCube, ref debugPinkCubeCounter, ref newChunkFieldData, newChunkCenter);
                         }
                     }
                 }
@@ -135,58 +129,15 @@ public class ChunkGenerator : MonoBehaviour
         DebugManager.Log($"Count of brown cubes - {debugBrownCubeCounter}");
         DebugManager.Log($"Count of pink cubes - {debugPinkCubeCounter}");
 
-        return actualChunkFieldData;
+        return newChunkFieldData;
     }
 
-    public Dictionary<Vector3, GameObject> GeneratePreloadedChunk(Vector3 centerOfUpcommingChunk)
+    private void ChunkDataGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubeColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, CubeData> actualChunkFieldData, Vector2 chunkCenter)
     {
-        Dictionary<Vector3, GameObject> chunkField = mapGenerator.dictionaryOfCentersWithItsChunkField[centerOfUpcommingChunk];
+        CubeData cubeData = new CubeData(actualCubeColor, upcomingCubePosition, chunkCenter);
 
-        foreach (KeyValuePair<Vector3, GameObject> actualCube in chunkField)
-        {
-            GameObject cube = mapGenerator.InstantiateAndReturnCube(actualCube.Key, actualCube.Value);
-        }
-
-        return chunkField;
-    }
-
-    private void ChunkGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, GameObject> actualChunkField)
-    {
-        GameObject actualCube = mapGenerator.InstantiateAndReturnCube(upcomingCubePosition, actualCubecColor);
-        actualChunkField.Add(actualCube.transform.position, actualCube);
-        debugActualCubeCounter++;
-        ChooseTexture(actualCube);
-    }    
-    
-    private void ChunkDataGenerationSequence(Vector3 upcomingCubePosition, GameObject actualCubecColor, ref uint debugActualCubeCounter, ref Dictionary<Vector3, GameObject> actualChunkFieldData)
-    {
-        GameObject actualCube = actualCubecColor;
-        actualCube.transform.position = upcomingCubePosition;
-        ChooseTexture(actualCube);
         debugActualCubeCounter++;
 
-        actualChunkFieldData.Add(actualCube.transform.position, actualCube);
-        mapGenerator.mapFieldData.Add(actualCube.transform.position, actualCube);
-    }
-
-    private void ChooseTexture(GameObject actualCube)
-    {
-        Material actualMaterial = actualCube.GetComponent<Renderer>().sharedMaterial;
-        if (actualCube.transform.position.y > grassValue)
-        {
-            actualMaterial.mainTexture = mapGenerator.grass;
-        }
-        else if (actualCube.transform.position.y > dirtValue)
-        {
-            actualMaterial.mainTexture = mapGenerator.dirt;
-        }
-        else if (actualCube.transform.position.y > rockValue)
-        {
-            actualMaterial.mainTexture = mapGenerator.rock;
-        }
-        else
-        {
-            actualMaterial.mainTexture = mapGenerator.sand;
-        }
+        actualChunkFieldData.Add(cubeData.position, cubeData);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCubePointer : MonoBehaviour
 {
-    public MeshRenderer pointerCubeMeshRenderer;
+    [HideInInspector] public MeshRenderer pointerCubeMeshRenderer;
 
     //SerializeFields
     [SerializeField] private GameObject pointerCubePrefab;

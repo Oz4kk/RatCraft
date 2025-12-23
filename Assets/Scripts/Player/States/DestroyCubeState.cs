@@ -31,10 +31,10 @@ public class DestroyCubeState : IState
         {
             return;
         }
-        BreakCubeSequence(actualCube);
+        DestroyCubeSequence(actualCube);
     }
 
-    private void BreakCubeSequence(CubeParameters actualCube)
+    private void DestroyCubeSequence(CubeParameters actualCube)
     {
         Debug.Log($"{actualCube.GetType()} - {actualCube.damage}");
         actualCube.damage += Time.deltaTime;
@@ -43,7 +43,7 @@ public class DestroyCubeState : IState
         {
             return;
         }
-        // Delete Cube in the world, remove it from the mapField dictionary, add increment ammount of hitted cube in the inventory and set mining time to 0
+        // Delete Cube in the world, remove it from the corresponding chunkField dictionary, add increment ammount of hitted cube in the inventory and set mining time to 0
         mapGenerator.DeleteCube(actualCube);
         inventoryHandler.AddNewItem(actualCube);
     }
