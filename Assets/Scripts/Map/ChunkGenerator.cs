@@ -87,11 +87,11 @@ public class ChunkGenerator : MonoBehaviour
 
         Dictionary<Vector3, CubeData> newChunkFieldData = new Dictionary<Vector3, CubeData>();
 
-        for (int x = (int)startingChunkGenerationPosition.x; x < mapGenerator.gridSize.x + (int)startingChunkGenerationPosition.x; x++)
+        for (int x = (int)startingChunkGenerationPosition.x; x < mapGenerator.chunkValues.width + (int)startingChunkGenerationPosition.x; x++)
         {
-            for (int y = 0; y < mapGenerator.gridSize.y; y++)
+            for (int y = 0; y < mapGenerator.chunkValues.height; y++)
             {
-                for (int z = (int)startingChunkGenerationPosition.z; z < mapGenerator.gridSize.z + (int)startingChunkGenerationPosition.z; z++)
+                for (int z = (int)startingChunkGenerationPosition.z; z < mapGenerator.chunkValues.width + (int)startingChunkGenerationPosition.z; z++)
                 {
                     float perlinValueCubes = Mathf.PerlinNoise(x * sidesPerlinScale + mapGenerator.seed, z * sidesPerlinScale + mapGenerator.seed);
 

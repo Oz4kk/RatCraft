@@ -8,24 +8,31 @@ using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCou
 public class MapGenerator : MonoBehaviour
 {
     public Action<Dictionary<Vector3, CubeData>, Vector2> onDataOfNewChunkGenerated;
-
-    [Serializable]
-    public struct GridSize
-    {
-        public int x;
-        public int y;
-        public int z;
-
-        public GridSize(int x, int y, int z)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-    }
-
     public Action<CubeData> onCubeDestroyed;
     public Action<CubeData> onCubePlaced;
+    
+    [Serializable]
+    public struct ChunkValues
+    {
+        public Vector2 xPositive;
+        public Vector2 xNegative;
+        public Vector2 yPositive;
+        public Vector2 yNegative;
+        public float height;
+        public float width;
+
+        public ChunkValues(Vector2 xPositive, Vector2 xNegative, Vector2 yPositive, Vector2 yNegative, uint height, uint width)
+        {
+            this.xPositive = xPositive;
+            this.xNegative = xNegative;
+            this.yPositive = yPositive;
+            this.yNegative = yNegative;
+            this.height = height;
+            this.width = width;
+        }
+    }
+    
+    public ChunkValues chunkValues;
 
     public GameObject greenCube;
     public GameObject blueCube;
@@ -40,9 +47,6 @@ public class MapGenerator : MonoBehaviour
     private PlayerSpawn playerSpawn;
     private GameObject player;
     private ChunkGenerator chunkGenerator;
-
-    [HideInInspector] public GridSize gridSize = new GridSize(0, 0, 0);
-
     public float seed;
 
     [SerializeField] private float chunkGenerationDistanceFromEndOfTheChunk;
@@ -69,9 +73,11 @@ public class MapGenerator : MonoBehaviour
         playerSpawn = GetComponent<PlayerSpawn>();
         chunkGenerator = GetComponent<ChunkGenerator>();
 
-        gridSize.y = (int)gridSizeHeight;
-        gridSize.x = (int)gridSizeSides;
-        gridSize.z = (int)gridSizeSides;
+        Vector2 xPositive = new Vector2(gridSizeSides, 0.0f);
+        Vector2 xNegative = new Vector2(-gridSizeSides, 0.0f);
+        Vector2 yPositive = new Vector2(0.0f, gridSizeSides);
+        Vector2 yNegative = new Vector2(0.0f, -gridSizeSides);
+        chunkValues = new ChunkValues(xPositive, xNegative, yPositive, yNegative, gridSizeHeight, gridSizeSides);
     }
 
     private void Start()
@@ -182,10 +188,10 @@ public class MapGenerator : MonoBehaviour
     {
         middlePointOfLastChunk = middlePointOfActualChunk;
 
-        xPositivePrediction = middlePointOfActualChunk.x + gridSize.x / 2;
-        xNegativePrediction = middlePointOfActualChunk.x - gridSize.x / 2;
-        zPositivePrediction = middlePointOfActualChunk.y + gridSize.x / 2;
-        zNegativePrediction = middlePointOfActualChunk.y - gridSize.x / 2;
+        xPositivePrediction = middlePointOfActualChunk.x + chunkValues.width / 2;
+        xNegativePrediction = middlePointOfActualChunk.x - chunkValues.width / 2;
+        zPositivePrediction = middlePointOfActualChunk.y + chunkValues.width / 2;
+        zNegativePrediction = middlePointOfActualChunk.y - chunkValues.width / 2;
     }
 
     private void ProcessChunkGenerationDistance()
@@ -193,19 +199,19 @@ public class MapGenerator : MonoBehaviour
         Vector2 centerPointOfUpcomingChunk = new Vector2(middlePointOfLastChunk.x, middlePointOfLastChunk.y);
         if (player.transform.position.x > xPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerPointOfUpcomingChunk.x += gridSize.x;
+            centerPointOfUpcomingChunk.x += chunkValues.width;
         }
         else if (player.transform.position.x < xNegativePrediction + chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerPointOfUpcomingChunk.x -= gridSize.x;
+            centerPointOfUpcomingChunk.x -= chunkValues.width;
         }
         else if (player.transform.position.z > zPositivePrediction - chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerPointOfUpcomingChunk.y += gridSize.x;
+            centerPointOfUpcomingChunk.y += chunkValues.width;
         }
         else if (player.transform.position.z < zNegativePrediction + chunkGenerationDistanceFromEndOfTheChunk)
         {
-            centerPointOfUpcomingChunk.y -= gridSize.x;
+            centerPointOfUpcomingChunk.y -= chunkValues.width;
         }
         else
         {
@@ -231,19 +237,19 @@ public class MapGenerator : MonoBehaviour
 
         if (player.transform.position.x > xPositivePrediction)
         {
-            centerOfUpcomingChunk.x += gridSize.x;
+            centerOfUpcomingChunk.x += chunkValues.width;
         }
         else if (player.transform.position.x < xNegativePrediction)
         {
-            centerOfUpcomingChunk.x -= gridSize.x;
+            centerOfUpcomingChunk.x -= chunkValues.width;
         }
         else if (player.transform.position.z > zPositivePrediction)
         {
-            centerOfUpcomingChunk.y += gridSize.x;
+            centerOfUpcomingChunk.y += chunkValues.width;
         }
         else if (player.transform.position.z < zNegativePrediction)
         {
-            centerOfUpcomingChunk.y -= gridSize.x;
+            centerOfUpcomingChunk.y -= chunkValues.width;
         }
         else
         {
@@ -277,6 +283,6 @@ public class MapGenerator : MonoBehaviour
 
     private Vector3 ReturnBeginningPositionOfGeneratedChunk(Vector2 centerOfChunk)
     {
-        return new Vector3(centerOfChunk.x - gridSize.x / 2, 0.0f, centerOfChunk.y - gridSize.x / 2);
+        return new Vector3(centerOfChunk.x - Mathf.Floor(chunkValues.width / 2), 0.0f, centerOfChunk.y - Mathf.Floor(chunkValues.width / 2));
     }
 }

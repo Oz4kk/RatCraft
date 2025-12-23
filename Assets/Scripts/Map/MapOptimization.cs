@@ -216,28 +216,28 @@ namespace InternalTypesForMapOptimization
             Border border;
             // Negative X border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            if ((cubeDataPosition.x - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((cubeDataPosition.x - Mathf.Floor(mapGenerator.chunkValues.width / 2)) % mapGenerator.chunkValues.width == 0.0f)
             {
                 border = Border.XPositive;
                 return border;
             }
             // Positive X border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            if ((cubeDataPosition.x + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((cubeDataPosition.x + Mathf.Floor(mapGenerator.chunkValues.width / 2)) % mapGenerator.chunkValues.width == 0.0f)
             {
                 border = Border.XNegative;
                 return border;
             }
             // Negative Z border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            if ((cubeDataPosition.z - (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((cubeDataPosition.z - Mathf.Floor(mapGenerator.chunkValues.width / 2)) % mapGenerator.chunkValues.width == 0.0f)
             {
                 border = Border.ZPositive;
                 return border;
             }
             // Postive Z border of Actual Chunk
             // If actual cube position is on border of actual chunk and if border chunk exist, optimalize borders of these two chunks
-            if ((cubeDataPosition.z + (mapGenerator.gridSize.x / 2)) % mapGenerator.gridSize.x == 0)
+            if ((cubeDataPosition.z + Mathf.Floor(mapGenerator.chunkValues.width / 2)) % mapGenerator.chunkValues.width == 0.0f)
             {
                 border = Border.ZNegative;
                 return border;
@@ -248,10 +248,10 @@ namespace InternalTypesForMapOptimization
         
         private Corner IsCubeAtCorner(Vector3 newCubeDataPosition, Vector2 chunkCenter)
         {
-            float XNegativeCorner = chunkCenter.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-            float XPositiveCorner = chunkCenter.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-            float ZNegativeCorner = chunkCenter.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-            float ZPositiveCorner = chunkCenter.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
+            float XNegativeCorner = chunkCenter.x - Mathf.Ceil(mapGenerator.chunkValues.width / 2.0f) + 1.0f;
+            float XPositiveCorner = chunkCenter.x + Mathf.Ceil(mapGenerator.chunkValues.width / 2.0f) - 1.0f;
+            float ZNegativeCorner = chunkCenter.y - Mathf.Ceil(mapGenerator.chunkValues.width / 2.0f) + 1.0f;
+            float ZPositiveCorner = chunkCenter.y + Mathf.Ceil(mapGenerator.chunkValues.width / 2.0f) - 1.0f;
 
             Corner corner;
             // XNegativeZNegative corner

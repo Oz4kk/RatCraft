@@ -119,10 +119,10 @@ public class BorderOptimization : MonoBehaviour
 
     private bool IsBorderCubeNearCorner(CubeData newCubeData, Vector2 chunkCenter, ref BorderSideAroundCorner borderSideAroundCorner)
     {
-        float XNegativeCorner = chunkCenter.x - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-        float XPositiveCorner = chunkCenter.x + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
-        float ZNegativeCorner = chunkCenter.y - Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) + 1.0f;
-        float ZPositiveCorner = chunkCenter.y + Mathf.Ceil((float)mapGenerator.gridSize.x / 2.0f) - 1.0f;
+        float XNegativeCorner = chunkCenter.x - Mathf.Ceil((float)mapGenerator.chunkValues.width / 2.0f) + 1.0f;
+        float XPositiveCorner = chunkCenter.x + Mathf.Ceil((float)mapGenerator.chunkValues.width / 2.0f) - 1.0f;
+        float ZNegativeCorner = chunkCenter.y - Mathf.Ceil((float)mapGenerator.chunkValues.width / 2.0f) + 1.0f;
+        float ZPositiveCorner = chunkCenter.y + Mathf.Ceil((float)mapGenerator.chunkValues.width / 2.0f) - 1.0f;
             
         if (newCubeData.position.x == (XNegativeCorner + 1.0f) && newCubeData.position.z == ZNegativeCorner)
         {
@@ -471,22 +471,22 @@ public class BorderOptimization : MonoBehaviour
         {
             case Border.XNegative:
                 neighbourCubesValues.edgeType = Border.XPositive;
-                neighbourCubesValues.chunkCenter = new Vector2(newCubeChunkCenter.x - mapGenerator.gridSize.x, newCubeChunkCenter.y); 
+                neighbourCubesValues.chunkCenter = newCubeChunkCenter + mapGenerator.chunkValues.xNegative;//new Vector2(newCubeChunkCenter.x - mapGenerator.gridSize.x, newCubeChunkCenter.y); 
                 neighbourCubesValues.position = newCubeData.position + Vector3.left;
                 break;
             case Border.XPositive:
                 neighbourCubesValues.edgeType = Border.XNegative;
-                neighbourCubesValues.chunkCenter = new Vector2(newCubeChunkCenter.x + mapGenerator.gridSize.x, newCubeChunkCenter.y); 
+                neighbourCubesValues.chunkCenter = newCubeChunkCenter + mapGenerator.chunkValues.xPositive;//new Vector2(newCubeChunkCenter.x + mapGenerator.gridSize.x, newCubeChunkCenter.y); 
                 neighbourCubesValues.position = newCubeData.position + Vector3.right;
                 break;
             case Border.ZNegative:
                 neighbourCubesValues.edgeType = Border.ZPositive;
-                neighbourCubesValues.chunkCenter = new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y - mapGenerator.gridSize.x); 
+                neighbourCubesValues.chunkCenter = newCubeChunkCenter + mapGenerator.chunkValues.yNegative;//new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y - mapGenerator.gridSize.x); 
                 neighbourCubesValues.position = newCubeData.position + Vector3.back;
                 break;
             case Border.ZPositive:
                 neighbourCubesValues.edgeType = Border.ZNegative;
-                neighbourCubesValues.chunkCenter = new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y + mapGenerator.gridSize.x); 
+                neighbourCubesValues.chunkCenter = newCubeChunkCenter + mapGenerator.chunkValues.yPositive;//new Vector2(newCubeChunkCenter.x, newCubeChunkCenter.y + mapGenerator.gridSize.x); 
                 neighbourCubesValues.position = newCubeData.position + Vector3.forward;
                 break;
         }
