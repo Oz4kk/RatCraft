@@ -1,0 +1,5 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement name="PlayerUIBar" style="bottom: auto; height: 54px; top: 90%; justify-content: center; align-items: center;">
+        <ui:VisualElement name="InventorySlot" style="width: 74px; height: 15px; max-width: 10%; max-height: 10%; border-top-left-radius: 10px; border-bottom-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-left-color: rgba(255, 109, 109, 255); border-right-color: rgba(255, 109, 109, 255); border-top-color: rgba(255, 109, 109, 255); border-bottom-color: rgba(255, 109, 109, 255); background-color: rgba(211, 248, 186, 255);" />
+    </ui:VisualElement>
+</ui:UXML>
